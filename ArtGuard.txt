@@ -1,0 +1,4 @@
+BP_Minimap: 
+set capture source in scene capture to the last option (Final Color worth checking too);
+
+SET COLLISION COMPONENT ON EACH EXIT ARROW TO OVERLAP WITH ANOTHER EXIT AND CHECK IF SAID EXIT IS NEEDED TO BE SET
