@@ -5,7 +5,9 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/Actor.h"
 #include "Picture.h"
-
+#include "../Plugins/2D/Paper2D/Source/Paper2D/Classes/PaperSpriteComponent.h"
+#include "Paper2DModule.h"
+//#include "Paper"
 // Sets default values
 AFrame::AFrame()
 {
@@ -44,5 +46,15 @@ void AFrame::SetFrame(UArrowComponent* ArrowToSet, USceneComponent* FrameToSet)
 {
 	ArrowComponent = ArrowToSet;
 	Frame = FrameToSet;
+}
+
+void AFrame::ChangeSpriteColor()
+{
+	Sprite->SetSpriteColor(FLinearColor::Red);
+}
+
+void AFrame::SetPictureSprite(UPaperSpriteComponent* SpriteToSet)
+{
+	Sprite=SpriteToSet;
 }
 

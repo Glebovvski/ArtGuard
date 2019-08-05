@@ -6,7 +6,8 @@
 #include "Materials/MaterialInstance.h"
 #include "Components/StaticMeshComponent.h"
 #include "ArtGuardGameMode.h"
-
+#include "Frame.h"
+//#include "Paper2D"
 // Sets default values
 APicture::APicture()
 {
@@ -106,5 +107,7 @@ void APicture::Steal()
 {
 	Plane->DestroyComponent();
 	IsStolen=true;
+	Cast<AFrame>(GetAttachParentActor())->ChangeSpriteColor();
+	//UE_LOG(LogTemp, Warning, TEXT("%s"),*GetAttachParentActor()->GetName());
 }
 

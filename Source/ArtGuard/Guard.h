@@ -7,6 +7,7 @@
 #include "Guard.generated.h"
 
 class UBoxComponent;
+class APicture;
 
 UCLASS()
 class ARTGUARD_API AGuard : public ACharacter
@@ -32,11 +33,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	APicture* GetPictureToSteal();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 	UBoxComponent* StealOverlapComponent;
-	class APicture* PictureToSteal;
+	APicture* PictureToSteal;
 
 	void Steal();
 };

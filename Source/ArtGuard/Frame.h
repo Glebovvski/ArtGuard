@@ -8,6 +8,7 @@
 
 class UArrowComponent;
 class APicture;
+class UPaperSpriteComponent;
 
 UCLASS()
 class ARTGUARD_API AFrame : public AActor
@@ -40,7 +41,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<APicture> Picture_BP;
 
+	UFUNCTION(BlueprintCallable, Category="Sprite")
+	void SetPictureSprite(UPaperSpriteComponent* SpriteToSet);
+
+	void ChangeSpriteColor();
 private:
+	
+	UPaperSpriteComponent* Sprite;
 	UPROPERTY(EditDefaultsOnly, Category="Frame")
 	UArrowComponent* ArrowComponent;
 

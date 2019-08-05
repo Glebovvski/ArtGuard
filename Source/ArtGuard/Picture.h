@@ -35,6 +35,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 		void SetPlane(UStaticMeshComponent* PlaneToSet);
 
+
 	UPROPERTY(BlueprintReadOnly, Category = "Spawn")
 		class AArtGuardGameMode* GameMode;
 
@@ -57,7 +58,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 		float RotationX;
 
+	UFUNCTION(BlueprintCallable, Category="Steal")
 	bool CanSteal();
+	UFUNCTION(BlueprintCallable, Category="Steal")
 	void Steal();
 
 private:

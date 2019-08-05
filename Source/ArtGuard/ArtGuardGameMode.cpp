@@ -38,7 +38,9 @@ void AArtGuardGameMode::RemoveUsedPictureFromArray(bool IsHorizontalArray, int i
 
 void AArtGuardGameMode::SpawnArea()
 {
-	FTransform RootTransform = FTransform(FRotator::ZeroRotator, FVector(7500, 7500, 0), FVector(150, 150, 1));
+	FVector Scale = FVector(150,150,1);
+	FVector Location = FVector(Scale.X/2*100, Scale.Y/2*100, 0);
+	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);
 	AArea* Root = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, RootTransform));
 	if (Root)
 	{

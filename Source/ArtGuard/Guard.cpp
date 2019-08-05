@@ -60,6 +60,11 @@ void AGuard::Tick(float DeltaTime)
 
 }
 
+APicture* AGuard::GetPictureToSteal()
+{
+	return PictureToSteal;
+}
+
 // Called to bind functionality to input
 void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -68,8 +73,8 @@ void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AGuard::Steal()
 {
-	if(PictureToSteal && PictureToSteal->CanSteal())
-	{
-		PictureToSteal->Steal();
-	}
+	//if(PictureToSteal && PictureToSteal->CanSteal())
+	//{
+	//	PictureToSteal->Steal();
+	//}
 }
