@@ -46,6 +46,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Stealing")
 	void Steal();
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	APicture* GetPictureToSteal();
 private:
 	UBoxComponent* StealOverlapComponent;
 	USphereComponent* SearchRadius;

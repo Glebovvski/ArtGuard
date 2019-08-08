@@ -96,3 +96,8 @@ void ARobber::Steal()
 	}
 }
 
+APicture* ARobber::GetPictureToSteal()
+{
+	return PictureToSteal;
+}
+
