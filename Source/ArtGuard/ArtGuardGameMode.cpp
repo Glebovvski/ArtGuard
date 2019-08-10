@@ -15,7 +15,8 @@
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-
+	IsRightExitSet=false;
+	IsUpExitSet=false;
 	GetAllMaterials();
 }
 

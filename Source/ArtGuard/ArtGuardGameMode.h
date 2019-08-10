@@ -44,6 +44,13 @@ public:
 	TSubclassOf<AArea> BP_Area;
 
 	TArray<AArea*> Areas;
+
+	bool IsRightExitSet=false;
+	bool IsUpExitSet=false;
+
+	AArea* MainRightExit;
+	AArea* MainUpExit;
+
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();

@@ -11,13 +11,18 @@ ARobber::ARobber()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	ShouldEscape=false;
 }
 
 void ARobber::SetStealOverlappings(UBoxComponent* Box, USphereComponent* Sphere)
 {
 	StealOverlapComponent = Box;
 	SearchRadius = Sphere;
+}
+
+void ARobber::SetGuardOverlappings(USphereComponent* Sphere)
+{
+	GuardRadius=Sphere;
 }
 
 void ARobber::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -59,6 +64,15 @@ void ARobber::OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	}
 }
 
+void ARobber::OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor!=this && OtherActor->ActorHasTag("Playable"))
+	{
+		ShouldEscape=true;
+	}
+}
+
 // Called when the game starts or when spawned
 void ARobber::BeginPlay()
 {
@@ -72,6 +86,10 @@ void ARobber::BeginPlay()
 	{
 		SearchRadius->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapSphereBegin);
 		SearchRadius->OnComponentEndOverlap.AddDynamic(this, &ARobber::OnOverlapSphereEnd);
+	}
+	if(GuardRadius)
+	{
+		GuardRadius->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapGuardBegin);
 	}
 }
 

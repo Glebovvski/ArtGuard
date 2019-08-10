@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Area")
 		TSubclassOf<AArea> BP_Hall;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Area")
+		TSubclassOf<AArea> BP_MAIN_Hall;
+
 	UPROPERTY(VisibleAnywhere, Category = "Hall")
 		FString HallText = "";
 
@@ -89,6 +92,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Hall")
 	TSubclassOf<class AExit> BP_Exit;
+
+	void CreateExit(int X, int Y, bool IsRight);
 private:
 	ARoom* GetRoom();
 

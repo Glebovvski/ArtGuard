@@ -21,6 +21,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	void SetStealOverlappings(UBoxComponent* Box, USphereComponent* Sphere);
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	void SetGuardOverlappings(USphereComponent* Sphere);
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
@@ -31,6 +33,11 @@ public:
 	UFUNCTION()
 	void OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	bool ShouldEscape=false;
+	//UFUNCTION()
+	//void OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -51,6 +58,7 @@ public:
 private:
 	UBoxComponent* StealOverlapComponent;
 	USphereComponent* SearchRadius;
+	USphereComponent* GuardRadius;
 
 	APicture* PictureToSteal;
 
