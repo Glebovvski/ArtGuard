@@ -14,43 +14,58 @@ AGuard::AGuard()
 
 }
 
-void AGuard::SetStealOverlappingBox(UBoxComponent* Box)
+//void AGuard::SetStealOverlappingBox(UBoxComponent* Box)
+//{
+//	StealOverlapComponent = Box;
+//}
+
+void AGuard::SetCatchOverlappingBox(UBoxComponent* Box)
 {
-	StealOverlapComponent = Box;
+	CatchBox=Box;
 }
 
 void AGuard::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag("Picture"))
+	if (OtherComp->ComponentHasTag("Robber"))
 	{
-		PictureToSteal = Cast<APicture>(OtherActor);
+		//PictureToSteal = Cast<APicture>(OtherActor);
+		Catch();
 	}
 }
 
-void AGuard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
+void AGuard::Catch_Implementation()
 {
-	if (OtherActor->ActorHasTag("Picture"))
-	{
-		if (Cast<APicture>(OtherActor) == PictureToSteal)
-		{
-			PictureToSteal = nullptr;
-		}
-	}
 }
+
+//void AGuard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+//	int32 OtherBodyIndex)
+//{
+//	if (OtherActor->ActorHasTag("Picture"))
+//	{
+//		if (Cast<APicture>(OtherActor) == PictureToSteal)
+//		{
+//			PictureToSteal = nullptr;
+//		}
+//	}
+//}
 
 // Called when the game starts or when spawned
 void AGuard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(StealOverlapComponent)
+	//if(StealOverlapComponent)
+	//{
+	//	StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
+	//	StealOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AGuard::OnOverlapEnd);
+	//}
+	//InputComponent->BindAction("StealPicture", IE_Pressed, this, &AGuard::Steal);
+	
+	if(CatchBox)
 	{
-		StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
-		StealOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AGuard::OnOverlapEnd);
+		CatchBox->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
 	}
-	InputComponent->BindAction("StealPicture", IE_Pressed, this, &AGuard::Steal);
 }
 
 // Called every frame

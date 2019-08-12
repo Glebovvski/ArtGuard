@@ -19,11 +19,15 @@ public:
 	AGuard();
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
-	void SetStealOverlappingBox(UBoxComponent* Box);
+	void SetCatchOverlappingBox(UBoxComponent* Box);
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Endgame")
+	void Catch();
+	//UFUNCTION()
+	//void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -39,8 +43,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
-	UBoxComponent* StealOverlapComponent;
+	//UBoxComponent* StealOverlapComponent;
 	APicture* PictureToSteal;
 
 	void Steal();
+
+	UBoxComponent* CatchBox;
 };

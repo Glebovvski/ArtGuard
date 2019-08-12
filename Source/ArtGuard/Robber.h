@@ -36,6 +36,9 @@ public:
 	UFUNCTION()
 	void OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	bool ShouldEscape=false;
+
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	bool GetShouldEscape();
 	//UFUNCTION()
 	//void OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
@@ -55,6 +58,12 @@ public:
 	void Steal();
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	APicture* GetPictureToSteal();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Stealing")
+	void SetPictureFound();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Stealing")
+	void SetEscape();
 private:
 	UBoxComponent* StealOverlapComponent;
 	USphereComponent* SearchRadius;

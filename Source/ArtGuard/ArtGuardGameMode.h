@@ -51,6 +51,11 @@ public:
 	AArea* MainRightExit;
 	AArea* MainUpExit;
 
+	UFUNCTION(BlueprintCallable, Category="Exit")
+	AArea* GetMainRightExit();
+	UFUNCTION(BlueprintCallable, Category="Exit")
+	AArea* GetMainUpExit();
+
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();

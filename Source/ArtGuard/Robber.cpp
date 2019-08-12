@@ -52,6 +52,7 @@ void ARobber::OnOverlapSphereBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 	if (OtherActor->ActorHasTag("Picture"))
 	{
 		SeenPictures.Add(Cast<APicture>(OtherActor));
+		SetPictureFound();
 	}
 }
 
@@ -70,7 +71,13 @@ void ARobber::OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	if(OtherActor!=this && OtherActor->ActorHasTag("Playable"))
 	{
 		ShouldEscape=true;
+		SetEscape();
 	}
+}
+
+bool ARobber::GetShouldEscape()
+{
+	return ShouldEscape;
 }
 
 // Called when the game starts or when spawned
@@ -117,5 +124,13 @@ void ARobber::Steal()
 APicture* ARobber::GetPictureToSteal()
 {
 	return PictureToSteal;
+}
+
+void ARobber::SetEscape_Implementation()
+{
+}
+
+void ARobber::SetPictureFound_Implementation()
+{
 }
 

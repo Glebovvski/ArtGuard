@@ -85,6 +85,16 @@ void AArtGuardGameMode::SpawnArea()
 	}
 }
 
+AArea* AArtGuardGameMode::GetMainRightExit()
+{
+	return MainRightExit;
+}
+
+AArea* AArtGuardGameMode::GetMainUpExit()
+{
+	return MainUpExit;
+}
+
 void AArtGuardGameMode::GetAllMaterials()
 {
 	VerticalMaterials = GetMaterialInstancesFromPath("/Game/Picture/Pictures/Materials/Vertical");
