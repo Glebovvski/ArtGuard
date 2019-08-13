@@ -62,6 +62,7 @@ void ARobber::OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if (OtherActor->ActorHasTag("Picture"))
 	{
 		SeenPictures.Remove(Cast<APicture>(OtherActor));
+		SetPictureFound();
 	}
 }
 

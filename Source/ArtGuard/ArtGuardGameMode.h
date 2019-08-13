@@ -14,6 +14,7 @@
 class ARoom;
 class UMaterialInstance;
 class AArea;
+class ARobber;
 
 UCLASS()
 class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
@@ -43,6 +44,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Area")
 	TSubclassOf<AArea> BP_Area;
 
+	UPROPERTY(EditDefaultsOnly, Category="Robber")
+	TSubclassOf<ARobber> BP_Robber;
+
 	TArray<AArea*> Areas;
 
 	bool IsRightExitSet=false;
@@ -56,11 +60,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Exit")
 	AArea* GetMainUpExit();
 
+	UFUNCTION(BlueprintCallable, Category="Spawning")
+	void SpawnRobber();
+
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();
 
 	TArray<UMaterialInstance*> GetMaterialInstancesFromPath(FString _path);
+	
+	TArray<AArea*> FoundAreas;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

@@ -11,12 +11,13 @@
 #include "Area.h"
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
+#include "Robber.h"
 
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	IsRightExitSet=false;
-	IsUpExitSet=false;
+	IsRightExitSet = false;
+	IsUpExitSet = false;
 	GetAllMaterials();
 }
 
@@ -39,8 +40,8 @@ void AArtGuardGameMode::RemoveUsedPictureFromArray(bool IsHorizontalArray, int i
 
 void AArtGuardGameMode::SpawnArea()
 {
-	FVector Scale = FVector(150,150,1);
-	FVector Location = FVector(Scale.X/2*100, Scale.Y/2*100, 0);
+	FVector Scale = FVector(150, 150, 1);
+	FVector Location = FVector(Scale.X / 2 * 100, Scale.Y / 2 * 100, 0);
 	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);
 	AArea* Root = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, RootTransform));
 	if (Root)
@@ -70,7 +71,6 @@ void AArtGuardGameMode::SpawnArea()
 
 	Root->CreateRooms();
 
-	TArray<AArea*> FoundAreas;
 	for (TActorIterator<AArea> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		AArea* Area = *ActorItr;
@@ -93,6 +93,31 @@ AArea* AArtGuardGameMode::GetMainRightExit()
 AArea* AArtGuardGameMode::GetMainUpExit()
 {
 	return MainUpExit;
+}
+
+void AArtGuardGameMode::SpawnRobber()
+{
+	float X, Y;
+	bool check = false;
+	do
+	{
+		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num());
+		UE_LOG(LogTemp, Warning, TEXT("%d"), FoundAreas.Num());
+		if (FoundAreas[RandomRoomIndex]->Room)
+		{
+			auto Room = FoundAreas[RandomRoomIndex]->Room;
+			X = FMath::RandRange(Room->Location.X - Room->Width * 100 +200, Room->Location.X + Room->Width * 100-200);
+			Y = FMath::RandRange(Room->Location.Y - Room->Height * 100+200, Room->Location.Y + Room->Height * 100-200);
+			check=true;
+		}
+	}while (!check);
+
+	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X,Y,150));
+	auto Robber = UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this);
+	if(Robber)
+	{
+		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
+	}
 }
 
 void AArtGuardGameMode::GetAllMaterials()
