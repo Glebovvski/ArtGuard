@@ -13,6 +13,12 @@
 #include "EngineUtils.h"
 #include "Robber.h"
 
+void AArtGuardGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
@@ -99,22 +105,26 @@ void AArtGuardGameMode::SpawnRobber()
 {
 	float X, Y;
 	bool check = false;
+	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	do
 	{
-		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num());
+		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num()-1);
 		UE_LOG(LogTemp, Warning, TEXT("%d"), FoundAreas.Num());
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			auto Room = FoundAreas[RandomRoomIndex]->Room;
-			X = FMath::RandRange(Room->Location.X - Room->Width * 100 +200, Room->Location.X + Room->Width * 100-200);
-			Y = FMath::RandRange(Room->Location.Y - Room->Height * 100+200, Room->Location.Y + Room->Height * 100-200);
-			check=true;
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 5000)
+			{
+				auto Room = FoundAreas[RandomRoomIndex]->Room;
+				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				check = true;
+			}
 		}
-	}while (!check);
+	} while (!check);
 
-	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X,Y,150));
+	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
 	auto Robber = UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this);
-	if(Robber)
+	if (Robber)
 	{
 		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
 	}

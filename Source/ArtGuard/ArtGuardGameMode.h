@@ -22,6 +22,8 @@ class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Materials")
@@ -66,6 +68,8 @@ public:
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();
+
+	APawn* Player;
 
 	TArray<UMaterialInstance*> GetMaterialInstancesFromPath(FString _path);
 	
