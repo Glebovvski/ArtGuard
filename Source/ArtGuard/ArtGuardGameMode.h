@@ -15,6 +15,7 @@ class ARoom;
 class UMaterialInstance;
 class AArea;
 class ARobber;
+class UAIPerceptionComponent;
 
 UCLASS()
 class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
@@ -64,6 +65,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SpawnRobber();
+
+	//UFUNCTION(BlueprintCallable, Category="SetRobber")
+	//void SetSight(float SightRadius);
+
+	//UPROPERTY(EditDefaultsOnly, Category="SetRobber")
+	//AAIController* RobberAIController;
+	UAIPerceptionComponent* Perception;
+
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")

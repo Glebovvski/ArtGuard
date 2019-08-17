@@ -5,6 +5,8 @@
 #include "Components/BoxComponent.h"
 #include "Picture.h"
 #include "Components/SphereComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AIController.h"
 
 // Sets default values
 ARobber::ARobber()
@@ -71,8 +73,8 @@ void ARobber::OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if(OtherActor!=this && OtherActor->ActorHasTag("Playable"))
 	{
-		ShouldEscape=true;
-		SetEscape();
+		SetShouldEscape(true);
+		//SetEscape();
 	}
 }
 
@@ -99,6 +101,7 @@ void ARobber::BeginPlay()
 	{
 		GuardRadius->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapGuardBegin);
 	}
+
 }
 
 // Called every frame
@@ -125,6 +128,18 @@ void ARobber::Steal()
 APicture* ARobber::GetPictureToSteal()
 {
 	return PictureToSteal;
+}
+
+void ARobber::SetShouldEscape(bool Escape)
+{
+	ShouldEscape=Escape;
+}
+
+UAIPerceptionComponent* ARobber::GetPerception()
+{
+	
+	auto Controller = UAIBlueprintHelperLibrary::GetAIController(this);
+	return Controller->GetAIPerceptionComponent();
 }
 
 void ARobber::SetEscape_Implementation()

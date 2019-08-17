@@ -9,6 +9,7 @@
 class UBoxComponent;
 class USphereComponent;
 class APicture;
+class UAIPerceptionComponent;
 
 UCLASS()
 class ARTGUARD_API ARobber : public ACharacter
@@ -35,6 +36,7 @@ public:
 
 	UFUNCTION()
 	void OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	bool ShouldEscape=false;
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
@@ -64,11 +66,15 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Stealing")
 	void SetEscape();
+
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	void SetShouldEscape(bool Escape);
+
+	UAIPerceptionComponent* GetPerception();
 private:
 	UBoxComponent* StealOverlapComponent;
 	USphereComponent* SearchRadius;
 	USphereComponent* GuardRadius;
 
 	APicture* PictureToSteal;
-
 };

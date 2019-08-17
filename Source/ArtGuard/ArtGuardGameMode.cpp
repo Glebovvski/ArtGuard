@@ -12,6 +12,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 #include "Robber.h"
+#include "Perception/AISense.h"
+#include "Perception/AISense_Sight.h"
+#include "AIController.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AIPerceptionComponent.h"
 
 void AArtGuardGameMode::BeginPlay()
 {
@@ -103,7 +108,7 @@ AArea* AArtGuardGameMode::GetMainUpExit()
 
 void AArtGuardGameMode::SpawnRobber()
 {
-	float X, Y;
+	float X = 0, Y = 0;
 	bool check = false;
 	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	do
@@ -123,12 +128,44 @@ void AArtGuardGameMode::SpawnRobber()
 	} while (!check);
 
 	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
-	auto Robber = UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this);
+	ARobber* Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
 	if (Robber)
 	{
 		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
 	}
+	//RobberAIController=Robber->GetController()->GetPawn()->AIControllerClass;
+	Perception=Robber->GetPerception();
 }
+
+/*
+void AArtGuardGameMode::SetSight(float SightRadius)
+{
+	 FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
+ 
+     if (!Id.IsValid())
+     {
+         UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
+         return;
+     }
+ 
+     // GetPerception() = AIController->GetPerceptionComponent()
+    
+	auto Config = Perception->GetSenseConfig(Id); //GetPerception()->GetSenseConfig(Id);
+ 
+     if (Config == nullptr)
+         return;
+ 
+     auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
+ 
+     // Save original lose range
+     //float LoseRange = ConfigSight->LoseSightRadius - ConfigSight->SightRadius;
+     
+     ConfigSight->SightRadius = SightRadius;
+ 
+     //RobberAIController->GetAIPerceptionComponent()->RequestStimuliListenerUpdate(); //->RequestStimuliListenerUpdate();
+	 
+}
+*/
 
 void AArtGuardGameMode::GetAllMaterials()
 {
