@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 // Sets default values
 ARobber::ARobber()
@@ -138,8 +139,8 @@ void ARobber::SetShouldEscape(bool Escape)
 UAIPerceptionComponent* ARobber::GetPerception()
 {
 	
-	auto Controller = UAIBlueprintHelperLibrary::GetAIController(this);
-	return Controller->GetAIPerceptionComponent();
+	//auto Controller = UAIBlueprintHelperLibrary::GetAIController(this);
+	return UAIBlueprintHelperLibrary::GetAIController(this)->GetAIPerceptionComponent();//Controller->GetPerceptionComponent();
 }
 
 void ARobber::SetEscape_Implementation()

@@ -43,6 +43,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
+	float Loudness;
+	float SneakLoudness;
+
+	UFUNCTION(BlueprintCallable, Category="Setup")
+	float GetLoudness();
+	UFUNCTION(BlueprintCallable, Category="Setup")
+	float GetSneakLoudness();
+
 	//UBoxComponent* StealOverlapComponent;
 	APicture* PictureToSteal;
 

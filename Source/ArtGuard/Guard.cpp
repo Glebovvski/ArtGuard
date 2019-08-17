@@ -11,7 +11,9 @@ AGuard::AGuard()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	Loudness=1;
+	SneakLoudness=Loudness*0.5;
 }
 
 //void AGuard::SetStealOverlappingBox(UBoxComponent* Box)
@@ -61,7 +63,8 @@ void AGuard::BeginPlay()
 	//	StealOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AGuard::OnOverlapEnd);
 	//}
 	//InputComponent->BindAction("StealPicture", IE_Pressed, this, &AGuard::Steal);
-	
+
+
 	if(CatchBox)
 	{
 		CatchBox->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
@@ -84,6 +87,16 @@ APicture* AGuard::GetPictureToSteal()
 void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+float AGuard::GetLoudness()
+{
+	return Loudness;
+}
+
+float AGuard::GetSneakLoudness()
+{
+	return SneakLoudness;
 }
 
 void AGuard::Steal()

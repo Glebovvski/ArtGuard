@@ -66,8 +66,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SpawnRobber();
 
-	//UFUNCTION(BlueprintCallable, Category="SetRobber")
-	//void SetSight(float SightRadius);
+	UFUNCTION(BlueprintCallable, Category="SetRobber")
+	void SetSight(float SightRadius);
+	
+	UFUNCTION(BlueprintCallable, Category="SetRobber")
+	void SetHearing(float HearRadius);
 
 	//UPROPERTY(EditDefaultsOnly, Category="SetRobber")
 	//AAIController* RobberAIController;
