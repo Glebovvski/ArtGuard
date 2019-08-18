@@ -45,6 +45,8 @@ public:
 	TArray<AWall*> UpWalls;
 	TArray<AWall*> DownWalls;
 
+	void CreateDecorWalls();
+
 	UPROPERTY(EditDefaultsOnly, Category="Room")
 	UStaticMeshComponent* Floor;
 
@@ -58,11 +60,13 @@ public:
 	TSubclassOf<AWall> Wall_BP;
 private:
 	AArtGuardGameMode* GameMode;
-	AWall* CreateWall(FVector Location, FVector Scale);
+	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation=FRotator::ZeroRotator);
 	ARoom* UpRoom;
 	ARoom* BottomRoom;
 	ARoom* RightRoom;
 	ARoom* LeftRoom;
+
+	TArray<int> PossibleRotationAnglesForDecorWalls = TArray<int>{ 0,90,180 };
 
 	void CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizontal, int FrameOffset);
 };
