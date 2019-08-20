@@ -145,42 +145,37 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 
 void ARoom::CreateDecorWalls()
 {
-	//if (FMath::RandBool())
+	if (FMath::RandBool())
 	{
 		int RandomRotation = PossibleRotationAnglesForDecorWalls[FMath::RandRange(0, PossibleRotationAnglesForDecorWalls.Num() - 1)];
 		FRotator Rotation(0, RandomRotation, 0);
-
+		FRotator OppositeRotation(0,180,0);
 		FVector WallLocation;
 
-		float LocationOffset = FMath::RandRange(4, 7);//Height*Width*100/(2/3);
-		//FVector Location = FVector(LocationOffset, LocationOffset, 0);
-		//FVector Scale = FVector(LocationOffset / 2, 1, 15);
-
-		//UpWalls.Add( CreateWall(FVector(Location.X, Location.Y + Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15), Rotation));
+		float LocationOffset = FMath::RandRange(5,10);//(4, 7);
 		auto UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15));
 		WallLocation=UpWall->GetActorLocation();
 		UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), UpWall->GetActorRotation());
+		UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), UpWall->GetActorRotation() + OppositeRotation);
 		UpWall->SetActorRotation(Rotation);
 		
-		//DownWalls.Add(CreateWall(FVector(Location.X, Location.Y - Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15), Rotation));
 		auto DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15));
 		WallLocation=DownWall->GetActorLocation();
 		DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), DownWall->GetActorRotation());
-		DownWall->SetActorRotation(Rotation);
+		DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), DownWall->GetActorRotation() + OppositeRotation);
+		DownWall->SetActorRotation(Rotation + FRotator(0,180,0));
 
-		//LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / LocationOffset, Location.Y, 800), FVector(1, Height / LocationOffset, 15), Rotation));
-		//auto LeftWall = CreateWall(FVector(Location.X - Width * 100 / LocationOffset, Location.Y, 800), FVector(1, Height / LocationOffset, 15), Rotation);
 		auto LeftWall = CreateWall(FVector(Location.X - Width * 100 / LocationOffset, Location.Y, 800), FVector(Height / LocationOffset, 1, 15));
 		WallLocation=LeftWall->GetActorLocation();
 		LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), LeftWall->GetActorRotation());
-		LeftWall->SetActorRotation(Rotation);
+		LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), LeftWall->GetActorRotation() + OppositeRotation);
+		LeftWall->SetActorRotation(Rotation + FRotator(0,-90, 0));
 
-		//RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / LocationOffset, Location.Y, 800), FVector(1, Height / LocationOffset, 15), Rotation));
-		//auto RightWall = CreateWall(FVector(Location.X + Width * 100 / LocationOffset, Location.Y, 800), FVector(1, Height / LocationOffset, 15), Rotation);
 		auto RightWall = CreateWall(FVector(Location.X + Width * 100 / LocationOffset, Location.Y, 800), FVector(Height / LocationOffset, 1, 15));
 		WallLocation=RightWall->GetActorLocation();
 		RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), RightWall->GetActorRotation());
-		RightWall->SetActorRotation(Rotation);
+		RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), RightWall->GetActorRotation() + OppositeRotation);
+		RightWall->SetActorRotation(Rotation + FRotator(0,90, 0));
 	}
 }
 
