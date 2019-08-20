@@ -152,29 +152,25 @@ void ARoom::CreateDecorWalls()
 		FRotator OppositeRotation(0,180,0);
 		FVector WallLocation;
 
-		float LocationOffset = FMath::RandRange(5,10);//(4, 7);
+		float LocationOffset = FMath::RandRange(5,10);
 		auto UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15));
 		WallLocation=UpWall->GetActorLocation();
-		UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), UpWall->GetActorRotation());
 		UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), UpWall->GetActorRotation() + OppositeRotation);
 		UpWall->SetActorRotation(Rotation);
 		
 		auto DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / LocationOffset, 800), FVector(Width / LocationOffset, 1, 15));
 		WallLocation=DownWall->GetActorLocation();
-		DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), DownWall->GetActorRotation());
 		DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), DownWall->GetActorRotation() + OppositeRotation);
 		DownWall->SetActorRotation(Rotation + FRotator(0,180,0));
 
 		auto LeftWall = CreateWall(FVector(Location.X - Width * 100 / LocationOffset, Location.Y, 800), FVector(Height / LocationOffset, 1, 15));
 		WallLocation=LeftWall->GetActorLocation();
 		LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), LeftWall->GetActorRotation());
-		LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), LeftWall->GetActorRotation() + OppositeRotation);
 		LeftWall->SetActorRotation(Rotation + FRotator(0,-90, 0));
 
 		auto RightWall = CreateWall(FVector(Location.X + Width * 100 / LocationOffset, Location.Y, 800), FVector(Height / LocationOffset, 1, 15));
 		WallLocation=RightWall->GetActorLocation();
 		RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y+50, 300), RightWall->GetActorRotation());
-		RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y-50, 300), RightWall->GetActorRotation() + OppositeRotation);
 		RightWall->SetActorRotation(Rotation + FRotator(0,90, 0));
 	}
 }
