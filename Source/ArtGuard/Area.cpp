@@ -305,14 +305,14 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		UpExit->SetActorLocation(FVector(Hall->Location.X + Hall->Width * 100 / 2, Hall->Location.Y, 50));
 		UpExit->SetActorRotation(FRotator(0, 180, 0));
 		UpExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
-		GameMode->MainRightExit=Hall;
+		GameMode->MainRightExit = Hall;
 	}
 
 	else
 	{
 		AArea* Hall = GetWorld()->SpawnActor<AArea>(BP_MAIN_Hall);
 		Hall->SetActorScale3D(FVector(4, 7, 1));
-		Hall->SetActorLocation(FVector(X, Y+ Hall->GetActorScale3D().Y * 100 / 2, 1));
+		Hall->SetActorLocation(FVector(X, Y + Hall->GetActorScale3D().Y * 100 / 2, 1));
 		Hall->Location = Hall->GetActorLocation();
 		Hall->Height = Hall->GetActorScale3D().Y;
 		Hall->Width = Hall->GetActorScale3D().X;
@@ -340,8 +340,15 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		UpExit->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y - Hall->Height * 100 / 2, 50));
 		UpExit->SetActorRotation(FRotator(0, 90, 0));
 		UpExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
-		GameMode->MainUpExit=Hall;
+		GameMode->MainUpExit = Hall;
 	}
+}
+
+void AArea::CreateInterior()
+{
+	Room->CreateDecorWalls();
+	Room->CreateWalls();
+	Room->CreateProps();
 }
 
 ARoom* AArea::GetRoom()
@@ -364,14 +371,14 @@ ARoom* AArea::GetRoom()
 
 void AArea::CreateHall()
 {
-	constexpr int ROOT_AREA_SCALE=15000;
+	constexpr int ROOT_AREA_SCALE = 15000;
 	int AdditionalOffset = 150;
-	if (!RightRoom && Room && Room->Location.X>ROOT_AREA_SCALE-2000)
+	if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 2000)
 	{
 		if (!GameMode->IsRightExitSet)
 			CreateExit(Room->Location.X + Room->Width * 100 / 2, Room->Location.Y, true);
 	}
-	if(!UpRoom && Room && Room->Location.Y>ROOT_AREA_SCALE-2000)
+	if (!UpRoom && Room && Room->Location.Y > ROOT_AREA_SCALE - 2000)
 	{
 		if (!GameMode->IsUpExitSet)
 			CreateExit(Room->Location.X, Room->Location.Y + Room->Height * 100 / 2, false);

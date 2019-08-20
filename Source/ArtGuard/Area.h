@@ -94,6 +94,8 @@ public:
 	TSubclassOf<class AExit> BP_Exit;
 
 	void CreateExit(int X, int Y, bool IsRight);
+
+	void CreateInterior();
 private:
 	ARoom* GetRoom();
 

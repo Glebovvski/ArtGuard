@@ -46,6 +46,9 @@ public:
 	TArray<AWall*> DownWalls;
 
 	void CreateDecorWalls();
+	void CreateProps();
+	UPROPERTY(EditDefaultsOnly, Category="Props")
+	TSubclassOf<AActor> BP_Bench;
 
 	UPROPERTY(EditDefaultsOnly, Category="Room")
 	UStaticMeshComponent* Floor;
@@ -69,4 +72,6 @@ private:
 	TArray<int> PossibleRotationAnglesForDecorWalls = TArray<int>{ 0,45, 90, 135, 180 };
 
 	void CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizontal, int FrameOffset);
+
+	void CreateProp(FVector Location, FRotator Rotation = FRotator::ZeroRotator);
 };

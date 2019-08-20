@@ -94,8 +94,7 @@ void AArtGuardGameMode::SpawnArea()
 	{
 		if (Area->Room)
 		{
-			Area->Room->CreateDecorWalls();
-			Area->Room->CreateWalls();
+			Area->CreateInterior();
 		}
 	}
 }
