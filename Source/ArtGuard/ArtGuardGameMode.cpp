@@ -117,7 +117,6 @@ void AArtGuardGameMode::SpawnRobber()
 	do
 	{
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), FoundAreas.Num());
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 5000)

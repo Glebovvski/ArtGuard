@@ -59,10 +59,14 @@ public:
 		float RotationX;
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
+	int GetCost();
+
+	UFUNCTION(BlueprintCallable, Category="Steal")
 	bool CanSteal();
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	void Steal();
 
 private:
+	int Cost = 0;
 	TArray<UMaterialInstance*> Materials;
 };

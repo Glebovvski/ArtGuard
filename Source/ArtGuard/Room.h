@@ -69,7 +69,7 @@ private:
 	ARoom* RightRoom;
 	ARoom* LeftRoom;
 
-	TArray<int> PossibleRotationAnglesForDecorWalls = TArray<int>{ 0,45, 90, 135, 180 };
+	TArray<int> PossibleRotationAnglesForDecorWalls = TArray<int>{ 45, 60, 90, 120, 135, 180 };
 
 	void CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizontal, int FrameOffset);
 

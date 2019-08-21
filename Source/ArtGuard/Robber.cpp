@@ -88,6 +88,7 @@ bool ARobber::GetShouldEscape()
 void ARobber::BeginPlay()
 {
 	Super::BeginPlay();
+	StolenMoney=0;
 	if (StealOverlapComponent)
 	{
 		StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapBegin);
@@ -121,7 +122,7 @@ void ARobber::Steal()
 {
 	if(PictureToSteal && PictureToSteal->CanSteal())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *PictureToSteal->GetName());
+		StolenMoney+=PictureToSteal->GetCost();
 		PictureToSteal->Steal();
 	}
 }

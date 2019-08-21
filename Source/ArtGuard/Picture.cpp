@@ -13,6 +13,7 @@ APicture::APicture()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Cost=0;
 }
 
 void APicture::SetScale()
@@ -27,6 +28,8 @@ void APicture::SetScale()
 void APicture::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Cost = FMath::RandRange(10000, 100000);
 
 	IsStolen=false;
 	if (Plane != nullptr)
@@ -96,6 +99,11 @@ void APicture::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+int APicture::GetCost()
+{
+	return Cost;
 }
 
 bool APicture::CanSteal()
