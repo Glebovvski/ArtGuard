@@ -205,9 +205,10 @@ void ARoom::CreateProps()
 			FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / 3, 50);
 			if (DownExit)
 			{
-				if (DownExit->Location.X != LeftLocation.X)
+				auto Bench = CreateProp(LeftLocation);
+				if (IsInExitLine(DownExit->Location + FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, DownExit->Height * 100, 50)))
 				{
-					CreateProp(LeftLocation);
+					Bench->Destroy();
 				}
 			}
 			else
@@ -216,9 +217,10 @@ void ARoom::CreateProps()
 			}
 			if (UpExit)
 			{
-				if (UpExit->Location.X != LeftLocation.X)
+				auto Bench = CreateProp(RightLocation);
+				if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, UpExit->Height * 100, 50)))
 				{
-					CreateProp(RightLocation);
+					Bench->Destroy();
 				}
 			}
 			else
@@ -238,9 +240,10 @@ void ARoom::CreateProps()
 			FVector RightLocation = FVector(Location.X + Width * 100 / 3, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
 			if (LeftExit)
 			{
-				if (LeftExit->Location.Y != LeftLocation.Y)
+				auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
+				if (IsInExitLine(LeftExit->Location + FVector(LeftExit->Width * 100 / 2, 0, 50), LeftExit->Location + FVector(LeftExit->Width * 100, 0, 50)))
 				{
-					CreateProp(LeftLocation, FRotator(0, 90, 0));
+					Bench->Destroy();
 				}
 			}
 			else
@@ -250,9 +253,10 @@ void ARoom::CreateProps()
 
 			if (RightExit)
 			{
-				if (RightExit->Location.Y != RightLocation.Y)
+				auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
+				if (IsInExitLine(RightExit->Location - FVector(RightExit->Width * 100 / 2, 0, 50), RightExit->Location - FVector(RightExit->Width * 100, 0, 50)))
 				{
-					CreateProp(RightLocation, FRotator(0, 90, 0));
+					Bench->Destroy();
 				}
 			}
 			else
@@ -264,17 +268,31 @@ void ARoom::CreateProps()
 }
 
 
-void ARoom::CreateProp(FVector Location, FRotator Rotation)
+AActor* ARoom::CreateProp(FVector Location, FRotator Rotation)
 {
 	auto Bench = GetWorld()->SpawnActor<AActor>(BP_Bench);
 	Bench->SetActorLocation(Location);
 	Bench->SetActorRotation(Rotation);
+	return Bench;
 }
 
 bool ARoom::IsInExitLine(FVector Start, FVector End)
 {
-	FHitResult OutHit;
+	TArray<FHitResult> OutHits;
+	FCollisionShape BoxCollision = FCollisionShape::MakeBox(FVector(180, 180, 180));
 
+	bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, Start, End, FQuat::Identity, ECC_WorldDynamic, BoxCollision);
+	if (IsHit)
+	{
+		for (auto OutHit : OutHits)
+		{
+			if (OutHit.GetActor()->ActorHasTag("Props"))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void ARoom::SetFloor(UStaticMeshComponent* FloorToSet)

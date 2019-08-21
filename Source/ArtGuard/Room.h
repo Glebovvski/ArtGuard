@@ -73,5 +73,7 @@ private:
 
 	void CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizontal, int FrameOffset);
 
-	void CreateProp(FVector Location, FRotator Rotation = FRotator::ZeroRotator);
+	AActor* CreateProp(FVector Location, FRotator Rotation = FRotator::ZeroRotator);
+
+	bool IsInExitLine(FVector Start, FVector End);
 };
