@@ -14,7 +14,7 @@ ARobber::ARobber()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	ShouldEscape=false;
+	ShouldEscape = false;
 }
 
 void ARobber::SetStealOverlappings(UBoxComponent* Box, USphereComponent* Sphere)
@@ -25,7 +25,7 @@ void ARobber::SetStealOverlappings(UBoxComponent* Box, USphereComponent* Sphere)
 
 void ARobber::SetGuardOverlappings(USphereComponent* Sphere)
 {
-	GuardRadius=Sphere;
+	GuardRadius = Sphere;
 }
 
 void ARobber::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -72,7 +72,7 @@ void ARobber::OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* Ot
 void ARobber::OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor!=this && OtherActor->ActorHasTag("Playable"))
+	if (OtherActor != this && OtherActor->ActorHasTag("Playable"))
 	{
 		SetShouldEscape(true);
 		//SetEscape();
@@ -88,18 +88,18 @@ bool ARobber::GetShouldEscape()
 void ARobber::BeginPlay()
 {
 	Super::BeginPlay();
-	StolenMoney=0;
+	StolenMoney = 0;
 	if (StealOverlapComponent)
 	{
 		StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapBegin);
 		StealOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ARobber::OnOverlapEnd);
 	}
-	if(SearchRadius)
+	if (SearchRadius)
 	{
 		SearchRadius->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapSphereBegin);
 		SearchRadius->OnComponentEndOverlap.AddDynamic(this, &ARobber::OnOverlapSphereEnd);
 	}
-	if(GuardRadius)
+	if (GuardRadius)
 	{
 		GuardRadius->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapGuardBegin);
 	}
@@ -120,10 +120,11 @@ TArray<APicture*> ARobber::GetSeenPictures()
 
 void ARobber::Steal()
 {
-	if(PictureToSteal && PictureToSteal->CanSteal())
+	if (PictureToSteal && PictureToSteal->CanSteal())
 	{
-		StolenMoney+=PictureToSteal->GetCost();
+		StolenMoney += PictureToSteal->GetCost();
 		PictureToSteal->Steal();
+		PicturesStolen++;
 	}
 }
 
@@ -134,14 +135,25 @@ APicture* ARobber::GetPictureToSteal()
 
 void ARobber::SetShouldEscape(bool Escape)
 {
-	ShouldEscape=Escape;
+	ShouldEscape = Escape;
 }
 
 UAIPerceptionComponent* ARobber::GetPerception()
 {
-	
+
 	//auto Controller = UAIBlueprintHelperLibrary::GetAIController(this);
 	return UAIBlueprintHelperLibrary::GetAIController(this)->GetAIPerceptionComponent();//Controller->GetPerceptionComponent();
+}
+
+bool ARobber::AssessPicture()
+{
+	if (PicturesStolen > 0)
+	{
+		int PictureCost = PictureToSteal->GetCost();
+		float Risk = StolenMoney / PicturesStolen;
+		return PictureCost > Risk ? true : false;
+	}
+	else return true;
 }
 
 void ARobber::SetEscape_Implementation()

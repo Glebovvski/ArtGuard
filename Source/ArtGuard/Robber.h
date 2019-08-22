@@ -70,6 +70,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Steal")
 		void SetShouldEscape(bool Escape);
 
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	bool AssessPicture();
+	
 	UAIPerceptionComponent* GetPerception();
 private:
 	UBoxComponent* StealOverlapComponent;
@@ -77,6 +80,8 @@ private:
 	USphereComponent* GuardRadius;
 
 	int StolenMoney = 0;
+	int PicturesStolen=0;
+
 
 	APicture* PictureToSteal;
 };
