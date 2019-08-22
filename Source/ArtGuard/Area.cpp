@@ -346,8 +346,8 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 
 void AArea::CreateInterior()
 {
-	Room->CreateDecorWalls();
 	Room->CreateWalls();
+	Room->CreateDecorWalls();
 	Room->CreateProps();
 }
 
