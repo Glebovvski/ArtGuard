@@ -54,8 +54,11 @@ void ARobber::OnOverlapSphereBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 {
 	if (OtherActor->ActorHasTag("Picture"))
 	{
-		SeenPictures.Add(Cast<APicture>(OtherActor));
-		SetPictureFound();
+		if (!Cast<APicture>(OtherActor)->Assessed)
+		{
+			SeenPictures.Add(Cast<APicture>(OtherActor));
+			SetPictureFound();
+		}
 	}
 }
 
@@ -125,6 +128,7 @@ void ARobber::Steal()
 		StolenMoney += PictureToSteal->GetCost();
 		PictureToSteal->Steal();
 		PicturesStolen++;
+		PictureToSteal=nullptr;
 	}
 }
 
@@ -147,13 +151,15 @@ UAIPerceptionComponent* ARobber::GetPerception()
 
 bool ARobber::AssessPicture()
 {
+	PictureToSteal->Assessed = true;
+	SeenPictures.Remove(PictureToSteal);
 	if (PicturesStolen > 0)
 	{
 		int PictureCost = PictureToSteal->GetCost();
 		float Risk = StolenMoney / PicturesStolen;
 		return PictureCost > Risk ? true : false;
 	}
-	else return true;
+	return true;
 }
 
 void ARobber::SetEscape_Implementation()

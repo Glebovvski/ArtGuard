@@ -66,6 +66,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	void Steal();
 
+	bool Assessed = false;
+
 private:
 	int Cost = 0;
 	TArray<UMaterialInstance*> Materials;

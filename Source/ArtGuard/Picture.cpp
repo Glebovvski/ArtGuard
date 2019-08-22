@@ -30,6 +30,7 @@ void APicture::BeginPlay()
 	Super::BeginPlay();
 
 	Cost = FMath::RandRange(10000, 100000);
+	Assessed = false;
 
 	IsStolen=false;
 	if (Plane != nullptr)
