@@ -25,6 +25,8 @@ class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
 public:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Materials")
@@ -65,6 +67,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SpawnRobber();
+	ARobber* Robber;
 
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
 	void SetSight(float SightRadius);
@@ -76,6 +79,8 @@ public:
 	//AAIController* RobberAIController;
 	UAIPerceptionComponent* Perception;
 
+	int TotalPicturesCost=0;
+	int TotalPictures=0;
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")

@@ -22,7 +22,23 @@
 void AArtGuardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	//TotalPicturesCost=0;
+	//TotalPictures=0;
 
+}
+
+void AArtGuardGameMode::Tick(float DeltaSeconds)
+{
+	if(Robber)
+	{
+		if(Robber->GetStolenMoney() > TotalPicturesCost)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost/2);
+			UE_LOG(LogTemp, Warning, TEXT("Stolen Money: %d"), Robber->GetStolenMoney());
+			Robber->SetEscape();
+			//UE_LOG(LogTemp, Warning, TEXT("SHOULD ESCAPE"));
+		}
+	}
 }
 
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
@@ -97,6 +113,10 @@ void AArtGuardGameMode::SpawnArea()
 			Area->CreateInterior();
 		}
 	}
+
+	//TotalPicturesCost=TotalPicturesCost/TotalPictures;
+	UE_LOG(LogTemp, Warning, TEXT("Total Pictures: %d"), TotalPictures);
+	UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost);
 }
 
 AArea* AArtGuardGameMode::GetMainRightExit()
@@ -130,7 +150,7 @@ void AArtGuardGameMode::SpawnRobber()
 	} while (!check);
 
 	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
-	ARobber* Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
+	Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
 	if (Robber)
 	{
 		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);

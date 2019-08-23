@@ -29,13 +29,16 @@ void APicture::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
 	Cost = FMath::RandRange(10000, 100000);
 	Assessed = false;
+
+	GameMode->TotalPicturesCost+=Cost;
+	GameMode->TotalPictures++;
 
 	IsStolen=false;
 	if (Plane != nullptr)
 	{
-		GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
 		int Alignment = FMath::RandRange(VERTICAL, HORIZONTAL);
 
 		switch (Alignment)

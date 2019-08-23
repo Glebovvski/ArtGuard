@@ -26,8 +26,14 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Endgame")
 	void Catch();
-	//UFUNCTION()
-	//void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Endgame")
+	void Chase();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Endgame")
+	void StopChase();
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	// Called when the game starts or when spawned

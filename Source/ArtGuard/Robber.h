@@ -72,7 +72,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	bool AssessPicture();
-	
+
+	int GetStolenMoney();
+
 	UAIPerceptionComponent* GetPerception();
 private:
 	UBoxComponent* StealOverlapComponent;

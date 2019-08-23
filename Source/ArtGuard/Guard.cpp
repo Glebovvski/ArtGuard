@@ -32,7 +32,8 @@ void AGuard::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	if (OtherComp->ComponentHasTag("Robber"))
 	{
 		//PictureToSteal = Cast<APicture>(OtherActor);
-		Catch();
+		Chase();
+		//Catch();
 	}
 }
 
@@ -40,17 +41,22 @@ void AGuard::Catch_Implementation()
 {
 }
 
-//void AGuard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-//	int32 OtherBodyIndex)
-//{
-//	if (OtherActor->ActorHasTag("Picture"))
-//	{
-//		if (Cast<APicture>(OtherActor) == PictureToSteal)
-//		{
-//			PictureToSteal = nullptr;
-//		}
-//	}
-//}
+void AGuard::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	if (OtherComp->ComponentHasTag("Robber"))
+	{
+		StopChase();
+	}
+}
+
+void AGuard::Chase_Implementation()
+{
+}
+
+void AGuard::StopChase_Implementation()
+{
+}
 
 // Called when the game starts or when spawned
 void AGuard::BeginPlay()
@@ -68,6 +74,7 @@ void AGuard::BeginPlay()
 	if(CatchBox)
 	{
 		CatchBox->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
+		CatchBox->OnComponentEndOverlap.AddDynamic(this, &AGuard::OnOverlapEnd);
 	}
 }
 
