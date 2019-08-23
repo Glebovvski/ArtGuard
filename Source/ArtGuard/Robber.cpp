@@ -168,6 +168,11 @@ int ARobber::GetStolenMoney()
 	return StolenMoney;
 }
 
+int ARobber::GetPicturesStolen()
+{ 
+	return PicturesStolen;
+}
+
 void ARobber::SetEscape_Implementation()
 {
 }

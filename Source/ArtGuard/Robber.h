@@ -74,6 +74,7 @@ public:
 	bool AssessPicture();
 
 	int GetStolenMoney();
+	int GetPicturesStolen();
 
 	UAIPerceptionComponent* GetPerception();
 private:

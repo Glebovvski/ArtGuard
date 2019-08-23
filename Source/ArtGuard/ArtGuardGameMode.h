@@ -75,6 +75,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
 	void SetHearing(float HearRadius);
 
+	UFUNCTION(BlueprintCallable, Category="WinLose")
+	void CalculateDamageToMuseum();
+
 	//UPROPERTY(EditDefaultsOnly, Category="SetRobber")
 	//AAIController* RobberAIController;
 	UAIPerceptionComponent* Perception;

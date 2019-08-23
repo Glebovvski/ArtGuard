@@ -201,6 +201,17 @@ void AArtGuardGameMode::SetHearing(float HearRadius)
 	Perception->RequestStimuliListenerUpdate();
 }
 
+void AArtGuardGameMode::CalculateDamageToMuseum()
+{
+	int StolenMoney = Robber->GetStolenMoney();
+	int StolenPictures = Robber->GetPicturesStolen();
+
+	int MoneyPercent = ((float)StolenMoney/(float)TotalPicturesCost)*100;
+	int PicturePercent = ((float)StolenPictures/(float)TotalPictures)*100;
+
+	UE_LOG(LogTemp, Warning, TEXT("Stolen %d of pictures or %d in dollars"), PicturePercent, MoneyPercent);
+}
+
 
 void AArtGuardGameMode::GetAllMaterials()
 {
