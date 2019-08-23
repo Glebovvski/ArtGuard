@@ -19,7 +19,7 @@ public:
 	AGuard();
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
-	void SetCatchOverlappingBox(UBoxComponent* Box);
+	void SetCatchOverlappingBox(/*UBoxComponent**/UStaticMeshComponent* Box);
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -62,5 +62,6 @@ private:
 
 	void Steal();
 
-	UBoxComponent* CatchBox;
+	//UBoxComponent* CatchBox;
+	UStaticMeshComponent* CatchBox;
 };
