@@ -51,6 +51,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Search")
 		TArray<APicture*> GetSeenPictures();
 	UPROPERTY(VisibleAnywhere, Category = "Search")

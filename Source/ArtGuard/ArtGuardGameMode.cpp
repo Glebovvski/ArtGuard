@@ -29,11 +29,11 @@ void AArtGuardGameMode::BeginPlay()
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
 {
-	if(Robber)
+	if (Robber)
 	{
-		if(Robber->GetStolenMoney() > TotalPicturesCost)
+		if (Robber->GetStolenMoney() > TotalPicturesCost)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost/2);
+			UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost / 2);
 			UE_LOG(LogTemp, Warning, TEXT("Stolen Money: %d"), Robber->GetStolenMoney());
 			Robber->SetEscape();
 			//UE_LOG(LogTemp, Warning, TEXT("SHOULD ESCAPE"));
@@ -161,55 +161,64 @@ void AArtGuardGameMode::SpawnRobber()
 
 void AArtGuardGameMode::SetSight(float SightRadius)
 {
-	FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
-
-	if (!Id.IsValid())
+	if (Robber)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
-		return;
+		FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
+
+		if (!Id.IsValid())
+		{
+			UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
+			return;
+		}
+
+		auto Config = Perception->GetSenseConfig(Id);
+
+		if (Config == nullptr)
+			return;
+
+		auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
+
+		ConfigSight->SightRadius = SightRadius;
+		Perception->RequestStimuliListenerUpdate();
 	}
-
-	auto Config = Perception->GetSenseConfig(Id);
-
-	if (Config == nullptr)
-		return;
-
-	auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
-
-	ConfigSight->SightRadius = SightRadius;
-	Perception->RequestStimuliListenerUpdate();
 }
 
 void AArtGuardGameMode::SetHearing(float HearRadius)
 {
-	FAISenseID Id = UAISense::GetSenseID(UAISense_Hearing::StaticClass());
-
-	if (!Id.IsValid())
+	if (Robber)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
-		return;
+		FAISenseID Id = UAISense::GetSenseID(UAISense_Hearing::StaticClass());
+
+		if (!Id.IsValid())
+		{
+			UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
+			return;
+		}
+
+		auto Config = Perception->GetSenseConfig(Id);
+
+		if (Config == nullptr)
+			return;
+
+		auto ConfigSight = Cast<UAISenseConfig_Hearing>(Config);
+
+		ConfigSight->HearingRange = HearRadius;
+		Perception->RequestStimuliListenerUpdate();
 	}
-
-	auto Config = Perception->GetSenseConfig(Id);
-
-	if (Config == nullptr)
-		return;
-
-	auto ConfigSight = Cast<UAISenseConfig_Hearing>(Config);
-
-	ConfigSight->HearingRange = HearRadius;
-	Perception->RequestStimuliListenerUpdate();
 }
 
 void AArtGuardGameMode::CalculateDamageToMuseum()
 {
-	int StolenMoney = Robber->GetStolenMoney();
-	int StolenPictures = Robber->GetPicturesStolen();
+	if (Robber)
+	{
+		int StolenMoney = Robber->GetStolenMoney();
+		int StolenPictures = Robber->GetPicturesStolen();
 
-	int MoneyPercent = ((float)StolenMoney/(float)TotalPicturesCost)*100;
-	int PicturePercent = ((float)StolenPictures/(float)TotalPictures)*100;
+		int MoneyPercent = ((float)StolenMoney / (float)TotalPicturesCost) * 100;
+		int PicturePercent = ((float)StolenPictures / (float)TotalPictures) * 100;
 
-	UE_LOG(LogTemp, Warning, TEXT("Stolen %d of pictures or %d in dollars"), PicturePercent, MoneyPercent);
+		UE_LOG(LogTemp, Warning, TEXT("Stolen %d of pictures or %d in dollars"), PicturePercent, MoneyPercent);
+	}
 }
 
 

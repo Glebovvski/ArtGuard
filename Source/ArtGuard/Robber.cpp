@@ -117,6 +117,11 @@ void ARobber::Tick(float DeltaTime)
 
 }
 
+void ARobber::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
 TArray<APicture*> ARobber::GetSeenPictures()
 {
 	return SeenPictures;
@@ -129,7 +134,7 @@ void ARobber::Steal()
 		StolenMoney += PictureToSteal->GetCost();
 		PictureToSteal->Steal();
 		PicturesStolen++;
-		PictureToSteal=nullptr;
+		PictureToSteal = nullptr;
 	}
 }
 
@@ -152,15 +157,19 @@ UAIPerceptionComponent* ARobber::GetPerception()
 
 bool ARobber::AssessPicture()
 {
-	PictureToSteal->Assessed = true;
-	SeenPictures.Remove(PictureToSteal);
-	if (PicturesStolen > 0)
+	if (PictureToSteal)
 	{
-		int PictureCost = PictureToSteal->GetCost();
-		float Risk = (StolenMoney / PicturesStolen)/2;
-		return PictureCost > Risk ? true : false;
+		PictureToSteal->Assessed = true;
+		SeenPictures.Remove(PictureToSteal);
+		if (PicturesStolen > 0)
+		{
+			int PictureCost = PictureToSteal->GetCost();
+			float Risk = (StolenMoney / PicturesStolen) / 2;
+			return PictureCost > Risk ? true : false;
+		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 int ARobber::GetStolenMoney()
@@ -169,7 +178,7 @@ int ARobber::GetStolenMoney()
 }
 
 int ARobber::GetPicturesStolen()
-{ 
+{
 	return PicturesStolen;
 }
 
