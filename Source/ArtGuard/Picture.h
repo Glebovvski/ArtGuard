@@ -35,14 +35,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 		void SetPlane(UStaticMeshComponent* PlaneToSet);
 
-
 	UPROPERTY(BlueprintReadOnly, Category = "Spawn")
 		class AArtGuardGameMode* GameMode;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn")
 		bool IsSet = false;
 

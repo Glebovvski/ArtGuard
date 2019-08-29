@@ -159,7 +159,7 @@ void AArtGuardGameMode::SpawnRobber()
 }
 
 
-void AArtGuardGameMode::SetSight(float SightRadius)
+void AArtGuardGameMode::SetRobberSight(float SightRadius)
 {
 	if (Robber)
 	{
@@ -183,7 +183,7 @@ void AArtGuardGameMode::SetSight(float SightRadius)
 	}
 }
 
-void AArtGuardGameMode::SetHearing(float HearRadius)
+void AArtGuardGameMode::SetRobberHearing(float HearRadius)
 {
 	if (Robber)
 	{

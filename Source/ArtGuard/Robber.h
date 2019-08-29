@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SlateColor.h"
 #include "Robber.generated.h"
 
 class UBoxComponent;
@@ -74,6 +75,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	bool AssessPicture();
+
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	int GetRiskAssessment();
+
+	UFUNCTION(BlueprintCallable, Category="Steal")
+	FColor GetColorOfRisk(int Risk);
 
 	int GetStolenMoney();
 	int GetPicturesStolen();

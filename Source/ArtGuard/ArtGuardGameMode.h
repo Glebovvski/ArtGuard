@@ -70,10 +70,10 @@ public:
 	ARobber* Robber;
 
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
-	void SetSight(float SightRadius);
+	void SetRobberSight(float SightRadius);
 	
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
-	void SetHearing(float HearRadius);
+	void SetRobberHearing(float HearRadius);
 
 	UFUNCTION(BlueprintCallable, Category="WinLose")
 	void CalculateDamageToMuseum();

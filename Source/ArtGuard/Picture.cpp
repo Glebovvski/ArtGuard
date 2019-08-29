@@ -7,8 +7,12 @@
 #include "Components/StaticMeshComponent.h"
 #include "ArtGuardGameMode.h"
 #include "Frame.h"
+//#include "Components/SphereComponent.h";
+//#include "WidgetComponent.h"
+
 //#include "Paper2D"
 // Sets default values
+
 APicture::APicture()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -74,6 +78,11 @@ void APicture::BeginPlay()
 	}
 }
 
+void APicture::SetPlane(UStaticMeshComponent* PlaneToSet)
+{
+	Plane=PlaneToSet;
+}
+
 void APicture::ApplyMaterial()
 {
 	int RandomIndex = FMath::RandRange(0, Materials.Num() - 1);
@@ -93,18 +102,6 @@ void APicture::RetryApply()
 	ApplyMaterial();
 }
 
-void APicture::SetPlane(UStaticMeshComponent* PlaneToSet)
-{
-	Plane = PlaneToSet;
-}
-
-// Called every frame
-void APicture::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 int APicture::GetCost()
 {
 	return Cost;
@@ -117,6 +114,12 @@ bool APicture::CanSteal()
 
 void APicture::Steal()
 {
+	TArray<USceneComponent*> Children;
+	//Plane->GetChildrenComponents(true, Children);
+	//for (auto Child : Children)
+	//{
+	//	Child->DestroyComponent();
+	//}
 	Plane->DestroyComponent();
 	IsStolen=true;
 	Cast<AFrame>(GetAttachParentActor())->ChangeSpriteColor();

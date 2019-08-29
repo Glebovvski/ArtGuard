@@ -172,6 +172,27 @@ bool ARobber::AssessPicture()
 	return false;
 }
 
+int ARobber::GetRiskAssessment()
+{
+	if (PictureToSteal)
+	{
+		int Cost = PictureToSteal->GetCost();
+		if (StolenMoney > 0)
+			return ((float)Cost / (float)StolenMoney) * 100;
+		return 100;
+	}
+	else return 100;
+}
+
+FColor ARobber::GetColorOfRisk(int Risk)
+{
+	if (Risk < 50)
+		return FColor::Green;
+	else if (Risk >= 50 && Risk < 80)
+		return FColor::Orange;
+	else return FColor::Red;
+}
+
 int ARobber::GetStolenMoney()
 {
 	return StolenMoney;
