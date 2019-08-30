@@ -15,6 +15,7 @@ class ARoom;
 class UMaterialInstance;
 class AArea;
 class ARobber;
+class AGuard;
 class UAIPerceptionComponent;
 
 UCLASS()
@@ -51,6 +52,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Robber")
 	TSubclassOf<ARobber> BP_Robber;
+	UPROPERTY(EditDefaultsOnly, Category="Robber")
+	TSubclassOf<AGuard> BP_Guard;
 
 	TArray<AArea*> Areas;
 
@@ -66,8 +69,16 @@ public:
 	AArea* GetMainUpExit();
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
-	void SpawnRobber();
+	void SpawnAIRobber();
+	FTransform GetRandomSpawnLocation();
 	ARobber* Robber;
+
+	UFUNCTION(BlueprintCallable, Category="Spawning")
+	AGuard* SpawnAIGuard();
+	AGuard* Guard;
+
+	UFUNCTION(BlueprintCallable, Category="Spawning")
+	void SetLocationForRobber();
 
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
 	void SetRobberSight(float SightRadius);
@@ -75,12 +86,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
 	void SetRobberHearing(float HearRadius);
 
+	UFUNCTION(BlueprintCallable, Category="SetRobber")
+	void SetGuardSight(float SightRadius);
+	
+	UFUNCTION(BlueprintCallable, Category="SetRobber")
+	void SetGuardHearing(float HearRadius);
+
+	void SetHear(float HearRadius, UAIPerceptionComponent* Perception);
+	void SetSight(float SightRadius, UAIPerceptionComponent* Perception);
+
 	UFUNCTION(BlueprintCallable, Category="WinLose")
 	void CalculateDamageToMuseum();
 
-	//UPROPERTY(EditDefaultsOnly, Category="SetRobber")
-	//AAIController* RobberAIController;
-	UAIPerceptionComponent* Perception;
+	UAIPerceptionComponent* RobberPerception;
+	UAIPerceptionComponent* GuardPerception;
 
 	int TotalPicturesCost=0;
 	int TotalPictures=0;

@@ -8,6 +8,7 @@
 
 class UBoxComponent;
 class APicture;
+class UAIPerceptionComponent;
 
 UCLASS()
 class ARTGUARD_API AGuard : public ACharacter
@@ -48,6 +49,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UAIPerceptionComponent* GetPerception();
 private:
 	float Loudness;
 	float SneakLoudness;

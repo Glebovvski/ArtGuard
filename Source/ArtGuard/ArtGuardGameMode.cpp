@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 #include "Robber.h"
+#include "Guard.h"
 #include "Perception/AISense.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Hearing.h"
@@ -129,7 +130,18 @@ AArea* AArtGuardGameMode::GetMainUpExit()
 	return MainUpExit;
 }
 
-void AArtGuardGameMode::SpawnRobber()
+void AArtGuardGameMode::SpawnAIRobber()
+{
+	FTransform SpawnTransform = GetRandomSpawnLocation();
+	Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
+	if (Robber)
+	{
+		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
+	}
+	RobberPerception = Robber->GetPerception();
+}
+
+FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 {
 	float X = 0, Y = 0;
 	bool check = false;
@@ -149,37 +161,56 @@ void AArtGuardGameMode::SpawnRobber()
 		}
 	} while (!check);
 
-	FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
-	Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
-	if (Robber)
-	{
-		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
-	}
-	Perception = Robber->GetPerception();
+	return FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
 }
 
+AGuard* AArtGuardGameMode::SpawnAIGuard()
+{
+	//FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(1244, 1411, 150));// GetRandomSpawnLocation();
+	//Guard = Cast<AGuard>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Guard, SpawnTransform, false, this));
+	//if (Guard)
+	//{
+	//	UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
+	//	GuardPerception = Guard->GetPerception();
+	//}
+	Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
+	GuardPerception=Guard->GetPerception();
+	Guard->SetActorLocation(FVector(1244,1411,150));
+	return Guard;
+}
+
+
+void AArtGuardGameMode::SetLocationForRobber()
+{
+	float X = 0, Y = 0;
+	bool check = false;
+	//Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	do
+	{
+		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
+		if (FoundAreas[RandomRoomIndex]->Room)
+		{
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)
+			{
+				auto Room = FoundAreas[RandomRoomIndex]->Room;
+				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				check = true;
+			}
+		}
+	} while (!check);
+
+	FVector SpawnLocation = FVector(X, Y, 150);
+	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	Player->SetActorLocation(SpawnLocation);
+	//GetWorld()->GetFirstPlayerController()->GetCharacter()->SetActorLocation(SpawnLocation);
+}
 
 void AArtGuardGameMode::SetRobberSight(float SightRadius)
 {
 	if (Robber)
 	{
-		FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
-
-		if (!Id.IsValid())
-		{
-			UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
-			return;
-		}
-
-		auto Config = Perception->GetSenseConfig(Id);
-
-		if (Config == nullptr)
-			return;
-
-		auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
-
-		ConfigSight->SightRadius = SightRadius;
-		Perception->RequestStimuliListenerUpdate();
+		SetSight(SightRadius, RobberPerception);
 	}
 }
 
@@ -187,24 +218,59 @@ void AArtGuardGameMode::SetRobberHearing(float HearRadius)
 {
 	if (Robber)
 	{
-		FAISenseID Id = UAISense::GetSenseID(UAISense_Hearing::StaticClass());
-
-		if (!Id.IsValid())
-		{
-			UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
-			return;
-		}
-
-		auto Config = Perception->GetSenseConfig(Id);
-
-		if (Config == nullptr)
-			return;
-
-		auto ConfigSight = Cast<UAISenseConfig_Hearing>(Config);
-
-		ConfigSight->HearingRange = HearRadius;
-		Perception->RequestStimuliListenerUpdate();
+		SetHear(HearRadius, RobberPerception);
 	}
+}
+
+void AArtGuardGameMode::SetGuardSight(float SightRadius)
+{
+	if (Guard)
+	{
+		SetSight(SightRadius, GuardPerception);
+		GuardPerception->SetSenseEnabled(UAISense_Sight::StaticClass(), true);
+	}
+}
+
+void AArtGuardGameMode::SetGuardHearing(float HearRadius)
+{
+	if (Guard)
+	{
+		SetHear(HearRadius, GuardPerception);
+	}
+}
+
+void AArtGuardGameMode::SetHear(float HearRadius, UAIPerceptionComponent* Perception)
+{
+	FAISenseID Id = UAISense::GetSenseID(UAISense_Hearing::StaticClass());
+
+	if (!Id.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
+		return;
+	}
+
+	auto Config = Perception->GetSenseConfig(Id);
+	if (Config == nullptr)
+		return;
+	auto ConfigSight = Cast<UAISenseConfig_Hearing>(Config);
+	ConfigSight->HearingRange = HearRadius;
+	Perception->RequestStimuliListenerUpdate();
+}
+
+void AArtGuardGameMode::SetSight(float SightRadius, UAIPerceptionComponent* Perception)
+{
+	FAISenseID Id = UAISense::GetSenseID(UAISense_Sight::StaticClass());
+	if (!Id.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Wrong Sense ID"));
+		return;
+	}
+	auto Config = Perception->GetSenseConfig(Id);
+	if (Config == nullptr)
+		return;
+	auto ConfigSight = Cast<UAISenseConfig_Sight>(Config);
+	ConfigSight->SightRadius = SightRadius;
+	Perception->RequestStimuliListenerUpdate();
 }
 
 void AArtGuardGameMode::CalculateDamageToMuseum()

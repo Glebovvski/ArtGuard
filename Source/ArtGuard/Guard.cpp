@@ -3,9 +3,11 @@
 
 #include "Guard.h"
 #include "Components/BoxComponent.h"
-#include "Components/InputComponent.h"
+//#include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Picture.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AIController.h"
 
 // Sets default values
 AGuard::AGuard()
@@ -97,6 +99,11 @@ void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+UAIPerceptionComponent* AGuard::GetPerception()
+{
+	return UAIBlueprintHelperLibrary::GetAIController(this)->GetAIPerceptionComponent();
+}
+
 float AGuard::GetLoudness()
 {
 	return Loudness;
@@ -106,6 +113,7 @@ float AGuard::GetSneakLoudness()
 {
 	return SneakLoudness;
 }
+
 
 void AGuard::Steal()
 {

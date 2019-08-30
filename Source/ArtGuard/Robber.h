@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "SlateColor.h"
 #include "Robber.generated.h"
 
 class UBoxComponent;
