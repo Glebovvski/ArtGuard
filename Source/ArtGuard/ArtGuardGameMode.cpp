@@ -19,6 +19,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 void AArtGuardGameMode::BeginPlay()
 {
@@ -173,7 +174,9 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 	//	UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
 	//	GuardPerception = Guard->GetPerception();
 	//}
+
 	Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
+	//Guard->SpawnDefaultController();
 	GuardPerception=Guard->GetPerception();
 	Guard->SetActorLocation(FVector(1244,1411,150));
 	return Guard;
@@ -190,7 +193,7 @@ void AArtGuardGameMode::SetLocationForRobber()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)
+			//if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
