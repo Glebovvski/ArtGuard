@@ -40,6 +40,7 @@ void AFrame::SpawnPicture()
 	Picture->SetActorRotation(FRotator(Rotation));
 	Picture->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
 	Picture->SetScale();
+	Picture->SetCost();
 }
 
 void AFrame::SetFrame(UArrowComponent* ArrowToSet, USceneComponent* FrameToSet)
@@ -51,6 +52,11 @@ void AFrame::SetFrame(UArrowComponent* ArrowToSet, USceneComponent* FrameToSet)
 void AFrame::ChangeSpriteColor()
 {
 	Sprite->SetSpriteColor(FLinearColor::Red);
+}
+
+void AFrame::Color(FLinearColor Color)
+{
+	Sprite->SetSpriteColor(Color);
 }
 
 void AFrame::SetPictureSprite(UPaperSpriteComponent* SpriteToSet)

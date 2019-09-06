@@ -64,7 +64,10 @@ public:
 
 	bool Assessed = false;
 
-private:
+	void SetCost();
+
+	UPROPERTY(VisibleAnywhere, Category="Cost")
 	int Cost = 0;
+private:
 	TArray<UMaterialInstance*> Materials;
 };

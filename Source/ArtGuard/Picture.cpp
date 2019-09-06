@@ -17,7 +17,7 @@ APicture::APicture()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Cost=0;
+	Cost = 0;
 }
 
 void APicture::SetScale()
@@ -34,13 +34,14 @@ void APicture::BeginPlay()
 	Super::BeginPlay();
 
 	GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
-	Cost = FMath::RandRange(10000, 100000);
+
+	
 	Assessed = false;
 
-	GameMode->TotalPicturesCost+=Cost;
+	GameMode->TotalPicturesCost += Cost;
 	GameMode->TotalPictures++;
 
-	IsStolen=false;
+	IsStolen = false;
 	if (Plane != nullptr)
 	{
 		int Alignment = FMath::RandRange(VERTICAL, HORIZONTAL);
@@ -80,7 +81,7 @@ void APicture::BeginPlay()
 
 void APicture::SetPlane(UStaticMeshComponent* PlaneToSet)
 {
-	Plane=PlaneToSet;
+	Plane = PlaneToSet;
 }
 
 void APicture::ApplyMaterial()
@@ -121,8 +122,35 @@ void APicture::Steal()
 	//	Child->DestroyComponent();
 	//}
 	Plane->DestroyComponent();
-	IsStolen=true;
+	IsStolen = true;
 	Cast<AFrame>(GetAttachParentActor())->ChangeSpriteColor();
 	//UE_LOG(LogTemp, Warning, TEXT("%s"),*GetAttachParentActor()->GetName());
+}
+
+void APicture::SetCost()
+{
+	AActor* Frame = GetAttachParentActor();
+	if (Frame)
+	{
+		if ((GetActorLocation().X <= 2000 || GetActorLocation().Y <= 2000) || (GetActorLocation().X >= 13000 || GetActorLocation().Y >= 13000))
+		{
+			Cost = FMath::RandRange(10000, 25000);
+			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Blue);
+		}
+		else if ((GetActorLocation().X <= 5500 || GetActorLocation().Y <= 5500) || (GetActorLocation().X >= 10500 || GetActorLocation().Y >= 10500))
+		{
+			Cost = FMath::RandRange(10000, 50000);
+			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Yellow);
+		}
+		else
+		{
+			Cost = FMath::RandRange(70000, 100000);
+			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Red);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO FRAME"));
+	}
 }
 

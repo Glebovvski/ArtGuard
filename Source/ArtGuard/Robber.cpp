@@ -126,15 +126,18 @@ TArray<APicture*> ARobber::GetSeenPictures()
 	return SeenPictures;
 }
 
-void ARobber::Steal()
+int ARobber::Steal()
 {
 	if (PictureToSteal && PictureToSteal->CanSteal())
 	{
-		StolenMoney += PictureToSteal->GetCost();
+		int Cost = PictureToSteal->GetCost();
+		StolenMoney += Cost;
 		PictureToSteal->Steal();
 		PicturesStolen++;
 		PictureToSteal = nullptr;
+		return Cost;
 	}
+	return 0;
 }
 
 APicture* ARobber::GetPictureToSteal()
@@ -175,7 +178,7 @@ int ARobber::GetRiskAssessment()
 	{
 		int Cost = PictureToSteal->GetCost();
 		if (StolenMoney > 0)
-			return ((float)Cost / (float)StolenMoney) * 100;
+			return ((float)Cost / ((float)StolenMoney/(float)PicturesStolen)) * 100;
 		return 100;
 	}
 	else return 100;

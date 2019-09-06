@@ -59,7 +59,7 @@ public:
 		TArray<APicture*> SeenPictures;
 
 	UFUNCTION(BlueprintCallable, Category = "Stealing")
-		void Steal();
+		int Steal();
 	UFUNCTION(BlueprintCallable, Category = "Steal")
 		APicture* GetPictureToSteal();
 

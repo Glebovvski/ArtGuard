@@ -176,7 +176,6 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 	//}
 
 	Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
-	//Guard->SpawnDefaultController();
 	GuardPerception=Guard->GetPerception();
 	Guard->SetActorLocation(FVector(1244,1411,150));
 	return Guard;
@@ -193,7 +192,7 @@ void AArtGuardGameMode::SetLocationForRobber()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			//if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 7000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
@@ -207,6 +206,13 @@ void AArtGuardGameMode::SetLocationForRobber()
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);
 	//GetWorld()->GetFirstPlayerController()->GetCharacter()->SetActorLocation(SpawnLocation);
+}
+
+void AArtGuardGameMode::SetLocationForGuard()
+{
+	FVector SpawnLocation = FVector(1244,1411,150);
+	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	Player->SetActorLocation(SpawnLocation);
 }
 
 void AArtGuardGameMode::SetRobberSight(float SightRadius)

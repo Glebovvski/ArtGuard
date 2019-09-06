@@ -45,6 +45,7 @@ public:
 	void SetPictureSprite(UPaperSpriteComponent* SpriteToSet);
 
 	void ChangeSpriteColor();
+	void Color(FLinearColor Color);
 private:
 	
 	UPaperSpriteComponent* Sprite;

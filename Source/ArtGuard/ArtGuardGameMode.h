@@ -80,6 +80,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SetLocationForRobber();
 
+	UFUNCTION(BlueprintCallable, Category="Spawning")
+	void SetLocationForGuard();
+
 	UFUNCTION(BlueprintCallable, Category="SetRobber")
 	void SetRobberSight(float SightRadius);
 	
