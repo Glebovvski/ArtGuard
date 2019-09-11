@@ -35,10 +35,9 @@ void APicture::BeginPlay()
 
 	GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
 
-	
 	Assessed = false;
 
-	GameMode->TotalPicturesCost += Cost;
+	
 	GameMode->TotalPictures++;
 
 	IsStolen = false;
@@ -135,18 +134,16 @@ void APicture::SetCost()
 		if ((GetActorLocation().X <= 2000 || GetActorLocation().Y <= 2000) || (GetActorLocation().X >= 13000 || GetActorLocation().Y >= 13000))
 		{
 			Cost = FMath::RandRange(10000, 25000);
-			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Blue);
 		}
 		else if ((GetActorLocation().X <= 5500 || GetActorLocation().Y <= 5500) || (GetActorLocation().X >= 10500 || GetActorLocation().Y >= 10500))
 		{
 			Cost = FMath::RandRange(10000, 50000);
-			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Yellow);
 		}
 		else
 		{
 			Cost = FMath::RandRange(70000, 100000);
-			//Cast<AFrame>(GetAttachParentActor())->Color(FLinearColor::Red);
 		}
+		GameMode->TotalPicturesCost += Cost;
 	}
 	else
 	{

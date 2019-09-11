@@ -107,6 +107,11 @@ public:
 	int TotalPicturesCost=0;
 	int TotalPictures=0;
 
+	UFUNCTION(BlueprintCallable, Category="Pictures")
+	int GetTotalPictureCost();
+	UFUNCTION(BlueprintCallable, Category="Pictures")
+	int GetTotalPictures();
+
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();

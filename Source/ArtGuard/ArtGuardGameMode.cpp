@@ -297,6 +297,16 @@ void AArtGuardGameMode::CalculateDamageToMuseum()
 }
 
 
+int AArtGuardGameMode::GetTotalPictureCost()
+{
+	return TotalPicturesCost;
+}
+
+int AArtGuardGameMode::GetTotalPictures()
+{
+	return TotalPictures;
+}
+
 void AArtGuardGameMode::GetAllMaterials()
 {
 	VerticalMaterials = GetMaterialInstancesFromPath("/Game/Picture/Pictures/Materials/Vertical");
