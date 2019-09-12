@@ -75,6 +75,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	AGuard* SpawnAIGuard();
+	void CheckCollisionForDecorateWalls(float X, float Y, bool& checkCollisionInRoom);
 	AGuard* Guard;
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")

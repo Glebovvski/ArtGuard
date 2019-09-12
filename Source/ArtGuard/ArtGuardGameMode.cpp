@@ -20,6 +20,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "DrawDebugHelpers.h"
 
 void AArtGuardGameMode::BeginPlay()
 {
@@ -146,6 +147,7 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 {
 	float X = 0, Y = 0;
 	bool check = false;
+	bool checkCollisionInRoom=false;
 	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	do
 	{
@@ -155,8 +157,13 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 5000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				do
+				{
+					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+
+					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+				} while (checkCollisionInRoom);
 				check = true;
 			}
 		}
@@ -167,25 +174,46 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 
 AGuard* AArtGuardGameMode::SpawnAIGuard()
 {
-	//FTransform SpawnTransform = FTransform(FRotator::ZeroRotator, FVector(1244, 1411, 150));// GetRandomSpawnLocation();
-	//Guard = Cast<AGuard>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Guard, SpawnTransform, false, this));
-	//if (Guard)
-	//{
-	//	UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
-	//	GuardPerception = Guard->GetPerception();
-	//}
-
-	Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
-	GuardPerception=Guard->GetPerception();
-	Guard->SetActorLocation(FVector(1244,1411,150));
+	FTransform SpawnTransform = GetRandomSpawnLocation();
+	Guard = Cast<AGuard>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Guard, SpawnTransform, false, this));
+	if (Guard)
+	{
+		UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
+		GuardPerception = Guard->GetPerception();
+	}
 	return Guard;
+	//Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
+	//GuardPerception = Guard->GetPerception();
+	//Guard->SetActorLocation(FVector(1244, 1411, 150));
+	//return Guard;
 }
 
+
+void AArtGuardGameMode::CheckCollisionForDecorateWalls(float X, float Y, bool& checkCollisionInRoom)
+{
+	TArray<FHitResult> OutHits;
+	FCollisionShape SphereCollision = FCollisionShape::MakeCapsule(34, 88);
+
+	bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 150), FVector(X + 2, Y + 2, 150), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
+	if (IsHit)
+	{
+		for (auto OutHit : OutHits)
+		{
+			if (OutHit.GetActor()->ActorHasTag("Wall"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("HIT: %s"), *OutHit.GetActor()->GetName());
+				checkCollisionInRoom = true;
+			}
+		}
+	}
+	else checkCollisionInRoom = false;
+}
 
 void AArtGuardGameMode::SetLocationForRobber()
 {
 	float X = 0, Y = 0;
 	bool check = false;
+	bool checkCollisionInRoom = false;
 	//Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	do
 	{
@@ -195,8 +223,14 @@ void AArtGuardGameMode::SetLocationForRobber()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 7000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				do
+				{
+					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+
+					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+				} while (checkCollisionInRoom);
+
 				check = true;
 			}
 		}
@@ -210,9 +244,36 @@ void AArtGuardGameMode::SetLocationForRobber()
 
 void AArtGuardGameMode::SetLocationForGuard()
 {
-	FVector SpawnLocation = FVector(1244,1411,150);
+	float X = 0, Y = 0;
+	bool check = false;
+	bool checkCollisionInRoom = false;
+	//Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	do
+	{
+		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
+		if (FoundAreas[RandomRoomIndex]->Room)
+		{
+			auto Room = FoundAreas[RandomRoomIndex]->Room;
+			do
+			{
+				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+
+				CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+			} while (checkCollisionInRoom);
+
+			check = true;
+
+		}
+	} while (!check);
+
+	FVector SpawnLocation = FVector(X, Y, 150);
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);
+
+	//FVector SpawnLocation = FVector(1244, 1411, 150);
+	//auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	//Player->SetActorLocation(SpawnLocation);
 }
 
 void AArtGuardGameMode::SetRobberSight(float SightRadius)
