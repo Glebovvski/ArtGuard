@@ -147,14 +147,14 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 {
 	float X = 0, Y = 0;
 	bool check = false;
-	bool checkCollisionInRoom=false;
+	bool checkCollisionInRoom = false;
 	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	do
 	{
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 5000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				do
@@ -220,7 +220,7 @@ void AArtGuardGameMode::SetLocationForRobber()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 7000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				do
@@ -253,17 +253,19 @@ void AArtGuardGameMode::SetLocationForGuard()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			auto Room = FoundAreas[RandomRoomIndex]->Room;
-			do
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
 			{
-				X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-				Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				auto Room = FoundAreas[RandomRoomIndex]->Room;
+				do
+				{
+					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
 
-				CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-			} while (checkCollisionInRoom);
+					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+				} while (checkCollisionInRoom);
 
-			check = true;
-
+				check = true;
+			}
 		}
 	} while (!check);
 
