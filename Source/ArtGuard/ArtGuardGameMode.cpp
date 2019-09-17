@@ -192,9 +192,11 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 void AArtGuardGameMode::CheckCollisionForDecorateWalls(float X, float Y, bool& checkCollisionInRoom)
 {
 	TArray<FHitResult> OutHits;
-	FCollisionShape SphereCollision = FCollisionShape::MakeCapsule(34, 88);
-
-	bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 150), FVector(X + 2, Y + 2, 150), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
+	FCollisionShape SphereCollision = FCollisionShape::MakeCapsule(50, 96);
+	DrawDebugCapsule(GetWorld(), FVector(X,Y,150), 96, 50, FQuat::Identity, FColor::Red, true, 1000);
+	
+	//bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
+	bool IsHit = GetWorld()->SweepMultiByObjectType(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
 	if (IsHit)
 	{
 		for (auto OutHit : OutHits)
