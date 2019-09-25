@@ -1,21 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Engine/World.h"
+#include "GameFramework/Actor.h"
 #include "Flashlight.h"
 
 // Sets default values for this component's properties
-UFlashlight::UFlashlight()
+AFlashlight::AFlashlight()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	//PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
 
 
 // Called when the game starts
-void UFlashlight::BeginPlay()
+void AFlashlight::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -25,10 +26,22 @@ void UFlashlight::BeginPlay()
 
 
 // Called every frame
-void UFlashlight::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void AFlashlight::Tick(float DeltaTime)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::Tick(DeltaTime);//Tick(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+bool AFlashlight::CheckFlashlightCollision()
+{
+	//FHitResult OutHit;
+	//bool DidTrace = GetWorld()->LineTraceSingleByChannel(OutHit, GetActorLocation(), GetActorForwardVector(), ECC_WorldDynamic);
+	//
+	//if(DidTrace)
+	//{
+	//	if(OutHit)
+	//}
+	return true;
 }
 

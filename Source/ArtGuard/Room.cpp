@@ -146,7 +146,7 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 
 void ARoom::CreateDecorWalls()
 {
-	//if (FMath::RandBool())
+	if (FMath::RandBool())
 	{
 		float SecondScale=0.5;
 		float FrameOffset=25;
