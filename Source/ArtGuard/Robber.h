@@ -81,6 +81,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	FColor GetColorOfRisk(int Risk);
 
+	UFUNCTION(BlueprintCallable, Category="Endgame")
+	bool IsEnoughStole();
+
+	int TotalMoney;
 	int GetStolenMoney();
 	int GetPicturesStolen();
 

@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
+#include "ArtGuardGameMode.h"
 
 // Sets default values
 ARobber::ARobber()
@@ -75,7 +76,7 @@ void ARobber::OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* Ot
 void ARobber::OnOverlapGuardBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != this && OtherActor->ActorHasTag("Playable"))
+	if (OtherActor != this && OtherComp->ComponentHasTag("Playable"))
 	{
 		SetShouldEscape(true);
 		//SetEscape();
@@ -92,6 +93,8 @@ void ARobber::BeginPlay()
 {
 	Super::BeginPlay();
 	StolenMoney = 0;
+	TotalMoney = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode())->TotalPicturesCost;
+	//UE_LOG(LogTemp, Warning, TEXT("TOTAL MONEY: %d"), TotalMoney);
 	if (StealOverlapComponent)
 	{
 		StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ARobber::OnOverlapBegin);
@@ -181,7 +184,7 @@ int ARobber::GetRiskAssessment()
 			return ((float)Cost / ((float)StolenMoney/(float)PicturesStolen)) * 100;
 		return 100;
 	}
-	else return 100;
+	else return 0;//100;
 }
 
 FColor ARobber::GetColorOfRisk(int Risk)
@@ -191,6 +194,15 @@ FColor ARobber::GetColorOfRisk(int Risk)
 	else if (Risk >= 50 && Risk < 80)
 		return FColor::Orange;
 	else return FColor::Red;
+}
+
+bool ARobber::IsEnoughStole()
+{
+	float StolenPercent = ((float)StolenMoney/(float)TotalMoney)*100;
+	UE_LOG(LogTemp, Warning, TEXT("STOLEN PERCENT: %f"), StolenPercent);
+	if(StolenPercent<10)
+		return false;
+	else return  true;
 }
 
 int ARobber::GetStolenMoney()
