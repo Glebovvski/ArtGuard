@@ -3,7 +3,6 @@
 
 #include "Guard.h"
 #include "Components/BoxComponent.h"
-//#include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Picture.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -19,11 +18,6 @@ AGuard::AGuard()
 	SneakLoudness=Loudness*0.5;
 }
 
-//void AGuard::SetStealOverlappingBox(UBoxComponent* Box)
-//{
-//	StealOverlapComponent = Box;
-//}
-
 void AGuard::SetCatchOverlappingBox(UStaticMeshComponent* Box)
 {
 	CatchBox=Box;
@@ -34,9 +28,7 @@ void AGuard::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 {
 	if (OtherComp->ComponentHasTag("Robber"))
 	{
-		//PictureToSteal = Cast<APicture>(OtherActor);
 		Chase();
-		//Catch();
 	}
 }
 
@@ -66,14 +58,6 @@ void AGuard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//if(StealOverlapComponent)
-	//{
-	//	StealOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
-	//	StealOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AGuard::OnOverlapEnd);
-	//}
-	//InputComponent->BindAction("StealPicture", IE_Pressed, this, &AGuard::Steal);
-
-
 	if(CatchBox)
 	{
 		CatchBox->OnComponentBeginOverlap.AddDynamic(this, &AGuard::OnOverlapBegin);
@@ -88,10 +72,6 @@ void AGuard::Tick(float DeltaTime)
 
 }
 
-APicture* AGuard::GetPictureToSteal()
-{
-	return PictureToSteal;
-}
 
 // Called to bind functionality to input
 void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -102,23 +82,4 @@ void AGuard::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 UAIPerceptionComponent* AGuard::GetPerception()
 {
 	return UAIBlueprintHelperLibrary::GetAIController(this)->GetAIPerceptionComponent();
-}
-
-float AGuard::GetLoudness()
-{
-	return Loudness;
-}
-
-float AGuard::GetSneakLoudness()
-{
-	return SneakLoudness;
-}
-
-
-void AGuard::Steal()
-{
-	//if(PictureToSteal && PictureToSteal->CanSteal())
-	//{
-	//	PictureToSteal->Steal();
-	//}
 }

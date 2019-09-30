@@ -36,6 +36,19 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float WalkSpeed;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float SneakSpeed;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float VisibilityRadius;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float Loudness;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float SneakLoudness;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float CatchConeRadius;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,27 +57,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable, Category="Steal")
-	APicture* GetPictureToSteal();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	UAIPerceptionComponent* GetPerception();
 private:
-	float Loudness;
-	float SneakLoudness;
-
-	UFUNCTION(BlueprintCallable, Category="Setup")
-	float GetLoudness();
-	UFUNCTION(BlueprintCallable, Category="Setup")
-	float GetSneakLoudness();
-
-	//UBoxComponent* StealOverlapComponent;
-	APicture* PictureToSteal;
-
-	void Steal();
-
 	//UBoxComponent* CatchBox;
 	UStaticMeshComponent* CatchBox;
 };

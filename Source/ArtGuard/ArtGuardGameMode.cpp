@@ -25,6 +25,8 @@
 void AArtGuardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	Shuffle(GuardBonuses);
+	Shuffle(RobberBonuses);
 	//TotalPicturesCost=0;
 	//TotalPictures=0;
 
@@ -32,16 +34,16 @@ void AArtGuardGameMode::BeginPlay()
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
 {
-	if (Robber)
-	{
-		if (Robber->GetStolenMoney() > TotalPicturesCost)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost / 2);
-			UE_LOG(LogTemp, Warning, TEXT("Stolen Money: %d"), Robber->GetStolenMoney());
-			Robber->SetEscape();
-			//UE_LOG(LogTemp, Warning, TEXT("SHOULD ESCAPE"));
-		}
-	}
+	//if (Robber)
+	//{
+	//	if (Robber->GetStolenMoney() > TotalPicturesCost)
+	//	{
+	//		UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost / 2);
+	//		UE_LOG(LogTemp, Warning, TEXT("Stolen Money: %d"), Robber->GetStolenMoney());
+	//		Robber->SetEscape();
+	//		//UE_LOG(LogTemp, Warning, TEXT("SHOULD ESCAPE"));
+	//	}
+	//}
 }
 
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
@@ -122,6 +124,57 @@ void AArtGuardGameMode::SpawnArea()
 	UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost);
 }
 
+void AArtGuardGameMode::ActionBonus1()
+{
+	Bonus bonus1;
+	if (IsGuardPlayer)
+	{
+		bonus1 = GuardBonuses[0];
+	}
+	else
+	{
+		bonus1 = RobberBonuses[0];
+	}
+}
+
+void AArtGuardGameMode::ActionBonus2()
+{
+	Bonus bonus2;
+	if (IsGuardPlayer)
+	{
+		bonus2 = GuardBonuses[1];
+	}
+	else
+	{
+		bonus2 = RobberBonuses[1];
+	}
+}
+
+void AArtGuardGameMode::ActionBonus3()
+{
+	Bonus bonus3;
+	if (IsGuardPlayer)
+	{
+		bonus3 = GuardBonuses[2];
+	}
+	else
+	{
+		bonus3 = RobberBonuses[2];
+	}
+}
+
+void AArtGuardGameMode::Shuffle(TArray<Bonus> BonusArray)
+{
+	for (int i = BonusArray.Num() - 1; i > 0; i--)
+	{
+		int j = FMath::FloorToInt(FMath::FRand() * (i + 1));
+		Bonus temp = BonusArray[i];
+		BonusArray[i] = BonusArray[j];
+		BonusArray[j] = temp;
+	}
+
+}
+
 AArea* AArtGuardGameMode::GetMainRightExit()
 {
 	return MainRightExit;
@@ -139,8 +192,8 @@ void AArtGuardGameMode::SpawnAIRobber()
 	if (Robber)
 	{
 		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
+		RobberPerception = Robber->GetPerception();
 	}
-	RobberPerception = Robber->GetPerception();
 }
 
 FTransform AArtGuardGameMode::GetRandomSpawnLocation()
@@ -193,8 +246,8 @@ void AArtGuardGameMode::CheckCollisionForDecorateWalls(float X, float Y, bool& c
 {
 	TArray<FHitResult> OutHits;
 	FCollisionShape SphereCollision = FCollisionShape::MakeCapsule(50, 96);
-	DrawDebugCapsule(GetWorld(), FVector(X,Y,150), 96, 50, FQuat::Identity, FColor::Red, true, 1000);
-	
+	DrawDebugCapsule(GetWorld(), FVector(X, Y, 150), 96, 50, FQuat::Identity, FColor::Red, true, 1000);
+
 	//bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
 	bool IsHit = GetWorld()->SweepMultiByObjectType(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
 	if (IsHit)

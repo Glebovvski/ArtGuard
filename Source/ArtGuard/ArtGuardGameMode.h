@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Bonus.h"
 #include "ArtGuardGameMode.generated.h"
 
 /**
@@ -47,15 +48,48 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SPawn")
 	void SpawnArea();
 
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	void ActionBonus1();
+	
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	void ActionBonus2();
+
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	void ActionBonus3();
+
+
 	UPROPERTY(EditDefaultsOnly, Category="Area")
 	TSubclassOf<AArea> BP_Area;
 
 	UPROPERTY(EditDefaultsOnly, Category="Robber")
 	TSubclassOf<ARobber> BP_Robber;
+	TArray<Bonus> RobberBonuses = 
+	{
+		Bonus(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "),
+		Bonus(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "),
+		Bonus(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Your Loudness by "),
+		Bonus(EBonusAddition::Decrease, EBonusType::CatchCone, "Decrease Guard's Catch Scale by "),
+		Bonus(EBonusAddition::Increase, EBonusType::StealSpeed, "Increase Steal Speed by "),
+	};
+	
 	UPROPERTY(EditDefaultsOnly, Category="Robber")
 	TSubclassOf<AGuard> BP_Guard;
+	TArray<Bonus> GuardBonuses = 
+	{
+		Bonus(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "),
+		Bonus(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "),
+		Bonus(EBonusAddition::Increase, EBonusType::SneakSpeed, "Increase Sneak Speed by "),
+		Bonus(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Your Loudness by "),
+		Bonus(EBonusAddition::Decrease, EBonusType::SneakLoudness, "Decrease Your Sneak Loudness by "),
+		Bonus(EBonusAddition::Increase, EBonusType::CatchCone, "Increase Catch Cone Scale by ")
+	};
+
+	void Shuffle(TArray<Bonus> BonusArray);
 
 	TArray<AArea*> Areas;
+
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool IsGuardPlayer;
 
 	bool IsRightExitSet=false;
 	bool IsUpExitSet=false;
