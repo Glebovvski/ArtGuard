@@ -9,6 +9,7 @@
 class UBoxComponent;
 class APicture;
 class UAIPerceptionComponent;
+class ABonus;
 
 UCLASS()
 class ARTGUARD_API AGuard : public ACharacter
@@ -36,18 +37,22 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float WalkSpeed;
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float SneakSpeed;
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float VisibilityRadius;
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float Loudness;
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float SneakLoudness;
-	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float CatchConeRadius;
+	UFUNCTION(BlueprintCallable, Category="Setup")
+	void SetupGuardStats();
+
+	void ApplyBonus(ABonus* Bonus);
 
 protected:
 	// Called when the game starts or when spawned

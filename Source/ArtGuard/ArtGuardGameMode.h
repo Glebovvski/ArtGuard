@@ -25,8 +25,10 @@ class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	void FillBonusArrays();
 	virtual void BeginPlay() override;
-
+	
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -63,28 +65,19 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Robber")
 	TSubclassOf<ARobber> BP_Robber;
-	TArray<Bonus> RobberBonuses = 
-	{
-		Bonus(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "),
-		Bonus(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "),
-		Bonus(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Your Loudness by "),
-		Bonus(EBonusAddition::Decrease, EBonusType::CatchCone, "Decrease Guard's Catch Scale by "),
-		Bonus(EBonusAddition::Increase, EBonusType::StealSpeed, "Increase Steal Speed by "),
-	};
-	
+	//UPROPERTY(BlueprintReadOnly)
+	TArray<ABonus*> RobberBonuses;
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	TArray<ABonus*> GetRobberBonuses() const;
+
 	UPROPERTY(EditDefaultsOnly, Category="Robber")
 	TSubclassOf<AGuard> BP_Guard;
-	TArray<Bonus> GuardBonuses = 
-	{
-		Bonus(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "),
-		Bonus(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "),
-		Bonus(EBonusAddition::Increase, EBonusType::SneakSpeed, "Increase Sneak Speed by "),
-		Bonus(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Your Loudness by "),
-		Bonus(EBonusAddition::Decrease, EBonusType::SneakLoudness, "Decrease Your Sneak Loudness by "),
-		Bonus(EBonusAddition::Increase, EBonusType::CatchCone, "Increase Catch Cone Scale by ")
-	};
+	//UPROPERTY(BlueprintReadOnly)
+	TArray<ABonus*> GuardBonuses;
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	TArray<ABonus*> GetGuardBonuses() const;
 
-	void Shuffle(TArray<Bonus> BonusArray);
+	void Shuffle(TArray<ABonus*>& BonusArray);
 
 	TArray<AArea*> Areas;
 

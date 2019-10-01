@@ -20,30 +20,37 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+//#include "Bonus.h"
 #include "DrawDebugHelpers.h"
+
+void AArtGuardGameMode::FillBonusArrays()
+{
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::SneakSpeed, "Increase Sneak Speed by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Loudness by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::SneakLoudness, "Decrease Sneak Loudness by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::CatchCone, "Increase Catch Cone Scale by "));
+
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Loudness by "));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::CatchCone, "Decrease Guard's Catch Scale by "));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::StealSpeed, "Increase Steal Speed by "));
+
+	Shuffle(GuardBonuses);
+	Shuffle(RobberBonuses);
+}
 
 void AArtGuardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	Shuffle(GuardBonuses);
-	Shuffle(RobberBonuses);
-	//TotalPicturesCost=0;
-	//TotalPictures=0;
 
 }
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
 {
-	//if (Robber)
-	//{
-	//	if (Robber->GetStolenMoney() > TotalPicturesCost)
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost / 2);
-	//		UE_LOG(LogTemp, Warning, TEXT("Stolen Money: %d"), Robber->GetStolenMoney());
-	//		Robber->SetEscape();
-	//		//UE_LOG(LogTemp, Warning, TEXT("SHOULD ESCAPE"));
-	//	}
-	//}
+	
 }
 
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
@@ -126,10 +133,13 @@ void AArtGuardGameMode::SpawnArea()
 
 void AArtGuardGameMode::ActionBonus1()
 {
-	Bonus bonus1;
+	ABonus* bonus1;
 	if (IsGuardPlayer)
 	{
 		bonus1 = GuardBonuses[0];
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *bonus1->GetName());
+		bonus1->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyBonus(bonus1);
 	}
 	else
 	{
@@ -139,10 +149,12 @@ void AArtGuardGameMode::ActionBonus1()
 
 void AArtGuardGameMode::ActionBonus2()
 {
-	Bonus bonus2;
+	ABonus* bonus2;
 	if (IsGuardPlayer)
 	{
 		bonus2 = GuardBonuses[1];
+		//bonus2->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyBonus(bonus2);
 	}
 	else
 	{
@@ -152,10 +164,12 @@ void AArtGuardGameMode::ActionBonus2()
 
 void AArtGuardGameMode::ActionBonus3()
 {
-	Bonus bonus3;
+	ABonus* bonus3;
 	if (IsGuardPlayer)
 	{
 		bonus3 = GuardBonuses[2];
+		//bonus3->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyBonus(bonus3);
 	}
 	else
 	{
@@ -163,12 +177,22 @@ void AArtGuardGameMode::ActionBonus3()
 	}
 }
 
-void AArtGuardGameMode::Shuffle(TArray<Bonus> BonusArray)
+TArray<ABonus*> AArtGuardGameMode::GetRobberBonuses() const
+{
+	return RobberBonuses;
+}
+
+TArray<ABonus*> AArtGuardGameMode::GetGuardBonuses() const
+{
+	return GuardBonuses;
+}
+
+void AArtGuardGameMode::Shuffle(TArray<ABonus*>& BonusArray)
 {
 	for (int i = BonusArray.Num() - 1; i > 0; i--)
 	{
 		int j = FMath::FloorToInt(FMath::FRand() * (i + 1));
-		Bonus temp = BonusArray[i];
+		ABonus* temp = BonusArray[i];
 		BonusArray[i] = BonusArray[j];
 		BonusArray[j] = temp;
 	}
@@ -294,6 +318,7 @@ void AArtGuardGameMode::SetLocationForRobber()
 	FVector SpawnLocation = FVector(X, Y, 150);
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);
+	Robber = Cast<ARobber>(Player);
 	//GetWorld()->GetFirstPlayerController()->GetCharacter()->SetActorLocation(SpawnLocation);
 }
 
@@ -328,6 +353,7 @@ void AArtGuardGameMode::SetLocationForGuard()
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);
 
+	Guard = Cast<AGuard>(Player);
 	//FVector SpawnLocation = FVector(1244, 1411, 150);
 	//auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	//Player->SetActorLocation(SpawnLocation);

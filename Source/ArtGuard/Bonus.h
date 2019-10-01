@@ -3,12 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Bonus.generated.h"
 
-/**
- *
- */
-
-//UENUM()
 enum EBonusAddition
 {
 	Increase=0,
@@ -26,16 +23,29 @@ enum EBonusType
 	SneakLoudness
 };
 
-class ARTGUARD_API Bonus
+UCLASS()
+class ARTGUARD_API ABonus : public AActor
 {
-public:
-	Bonus();
-	Bonus(EBonusAddition Addition, EBonusType Type, FString Text);
-	void SetPercent(double Percent);
-	~Bonus();
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ABonus();
 
+	static ABonus* BonusInit(EBonusAddition Addition, EBonusType Type, FString Text);
+
+	void SetPercent(double Percent);
 	EBonusAddition BonusAddition;
 	EBonusType BonusType;
 	FString BonusText;
-	double BonusPercent;
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	FString GetBonusText();
+	float BonusPercent;
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	float GetBonusPercent();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 };
