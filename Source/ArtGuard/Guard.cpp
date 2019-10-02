@@ -9,6 +9,7 @@
 #include "AIController.h"
 #include "Bonus.h"
 #include "GI_ArtGuard.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGuard::AGuard()
@@ -88,19 +89,16 @@ void AGuard::ApplyBonus(ABonus* Bonus)
 
 void AGuard::SetupGuardStats()
 {
-	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	WalkSpeed = GI->GuardWalkSpeed;//600;
-	//UE_LOG(LogTemp, Warning, TEXT("Walk speed: %f"), WalkSpeed);
-	SneakSpeed = GI->GuardSneakSpeed;//200;
-	//UE_LOG(LogTemp, Warning, TEXT("Sneak speed: %f"), SneakSpeed);
-	VisibilityRadius = GI->GuardVisibilityRadius;//2000;
-	//UE_LOG(LogTemp, Warning, TEXT("Visibility: %f"), VisibilityRadius);
-	Loudness = GI->GuardLoudness;//1;
-	//UE_LOG(LogTemp, Warning, TEXT("Loudness: %f"), Loudness);
-	SneakLoudness = GI->GuardSneakLoudness;//0.7;
-	//UE_LOG(LogTemp, Warning, TEXT("Sneak Loudness: %f"), SneakLoudness);
-	CatchConeRadius = GI->GuardCatchConeRadius;//3;
-	//UE_LOG(LogTemp, Warning, TEXT("Catch Cone: %f"), CatchConeRadius);
+	auto GI = Cast<UGI_ArtGuard>(UGameplayStatics::GetGameInstance(GetWorld()));//(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		WalkSpeed = GI->GuardWalkSpeed;//600;
+		SneakSpeed = GI->GuardSneakSpeed;//200;
+		VisibilityRadius = GI->GuardVisibilityRadius;//2000;
+		Loudness = GI->GuardLoudness;//1;
+		SneakLoudness = GI->GuardSneakLoudness;//0.7;
+		CatchConeRadius = GI->GuardCatchConeRadius;//3;
+	}
 }
 
 // Called when the game starts or when spawned

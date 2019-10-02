@@ -50,7 +50,7 @@ void AArtGuardGameMode::BeginPlay()
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
 {
-	
+
 }
 
 void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
@@ -222,6 +222,8 @@ void AArtGuardGameMode::SpawnAIRobber()
 
 FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 {
+	int MaxAmountOfTries = 3;
+	int Try = 0;
 	float X = 0, Y = 0;
 	bool check = false;
 	bool checkCollisionInRoom = false;
@@ -240,7 +242,8 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
 
 					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-				} while (checkCollisionInRoom);
+					Try++;
+				} while (checkCollisionInRoom || Try < MaxAmountOfTries);
 				check = true;
 			}
 		}
@@ -269,19 +272,22 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 void AArtGuardGameMode::CheckCollisionForDecorateWalls(float X, float Y, bool& checkCollisionInRoom)
 {
 	TArray<FHitResult> OutHits;
+	FHitResult OutHit;
 	FCollisionShape SphereCollision = FCollisionShape::MakeCapsule(50, 96);
-	DrawDebugCapsule(GetWorld(), FVector(X, Y, 150), 96, 50, FQuat::Identity, FColor::Red, true, 1000);
+	DrawDebugCapsule(GetWorld(), FVector(X, Y, 160), 96, 50, FQuat::Identity, FColor::Red, true, 1000);
 
 	//bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
-	bool IsHit = GetWorld()->SweepMultiByObjectType(OutHits, FVector(X, Y, 150), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
+	//bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, FVector(X, Y, 160), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
+	bool IsHit = GetWorld()->SweepSingleByObjectType(OutHit, FVector(X, Y, 160), FVector(X, Y, 200), FQuat::Identity, ECC_WorldDynamic, SphereCollision);
 	if (IsHit)
 	{
-		for (auto OutHit : OutHits)
+		//for (auto OutHit : OutHits)
 		{
 			if (OutHit.GetActor()->ActorHasTag("Wall"))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("HIT: %s"), *OutHit.GetActor()->GetName());
 				checkCollisionInRoom = true;
+				//break;
 			}
 		}
 	}
@@ -302,13 +308,16 @@ void AArtGuardGameMode::SetLocationForRobber()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				do
-				{
-					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				//do
+				//{
+					//X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+					//Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
 
-					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-				} while (checkCollisionInRoom);
+					X = Room->Location.X;
+					Y = Room->Location.Y;
+
+					//CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+				//} while (checkCollisionInRoom);
 
 				check = true;
 			}
@@ -324,6 +333,9 @@ void AArtGuardGameMode::SetLocationForRobber()
 
 void AArtGuardGameMode::SetLocationForGuard()
 {
+	int MaxAmountOfTries = 3;
+	int RoomAdj = 1000;//2000
+	int Try = 0;
 	float X = 0, Y = 0;
 	bool check = false;
 	bool checkCollisionInRoom = false;
@@ -333,16 +345,19 @@ void AArtGuardGameMode::SetLocationForGuard()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
+			//if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				do
-				{
-					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				//do
+				//{
+				//X = FMath::RandRange(Room->Location.X - Room->Width * 100 + RoomAdj, Room->Location.X + Room->Width * 100 - RoomAdj);
+				//Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + RoomAdj, Room->Location.Y + Room->Height * 100 - RoomAdj);
 
-					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-				} while (checkCollisionInRoom);
+				X = Room->Location.X;
+				Y = Room->Location.Y;
+				//CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+				Try++;
+				//} while (checkCollisionInRoom || Try<MaxAmountOfTries);
 
 				check = true;
 			}
