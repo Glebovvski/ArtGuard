@@ -345,7 +345,7 @@ void AArtGuardGameMode::SetLocationForGuard()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			//if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				//do
