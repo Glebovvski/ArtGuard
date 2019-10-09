@@ -10,6 +10,7 @@ class UBoxComponent;
 class USphereComponent;
 class APicture;
 class UAIPerceptionComponent;
+class ABonus;
 
 UCLASS()
 class ARTGUARD_API ARobber : public ACharacter
@@ -89,6 +90,21 @@ public:
 	int GetPicturesStolen();
 
 	UAIPerceptionComponent* GetPerception();
+
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float VisibilityRadius;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float WalkSpeed;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float Loudness;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float CatchConeRadius;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float StealSpeed;
+	void SetupRobberStats();
+
+	void ApplyBonus(ABonus* Bonus);
+
 private:
 	UBoxComponent* StealOverlapComponent;
 	USphereComponent* SearchRadius;

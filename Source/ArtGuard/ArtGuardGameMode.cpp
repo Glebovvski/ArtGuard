@@ -133,47 +133,52 @@ void AArtGuardGameMode::SpawnArea()
 
 void AArtGuardGameMode::ActionBonus1()
 {
-	ABonus* bonus1;
+	ABonus* bonus;
 	if (IsGuardPlayer)
 	{
-		bonus1 = GuardBonuses[0];
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *bonus1->GetName());
-		bonus1->SetPercent(FMath::RandRange(10, 15));
-		Guard->ApplyBonus(bonus1);
+		bonus = GuardBonuses[0];
+		bonus->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
-		bonus1 = RobberBonuses[0];
+		bonus = RobberBonuses[0];
+		bonus->SetPercent(FMath::RandRange(10,15));
+		Robber->ApplyBonus(bonus);
 	}
 }
 
 void AArtGuardGameMode::ActionBonus2()
 {
-	ABonus* bonus2;
+	ABonus* bonus;
 	if (IsGuardPlayer)
 	{
-		bonus2 = GuardBonuses[1];
+		bonus = GuardBonuses[1];
 		//bonus2->SetPercent(FMath::RandRange(10, 15));
-		Guard->ApplyBonus(bonus2);
+		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
-		bonus2 = RobberBonuses[1];
+		bonus = RobberBonuses[1];
+		bonus->SetPercent(FMath::RandRange(10,15));
+		Robber->ApplyBonus(bonus);
 	}
 }
 
 void AArtGuardGameMode::ActionBonus3()
 {
-	ABonus* bonus3;
+	ABonus* bonus;
 	if (IsGuardPlayer)
 	{
-		bonus3 = GuardBonuses[2];
-		//bonus3->SetPercent(FMath::RandRange(10, 15));
-		Guard->ApplyBonus(bonus3);
+		bonus = GuardBonuses[2];
+		bonus->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
-		bonus3 = RobberBonuses[2];
+		bonus = RobberBonuses[2];
+		bonus->SetPercent(FMath::RandRange(10,15));
+		Robber->ApplyBonus(bonus);
 	}
 }
 

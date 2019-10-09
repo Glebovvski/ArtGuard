@@ -17,9 +17,12 @@ class ARTGUARD_API UGI_ArtGuard : public UGameInstance
 public:
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupGuardStats();
+	void SetupRobberStats();
 
 	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius);
+	void SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius, float StealSpeed);
 
+	//GUARD STATS
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
 	float GuardWalkSpeed;
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
@@ -33,5 +36,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
 	float GuardCatchConeRadius;
 
-	
+	//ROBBER STATS
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float RobberVisibilityRadius;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float RobberWalkSpeed;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float RobberLoudness;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float RobberCatchConeRadius;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float RobberStealSpeed;
 };

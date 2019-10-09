@@ -8,6 +8,8 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
 #include "ArtGuardGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "GI_ArtGuard.h"
 
 // Sets default values
 ARobber::ARobber()
@@ -158,6 +160,47 @@ UAIPerceptionComponent* ARobber::GetPerception()
 	return UAIBlueprintHelperLibrary::GetAIController(this)->GetAIPerceptionComponent();
 }
 
+void ARobber::SetupRobberStats()
+{
+	auto GI = Cast<UGI_ArtGuard>(UGameplayStatics::GetGameInstance(GetWorld()));//(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		WalkSpeed = GI->RobberWalkSpeed;//600;
+		VisibilityRadius = GI->RobberVisibilityRadius;//2000;
+		Loudness = GI->RobberLoudness;//1;
+		CatchConeRadius = GI->RobberCatchConeRadius;//3;
+		StealSpeed = GI->RobberStealSpeed;
+	}
+}
+
+void ARobber::ApplyBonus(ABonus* Bonus)
+{
+	float percent = Bonus->BonusPercent / 100;
+
+	switch (Bonus->BonusType)
+	{
+	case (EBonusType::Loudness):
+		Loudness -= Loudness * percent;//(float)(Bonus->BonusPercent / 100);
+		break;
+	case (EBonusType::CatchCone):
+		CatchConeRadius -= CatchConeRadius * percent;//(float)(Bonus->BonusPercent / 100);
+		break;
+	case (EBonusType::RadiusVisibility):
+		VisibilityRadius += VisibilityRadius * percent;//(float)(Bonus->BonusPercent / 100);
+		break;
+	case (EBonusType::WalkSpeed):
+		WalkSpeed += WalkSpeed * percent;//(float)(Bonus->BonusPercent / 100);
+		break;
+	case(EBonusType::StealSpeed):
+		StealSpeed+=StealSpeed*percent;
+		break;
+	default:
+		break;
+	}
+	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed);
+}
+
 bool ARobber::AssessPicture()
 {
 	if (PictureToSteal)
@@ -181,7 +224,7 @@ int ARobber::GetRiskAssessment()
 	{
 		int Cost = PictureToSteal->GetCost();
 		if (StolenMoney > 0)
-			return ((float)Cost / ((float)StolenMoney/(float)PicturesStolen)) * 100;
+			return ((float)Cost / ((float)StolenMoney / (float)PicturesStolen)) * 100;
 		return 100;
 	}
 	else return 0;//100;
@@ -198,9 +241,9 @@ FColor ARobber::GetColorOfRisk(int Risk)
 
 bool ARobber::IsEnoughStole()
 {
-	float StolenPercent = ((float)StolenMoney/(float)TotalMoney)*100;
+	float StolenPercent = ((float)StolenMoney / (float)TotalMoney) * 100;
 	UE_LOG(LogTemp, Warning, TEXT("STOLEN PERCENT: %f"), StolenPercent);
-	if(StolenPercent<10)
+	if (StolenPercent < 10)
 		return false;
 	else return  true;
 }
