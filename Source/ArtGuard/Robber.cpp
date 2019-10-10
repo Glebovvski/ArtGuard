@@ -180,19 +180,47 @@ void ARobber::ApplyBonus(ABonus* Bonus)
 	switch (Bonus->BonusType)
 	{
 	case (EBonusType::Loudness):
-		Loudness -= Loudness * percent;//(float)(Bonus->BonusPercent / 100);
+		Loudness = percent;
 		break;
 	case (EBonusType::CatchCone):
-		CatchConeRadius -= CatchConeRadius * percent;//(float)(Bonus->BonusPercent / 100);
+		CatchConeRadius -= CatchConeRadius * percent;
 		break;
 	case (EBonusType::RadiusVisibility):
-		VisibilityRadius += VisibilityRadius * percent;//(float)(Bonus->BonusPercent / 100);
+		VisibilityRadius += VisibilityRadius * percent;
 		break;
 	case (EBonusType::WalkSpeed):
-		WalkSpeed += WalkSpeed * percent;//(float)(Bonus->BonusPercent / 100);
+		WalkSpeed += WalkSpeed * percent;
 		break;
 	case(EBonusType::StealSpeed):
-		StealSpeed+=StealSpeed*percent;
+		StealSpeed-=StealSpeed*percent;
+		break;
+	default:
+		break;
+	}
+	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed);
+}
+
+void ARobber::ApplyPenalty(ABonus* Bonus)
+{
+	float percent = Bonus->BonusPercent / 100;
+
+	switch (Bonus->BonusType)
+	{
+	case (EBonusType::Loudness):
+		Loudness -= percent;
+		break;
+	case (EBonusType::CatchCone):
+		CatchConeRadius += CatchConeRadius * percent;
+		break;
+	case (EBonusType::RadiusVisibility):
+		VisibilityRadius -= VisibilityRadius * percent;
+		break;
+	case (EBonusType::WalkSpeed):
+		WalkSpeed -= WalkSpeed * percent;
+		break;
+	case(EBonusType::StealSpeed):
+		StealSpeed += StealSpeed*percent;
 		break;
 	default:
 		break;
@@ -227,7 +255,7 @@ int ARobber::GetRiskAssessment()
 			return ((float)Cost / ((float)StolenMoney / (float)PicturesStolen)) * 100;
 		return 100;
 	}
-	else return 0;//100;
+	else return 100;
 }
 
 FColor ARobber::GetColorOfRisk(int Risk)

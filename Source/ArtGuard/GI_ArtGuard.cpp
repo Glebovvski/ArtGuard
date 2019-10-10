@@ -39,6 +39,6 @@ void UGI_ArtGuard::SaveRobberStats(float WalkSpeed, float VisibilityRadius, floa
 	RobberWalkSpeed=WalkSpeed;
 	RobberVisibilityRadius=VisibilityRadius;
 	RobberLoudness=Loudness;
-	RobberCatchConeRadius=CatchConeRadius;
+	GuardCatchConeRadius=CatchConeRadius;
 	RobberStealSpeed=StealSpeed;
 }

@@ -17,6 +17,7 @@ class ARTGUARD_API UGI_ArtGuard : public UGameInstance
 public:
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupGuardStats();
+	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupRobberStats();
 
 	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius);

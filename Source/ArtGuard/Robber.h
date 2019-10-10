@@ -101,9 +101,11 @@ public:
 	float CatchConeRadius;
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float StealSpeed;
+	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupRobberStats();
 
 	void ApplyBonus(ABonus* Bonus);
+	void ApplyPenalty(ABonus* Bonus);
 
 private:
 	UBoxComponent* StealOverlapComponent;

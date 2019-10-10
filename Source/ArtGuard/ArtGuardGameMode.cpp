@@ -182,6 +182,23 @@ void AArtGuardGameMode::ActionBonus3()
 	}
 }
 
+void AArtGuardGameMode::ActionPenalty()
+{
+	ABonus* bonus;
+	if (IsGuardPlayer)
+	{
+		bonus = GuardBonuses[FMath::RandRange(0,GuardBonuses.Num()-1)];
+		bonus->SetPercent(FMath::RandRange(10, 15));
+		Guard->ApplyPenalty(bonus);
+	}
+	else
+	{
+		bonus = RobberBonuses[FMath::RandRange(0, RobberBonuses.Num()-1)];
+		bonus->SetPercent(FMath::RandRange(10,15));
+		Robber->ApplyPenalty(bonus);
+	}
+}
+
 TArray<ABonus*> AArtGuardGameMode::GetRobberBonuses() const
 {
 	return RobberBonuses;

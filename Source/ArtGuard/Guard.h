@@ -53,6 +53,7 @@ public:
 	void SetupGuardStats();
 
 	void ApplyBonus(ABonus* Bonus);
+	void ApplyPenalty(ABonus* Bonus);
 
 protected:
 	// Called when the game starts or when spawned

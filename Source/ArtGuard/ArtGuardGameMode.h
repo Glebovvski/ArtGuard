@@ -59,6 +59,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Bonus")
 	void ActionBonus3();
 
+	UFUNCTION(BlueprintCallable, Category="Bonus")
+	void ActionPenalty();
 
 	UPROPERTY(EditDefaultsOnly, Category="Area")
 	TSubclassOf<AArea> BP_Area;
