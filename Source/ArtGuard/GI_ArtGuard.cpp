@@ -17,7 +17,7 @@ void UGI_ArtGuard::SetupRobberStats()
 {
 	RobberVisibilityRadius = 2000;
 	RobberWalkSpeed=750;
-	RobberLoudness=1;
+	RobberLoudness=0.01;
 	RobberCatchConeRadius=3;
 	RobberStealSpeed=5;
 }
