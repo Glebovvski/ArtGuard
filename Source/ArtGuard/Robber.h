@@ -77,7 +77,7 @@ public:
 	bool AssessPicture();
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
-	int GetRiskAssessment();
+	float GetRiskAssessment();
 
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	FColor GetColorOfRisk(int Risk);
@@ -101,6 +101,12 @@ public:
 	float CatchConeRadius;
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float StealSpeed;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool VisibleExits;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool EnemyVisibility;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float CatchSpeed;
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupRobberStats();
 

@@ -18,7 +18,7 @@ ABonus* ABonus::BonusInit(EBonusAddition Addition, EBonusType Type, FString Text
 	b->BonusAddition = Addition;
 	b->BonusType = Type;
 	b->BonusText = Text;
-	b->BonusPercent=FMath::RandRange(10,15);
+	b->BonusPercent=FMath::RandRange(3,10);
 	return b;
 }
 

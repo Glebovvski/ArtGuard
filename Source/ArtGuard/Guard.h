@@ -49,6 +49,10 @@ public:
 	float SneakLoudness;
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float CatchConeRadius;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool EnemyVisibility;
+	UPROPERTY(BlueprintReadOnly, Category="Setup")
+	float CatchSpeed;
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupGuardStats();
 

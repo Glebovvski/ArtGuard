@@ -31,12 +31,17 @@ void AArtGuardGameMode::FillBonusArrays()
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Loudness by "));
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::SneakLoudness, "Decrease Sneak Loudness by "));
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::CatchCone, "Increase Catch Cone Scale by "));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::EnemyVisibility, "Visible Robber icon for 5 seconds"));
+	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::CatchSpeed, "Increase Catch Speed by "));
 
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Loudness by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::CatchCone, "Decrease Guard's Catch Scale by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::StealSpeed, "Increase Steal Speed by "));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::ExitVisibility, "Visible Exit icons for 5 seconds"));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::EnemyVisibility, "Visible Guard icon for 5 seconds"));
+	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::CatchSpeed, "Decrease Catch Speed by "));
 
 	Shuffle(GuardBonuses);
 	Shuffle(RobberBonuses);
@@ -127,8 +132,8 @@ void AArtGuardGameMode::SpawnArea()
 	}
 
 	//TotalPicturesCost=TotalPicturesCost/TotalPictures;
-	UE_LOG(LogTemp, Warning, TEXT("Total Pictures: %d"), TotalPictures);
-	UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost);
+	//UE_LOG(LogTemp, Warning, TEXT("Total Pictures: %d"), TotalPictures);
+	//UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost);
 }
 
 void AArtGuardGameMode::ActionBonus1()
@@ -137,13 +142,21 @@ void AArtGuardGameMode::ActionBonus1()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[0];
-		bonus->SetPercent(FMath::RandRange(10, 15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[0];
-		bonus->SetPercent(FMath::RandRange(10,15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Robber->ApplyBonus(bonus);
 	}
 }
@@ -154,13 +167,21 @@ void AArtGuardGameMode::ActionBonus2()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[1];
-		//bonus2->SetPercent(FMath::RandRange(10, 15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[1];
-		bonus->SetPercent(FMath::RandRange(10,15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Robber->ApplyBonus(bonus);
 	}
 }
@@ -171,13 +192,21 @@ void AArtGuardGameMode::ActionBonus3()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[2];
-		bonus->SetPercent(FMath::RandRange(10, 15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[2];
-		bonus->SetPercent(FMath::RandRange(10,15));
+		//if (bonus->BonusType != EBonusType::ExitVisibility)
+		//{
+		//	bonus->SetPercent(FMath::RandRange(3, 10));
+		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
+		//}
 		Robber->ApplyBonus(bonus);
 	}
 }
@@ -187,14 +216,14 @@ void AArtGuardGameMode::ActionPenalty()
 	ABonus* bonus;
 	if (IsGuardPlayer)
 	{
-		bonus = GuardBonuses[FMath::RandRange(0,GuardBonuses.Num()-1)];
+		bonus = GuardBonuses[FMath::RandRange(0, GuardBonuses.Num() - 1)];
 		bonus->SetPercent(FMath::RandRange(10, 15));
 		Guard->ApplyPenalty(bonus);
 	}
 	else
 	{
-		bonus = RobberBonuses[FMath::RandRange(0, RobberBonuses.Num()-1)];
-		bonus->SetPercent(FMath::RandRange(10,15));
+		bonus = RobberBonuses[FMath::RandRange(0, RobberBonuses.Num() - 1)];
+		bonus->SetPercent(FMath::RandRange(10, 15));
 		Robber->ApplyPenalty(bonus);
 	}
 }
@@ -214,11 +243,24 @@ void AArtGuardGameMode::Shuffle(TArray<ABonus*>& BonusArray)
 	for (int i = BonusArray.Num() - 1; i > 0; i--)
 	{
 		int j = FMath::FloorToInt(FMath::FRand() * (i + 1));
-		ABonus* temp = BonusArray[i];
+		ABonus* bonus = BonusArray[i];
 		BonusArray[i] = BonusArray[j];
-		BonusArray[j] = temp;
+		BonusArray[j] = bonus;
 	}
+	SetBonusPercent(BonusArray);
+}
 
+void AArtGuardGameMode::SetBonusPercent(TArray<ABonus*>& BonusArray)
+{
+	for (int i = 0; i < BonusArray.Num(); i++)
+	{
+		if (BonusArray[i]->BonusType != EBonusType::ExitVisibility && BonusArray[i]->BonusType != EBonusType::EnemyVisibility)
+		{
+			BonusArray[i]->SetPercent(FMath::RandRange(3, 10));
+			BonusArray[i]->BonusText += FString::SanitizeFloat(BonusArray[i]->BonusPercent) + "%";
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *BonusArray[i]->BonusText);
+	}
 }
 
 AArea* AArtGuardGameMode::GetMainRightExit()
@@ -274,6 +316,11 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 	return FTransform(FRotator::ZeroRotator, FVector(X, Y, 150));
 }
 
+ARobber* AArtGuardGameMode::GetRobber()
+{
+	return Robber;
+}
+
 AGuard* AArtGuardGameMode::SpawnAIGuard()
 {
 	FTransform SpawnTransform = GetRandomSpawnLocation();
@@ -284,10 +331,6 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 		GuardPerception = Guard->GetPerception();
 	}
 	return Guard;
-	//Guard = GetWorld()->SpawnActor<AGuard>(BP_Guard);
-	//GuardPerception = Guard->GetPerception();
-	//Guard->SetActorLocation(FVector(1244, 1411, 150));
-	//return Guard;
 }
 
 
@@ -316,6 +359,11 @@ void AArtGuardGameMode::CheckCollisionForDecorateWalls(float X, float Y, bool& c
 	else checkCollisionInRoom = false;
 }
 
+AGuard* AArtGuardGameMode::GetGuard()
+{
+	return Guard;
+}
+
 void AArtGuardGameMode::SetLocationForRobber()
 {
 	float X = 0, Y = 0;
@@ -335,11 +383,11 @@ void AArtGuardGameMode::SetLocationForRobber()
 					//X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
 					//Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
 
-					X = Room->Location.X;
-					Y = Room->Location.Y;
+				X = Room->Location.X;
+				Y = Room->Location.Y;
 
-					//CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-				//} while (checkCollisionInRoom);
+				//CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+			//} while (checkCollisionInRoom);
 
 				check = true;
 			}

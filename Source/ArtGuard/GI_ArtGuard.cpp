@@ -11,19 +11,24 @@ void UGI_ArtGuard::SetupGuardStats()
 	GuardLoudness = 1;
 	GuardSneakLoudness = 0.7;
 	GuardCatchConeRadius = 3;
+	GuardEnemyVisibility = false;
+	GuardCatchSpeed = 2;
 }
 
 void UGI_ArtGuard::SetupRobberStats()
 {
 	RobberVisibilityRadius = 2000;
-	RobberWalkSpeed=750;
-	RobberLoudness=0.01;
-	RobberCatchConeRadius=3;
-	RobberStealSpeed=5;
+	RobberWalkSpeed = 750;
+	RobberLoudness = 0.0001;
+	RobberCatchConeRadius = 3;
+	RobberStealSpeed = 5;
+	RobberVisibleExits = false;
+	RobberEnemyVisibility = false;
+	GuardCatchSpeed = 2;
 }
 
 void UGI_ArtGuard::SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness,
-	float SneakLoudness, float CatchConeRadius)
+	float SneakLoudness, float CatchConeRadius, bool EnemyVisibility, float CatchSpeed)
 {
 	GuardWalkSpeed = WalkSpeed;
 	GuardSneakSpeed = SneakSpeed;
@@ -31,14 +36,19 @@ void UGI_ArtGuard::SaveGuardStats(float WalkSpeed, float SneakSpeed, float Visib
 	GuardLoudness = Loudness;
 	GuardSneakLoudness = SneakLoudness;
 	GuardCatchConeRadius = CatchConeRadius;
+	GuardEnemyVisibility = EnemyVisibility;
+	GuardCatchSpeed = CatchSpeed;
 }
 
 void UGI_ArtGuard::SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius,
-	float StealSpeed)
+	float StealSpeed, bool VisibleExits, bool EnemyVisibility, float CatchSpeed)
 {
-	RobberWalkSpeed=WalkSpeed;
-	RobberVisibilityRadius=VisibilityRadius;
-	RobberLoudness=Loudness;
-	GuardCatchConeRadius=CatchConeRadius;
-	RobberStealSpeed=StealSpeed;
+	RobberWalkSpeed = WalkSpeed;
+	RobberVisibilityRadius = VisibilityRadius;
+	RobberLoudness = Loudness;
+	GuardCatchConeRadius = CatchConeRadius;
+	RobberStealSpeed = StealSpeed;
+	RobberVisibleExits = VisibleExits;
+	RobberEnemyVisibility = EnemyVisibility;
+	GuardCatchSpeed = CatchSpeed;
 }

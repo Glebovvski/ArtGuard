@@ -10,6 +10,7 @@
 #include "ArtGuardGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GI_ArtGuard.h"
+#include <string>
 
 // Sets default values
 ARobber::ARobber()
@@ -170,6 +171,9 @@ void ARobber::SetupRobberStats()
 		Loudness = GI->RobberLoudness;//1;
 		CatchConeRadius = GI->RobberCatchConeRadius;//3;
 		StealSpeed = GI->RobberStealSpeed;
+		VisibleExits = GI->RobberVisibleExits;
+		EnemyVisibility = GI->RobberEnemyVisibility;
+		CatchSpeed = GI->GuardCatchSpeed;
 	}
 }
 
@@ -192,13 +196,22 @@ void ARobber::ApplyBonus(ABonus* Bonus)
 		WalkSpeed += WalkSpeed * percent;
 		break;
 	case(EBonusType::StealSpeed):
-		StealSpeed-=StealSpeed*percent;
+		StealSpeed -= StealSpeed * percent;
+		break;
+	case(EBonusType::ExitVisibility):
+		VisibleExits = true;
+		break;
+	case(EBonusType::EnemyVisibility):
+		EnemyVisibility = true;
+		break;
+	case(EBonusType::CatchSpeed):
+		CatchSpeed += CatchSpeed * percent;
 		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed);
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, VisibleExits, EnemyVisibility, CatchSpeed);
 }
 
 void ARobber::ApplyPenalty(ABonus* Bonus)
@@ -211,7 +224,7 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 		Loudness -= percent;
 		break;
 	case (EBonusType::CatchCone):
-		CatchConeRadius += CatchConeRadius * percent;
+		CatchConeRadius -= CatchConeRadius * percent;
 		break;
 	case (EBonusType::RadiusVisibility):
 		VisibilityRadius -= VisibilityRadius * percent;
@@ -220,13 +233,16 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 		WalkSpeed -= WalkSpeed * percent;
 		break;
 	case(EBonusType::StealSpeed):
-		StealSpeed += StealSpeed*percent;
+		StealSpeed += StealSpeed * percent;
+		break;
+	case(EBonusType::CatchSpeed):
+		CatchSpeed -= CatchSpeed * percent;
 		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed);
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, false, false, CatchSpeed);
 }
 
 bool ARobber::AssessPicture()
@@ -246,7 +262,7 @@ bool ARobber::AssessPicture()
 	return false;
 }
 
-int ARobber::GetRiskAssessment()
+float ARobber::GetRiskAssessment()
 {
 	if (PictureToSteal)
 	{

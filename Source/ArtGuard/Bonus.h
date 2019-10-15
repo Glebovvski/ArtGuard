@@ -20,7 +20,10 @@ enum EBonusType
 	StealSpeed,
 	CatchCone,
 	SneakSpeed,
-	SneakLoudness
+	SneakLoudness,
+	ExitVisibility,
+	EnemyVisibility,
+	CatchSpeed
 };
 
 UCLASS()

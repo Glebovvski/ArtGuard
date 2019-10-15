@@ -27,6 +27,7 @@ class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
 public:
 	UFUNCTION(BlueprintCallable, Category="Bonus")
 	void FillBonusArrays();
+	
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaSeconds) override;
@@ -65,14 +66,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Area")
 	TSubclassOf<AArea> BP_Area;
 
-	UPROPERTY(EditDefaultsOnly, Category="Robber")
+	UPROPERTY(EditDefaultsOnly, Category="Character")
 	TSubclassOf<ARobber> BP_Robber;
 	//UPROPERTY(BlueprintReadOnly)
 	TArray<ABonus*> RobberBonuses;
 	UFUNCTION(BlueprintCallable, Category="Bonus")
 	TArray<ABonus*> GetRobberBonuses() const;
 
-	UPROPERTY(EditDefaultsOnly, Category="Robber")
+	UPROPERTY(EditDefaultsOnly, Category="Character")
 	TSubclassOf<AGuard> BP_Guard;
 	//UPROPERTY(BlueprintReadOnly)
 	TArray<ABonus*> GuardBonuses;
@@ -80,6 +81,7 @@ public:
 	TArray<ABonus*> GetGuardBonuses() const;
 
 	void Shuffle(TArray<ABonus*>& BonusArray);
+	void SetBonusPercent(TArray<ABonus*>& BonusArray);
 
 	TArray<AArea*> Areas;
 
@@ -101,11 +103,15 @@ public:
 	void SpawnAIRobber();
 	FTransform GetRandomSpawnLocation();
 	ARobber* Robber;
+	UFUNCTION(BlueprintCallable, Category="Setup")
+	ARobber* GetRobber();
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	AGuard* SpawnAIGuard();
 	void CheckCollisionForDecorateWalls(float X, float Y, bool& checkCollisionInRoom);
 	AGuard* Guard;
+	UFUNCTION(BlueprintCallable, Category="Setup")
+	AGuard* GetGuard();
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SetLocationForRobber();

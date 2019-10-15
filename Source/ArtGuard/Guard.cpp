@@ -80,17 +80,23 @@ void AGuard::ApplyBonus(ABonus* Bonus)
 	case (EBonusType::WalkSpeed):
 		WalkSpeed += WalkSpeed * percent;
 		break;
+	case(EBonusType::EnemyVisibility):
+		EnemyVisibility = true;
+		break;
+	case(EBonusType::CatchSpeed):
+		CatchSpeed -= CatchSpeed * percent;
+		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius);
+	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, EnemyVisibility, CatchSpeed);
 }
 
 void AGuard::ApplyPenalty(ABonus* Bonus)
 {
 	float percent = Bonus->BonusPercent / 100;
-	
+
 	switch (Bonus->BonusType)
 	{
 	case (EBonusType::SneakLoudness):
@@ -111,11 +117,14 @@ void AGuard::ApplyPenalty(ABonus* Bonus)
 	case (EBonusType::WalkSpeed):
 		WalkSpeed -= WalkSpeed * percent;
 		break;
+	case(EBonusType::CatchSpeed):
+		CatchSpeed -= CatchSpeed * percent;
+		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius);
+	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, false, CatchSpeed);
 }
 
 void AGuard::SetupGuardStats()
@@ -129,6 +138,8 @@ void AGuard::SetupGuardStats()
 		Loudness = GI->GuardLoudness;//1;
 		SneakLoudness = GI->GuardSneakLoudness;//0.7;
 		CatchConeRadius = GI->GuardCatchConeRadius;//3;
+		EnemyVisibility = GI->GuardEnemyVisibility;
+		CatchSpeed = GI->GuardCatchSpeed;
 	}
 }
 

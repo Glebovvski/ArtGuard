@@ -20,8 +20,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupRobberStats();
 
-	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius);
-	void SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius, float StealSpeed);
+	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius, bool EnemyVisibility, float CatchSpeed);
+	void SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius, float StealSpeed, bool VisibleExits, bool EnemyVisibility, float CatchSpeed);
 
 	//GUARD STATS
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
@@ -36,6 +36,10 @@ public:
 	float GuardSneakLoudness;
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
 	float GuardCatchConeRadius;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool GuardEnemyVisibility;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	float GuardCatchSpeed;
 
 	//ROBBER STATS
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
@@ -48,4 +52,8 @@ public:
 	float RobberCatchConeRadius;
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
 	float RobberStealSpeed;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool RobberVisibleExits;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	bool RobberEnemyVisibility;
 };
