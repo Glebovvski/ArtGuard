@@ -240,17 +240,18 @@ void AArea::CreateRoom()
 {
 	int RoomWidth = 5;
 	int RoomHeight = 5;
-	for (int i = Width - 5; i > 5; i--)
+	for (int i = Width - FMath::RandRange(5,9); i > 5; i--)
 	{
-		if (i % 5 == 0)
+		//CHECK WHAT HAPPENS
+		//if (i % 5 == 0)
 		{
 			RoomWidth = i;
 			break;
 		}
 	}
-	for (int i = Height - 5; i > 5; i--)
+	for (int i = Height - FMath::RandRange(5,9); i > 5; i--)
 	{
-		if (i % 5 == 0)
+		//if (i % 5 == 0)
 		{
 			RoomHeight = i;
 			break;

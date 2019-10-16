@@ -38,7 +38,7 @@ void APicture::BeginPlay()
 	Assessed = false;
 
 	
-	GameMode->TotalPictures++;
+	//GameMode->TotalPictures++;
 
 	IsStolen = false;
 	if (Plane != nullptr)
