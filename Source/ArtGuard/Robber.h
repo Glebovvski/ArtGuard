@@ -87,6 +87,7 @@ public:
 
 	int TotalMoney;
 	int GetStolenMoney();
+	UFUNCTION(BlueprintCallable, Category="Steal")
 	int GetPicturesStolen();
 
 	UAIPerceptionComponent* GetPerception();

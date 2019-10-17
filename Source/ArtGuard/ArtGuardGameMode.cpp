@@ -142,21 +142,11 @@ void AArtGuardGameMode::ActionBonus1()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[0];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[0];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Robber->ApplyBonus(bonus);
 	}
 }
@@ -167,21 +157,11 @@ void AArtGuardGameMode::ActionBonus2()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[1];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[1];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Robber->ApplyBonus(bonus);
 	}
 }
@@ -192,21 +172,11 @@ void AArtGuardGameMode::ActionBonus3()
 	if (IsGuardPlayer)
 	{
 		bonus = GuardBonuses[2];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Guard->ApplyBonus(bonus);
 	}
 	else
 	{
 		bonus = RobberBonuses[2];
-		//if (bonus->BonusType != EBonusType::ExitVisibility)
-		//{
-		//	bonus->SetPercent(FMath::RandRange(3, 10));
-		//	bonus->BonusText+FString::SanitizeFloat(bonus->BonusPercent)+"%";
-		//}
 		Robber->ApplyBonus(bonus);
 	}
 }

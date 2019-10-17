@@ -1,2 +1,1 @@
-crash probably because random point spawn for robber and guard
-robber ai TOO RISKY constantly
+GUARD VISIBILITY RADIUS SHOULD BE BIGGER
