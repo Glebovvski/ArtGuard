@@ -270,14 +270,16 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				do
-				{
-					X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
-					Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
+				//do
+				//{
+					//X = FMath::RandRange(Room->Location.X - Room->Width * 100 + 2000, Room->Location.X + Room->Width * 100 - 2000);
+					//Y = FMath::RandRange(Room->Location.Y - Room->Height * 100 + 2000, Room->Location.Y + Room->Height * 100 - 2000);
 
-					CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
-					Try++;
-				} while (checkCollisionInRoom || Try < MaxAmountOfTries);
+					X = Room->Location.X;
+					Y = Room->Location.Y;
+					//CheckCollisionForDecorateWalls(X, Y, checkCollisionInRoom);
+					//Try++;
+				//} while (checkCollisionInRoom || Try < MaxAmountOfTries);
 				check = true;
 			}
 		}
