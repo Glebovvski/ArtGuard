@@ -303,8 +303,8 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		DownExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
 		auto UpExit = GetWorld()->SpawnActor<AExit>(BP_Exit);
-		UpExit->SetActorLocation(FVector(Hall->Location.X + Hall->Width * 100 / 2, Hall->Location.Y, 50));
-		UpExit->SetActorRotation(FRotator(0, 180, 0));
+		UpExit->SetActorLocation(FVector(Hall->Location.X + Hall->Width * 100 / 2, Hall->Location.Y, 1500));
+		UpExit->SetActorRotation(FRotator(0, 180, 180));
 		UpExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 		GameMode->MainRightExit = Hall;
 	}
@@ -332,9 +332,9 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		RightWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
 		auto DownExit = GetWorld()->SpawnActor<AExit>(BP_Exit);
-		DownExit->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y + Hall->Height * 100 / 2, 50));
+		DownExit->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y + Hall->Height * 100 / 2, 1500));
 		//DownExit->SetActorRotation(FRotator(0,90,0));
-		DownExit->SetActorRotation(FRotator(0, 270, 0));
+		DownExit->SetActorRotation(FRotator(0, 270, 180));
 		DownExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
 		auto UpExit = GetWorld()->SpawnActor<AExit>(BP_Exit);

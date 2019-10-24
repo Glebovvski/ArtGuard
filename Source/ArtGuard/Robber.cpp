@@ -91,6 +91,11 @@ bool ARobber::GetShouldEscape()
 	return ShouldEscape;
 }
 
+void ARobber::Stop()
+{
+	
+}
+
 // Called when the game starts or when spawned
 void ARobber::BeginPlay()
 {

@@ -148,6 +148,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Pictures")
 	int GetTotalPictures();
 
+
 private:
 	UFUNCTION(BlueprintCallable, Category = "Materials")
 		void GetAllMaterials();

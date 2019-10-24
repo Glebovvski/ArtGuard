@@ -42,6 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Steal")
 		bool GetShouldEscape();
+
+	UFUNCTION(BlueprintCallable,Category="Stop")
+	void Stop();
 	//UFUNCTION()
 	//void OnOverlapSphereEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
