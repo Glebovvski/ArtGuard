@@ -309,7 +309,6 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		UpExit->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 		GameMode->MainRightExit = Hall;
 	}
-
 	else
 	{
 		AArea* Hall = GetWorld()->SpawnActor<AArea>(BP_MAIN_Hall);

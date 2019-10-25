@@ -216,7 +216,7 @@ void ARoom::CreateProps()
 			if (DownExit)
 			{
 				auto Bench = CreateProp(LeftLocation);
-				if (IsInExitLine(DownExit->Location + FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, DownExit->Height * 1000, 50)))
+				if (IsInExitLine(DownExit->Location + FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, 500/*DownExit->Height * 1000*/, 50)))
 				{
 					Bench->Destroy();
 				}
@@ -228,7 +228,7 @@ void ARoom::CreateProps()
 			if (UpExit)
 			{
 				auto Bench = CreateProp(RightLocation);
-				if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, UpExit->Height * 1000, 50)))
+				if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, 500/*UpExit->Height * 1000*/, 50)))
 				{
 					Bench->Destroy();
 				}
