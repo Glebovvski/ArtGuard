@@ -114,7 +114,7 @@ bool APicture::CanSteal()
 
 void APicture::Steal()
 {
-	TArray<USceneComponent*> Children;
+	//TArray<USceneComponent*> Children;
 	//Plane->GetChildrenComponents(true, Children);
 	//for (auto Child : Children)
 	//{

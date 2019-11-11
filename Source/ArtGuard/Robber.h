@@ -89,6 +89,8 @@ public:
 	bool IsEnoughStole();
 
 	int TotalMoney;
+	int TotalPictures;
+
 	int GetStolenMoney();
 	UFUNCTION(BlueprintCallable, Category="Steal")
 	int GetPicturesStolen();

@@ -102,6 +102,7 @@ void ARobber::BeginPlay()
 	Super::BeginPlay();
 	StolenMoney = 0;
 	TotalMoney = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode())->TotalPicturesCost;
+	TotalPictures = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode())->TotalPictures;
 	//UE_LOG(LogTemp, Warning, TEXT("TOTAL MONEY: %d"), TotalMoney);
 	if (StealOverlapComponent)
 	{
@@ -228,27 +229,27 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 	{
 	case (EBonusType::Loudness):
 		Loudness += percent; //PROBABLY +
-		PenaltyText = "Increased Loudness by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Increased Loudness by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case (EBonusType::CatchCone):
 		CatchConeRadius += CatchConeRadius * percent;
-		PenaltyText = "Increased Guard's Catch Cone by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Increased Guard's Catch Cone by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case (EBonusType::RadiusVisibility):
 		VisibilityRadius -= VisibilityRadius * percent;
-		PenaltyText = "Decreased Visibility Radius by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Decreased Visibility Radius by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case (EBonusType::WalkSpeed):
 		WalkSpeed -= WalkSpeed * percent;
-		PenaltyText = "Decreased Walk Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Decreased Walk Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case(EBonusType::StealSpeed):
 		StealSpeed += StealSpeed * percent;
-		PenaltyText = "Increased Steal Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Increased Steal Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case(EBonusType::CatchSpeed):
 		CatchSpeed += CatchSpeed * percent;
-		PenaltyText = "Increased Guard's Catch Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
+		PenaltyText = "Increased Guard's Catch Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	default:
 		break;
@@ -261,15 +262,20 @@ bool ARobber::AssessPicture()
 {
 	if (PictureToSteal)
 	{
-		PictureToSteal->Assessed = true;
-		SeenPictures.Remove(PictureToSteal);
-		if (PicturesStolen > 0)
+		if (!PictureToSteal->Assessed)
 		{
-			int PictureCost = PictureToSteal->GetCost();
-			float Risk = (StolenMoney / PicturesStolen) / 2;
-			return PictureCost > Risk ? true : false;
+			PictureToSteal->Assessed = true;
+			SeenPictures.Remove(PictureToSteal);
+			if (PicturesStolen > 0)
+			{
+				int PictureCost = PictureToSteal->GetCost();
+				float Risk = (float)StolenMoney / (float)PicturesStolen;//*100;//(StolenMoney / TotalMoney);// PicturesStolen);// / 2;
+				float Temp = (float(StolenMoney) / float(PicturesStolen));
+				UE_LOG(LogTemp,Warning, TEXT("Risk: %f,  Cost: %d"), Risk, PictureCost);
+				return PictureCost > Risk ? true : false;//Risk <= Temp ? true : false;//
+			}
+			return true;
 		}
-		return true;
 	}
 	return false;
 }
@@ -297,11 +303,11 @@ FColor ARobber::GetColorOfRisk(int Risk)
 
 bool ARobber::IsEnoughStole()
 {
-	float StolenPercent = ((float)StolenMoney / (float)TotalMoney) * 100;
+	float StolenPercent = ((float)PicturesStolen / (float)TotalPictures) * 100;//((float)StolenMoney / (float)TotalMoney) * 100;
 	UE_LOG(LogTemp, Warning, TEXT("STOLEN PERCENT: %f"), StolenPercent);
-	if (StolenPercent < 10)
+	if (StolenPercent < 1.5) //10
 		return false;
-	else return  true;
+	return  true;
 }
 
 int ARobber::GetStolenMoney()

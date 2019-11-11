@@ -119,6 +119,7 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 			int Width = Wall->GetActorScale3D().X;
 			FVector Start = FVector(Wall->GetActorLocation().X - Width * 100 / 2, Wall->GetActorLocation().Y, 300);
 			int NumberOfFrames = FMath::CeilToInt(Width / 5);
+			(Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode()))->TotalPictures+=NumberOfFrames;
 			for (int i = 0; i < NumberOfFrames; i++)
 			{
 				if (NumberOfFrames == 1)
@@ -131,7 +132,8 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 		{
 			int Width = Wall->GetActorScale3D().Y;
 			FVector Start = FVector(Wall->GetActorLocation().X, Wall->GetActorLocation().Y - Width * 100 / 2, 300);
-			int NumberOfFrames = Width / 5;
+			int NumberOfFrames = FMath::CeilToInt(Width / 5);
+			(Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode()))->TotalPictures+=NumberOfFrames;
 			for (int i = 0; i < NumberOfFrames; i++)
 			{
 				if (NumberOfFrames == 1)
@@ -146,6 +148,7 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 
 void ARoom::CreateDecorWalls()
 {
+	auto GM = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
 	if (FMath::RandBool())
 	{
 		if (Width > 8 && Height > 8)
@@ -168,6 +171,7 @@ void ARoom::CreateDecorWalls()
 			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), UpWall->GetActorRotation() + OppositeRotation, false);
 			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), UpWall->GetActorRotation(), false);
 			UpWall->SetActorRotation(Rotation);
+			GM->TotalPictures+=2;
 
 			AWall* DownWall;
 			if (Rotation == FRotator(0, 90, 0) && Width / Height >= 2)
@@ -178,6 +182,7 @@ void ARoom::CreateDecorWalls()
 			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), DownWall->GetActorRotation() + OppositeRotation, false);
 			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation(), false);
 			DownWall->SetActorRotation(Rotation + FRotator(0, 180, 0));
+			GM->TotalPictures+=2;
 
 			AWall* LeftWall;
 			if (Rotation == FRotator(0, 90, 0) && Height / Width >= 2)
@@ -188,6 +193,7 @@ void ARoom::CreateDecorWalls()
 			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), LeftWall->GetActorRotation(), false);
 			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation() + OppositeRotation, false);
 			LeftWall->SetActorRotation(Rotation + FRotator(0, -90, 0));
+			GM->TotalPictures+=2;
 
 			AWall* RightWall;
 			if (Rotation == FRotator(0, 90, 0) && Height / Width >= 2)
@@ -198,6 +204,7 @@ void ARoom::CreateDecorWalls()
 			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), RightWall->GetActorRotation(), false);
 			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation() + OppositeRotation, false);
 			RightWall->SetActorRotation(Rotation + FRotator(0, 90, 0));
+			GM->TotalPictures+=2;
 		}
 	}
 	else
