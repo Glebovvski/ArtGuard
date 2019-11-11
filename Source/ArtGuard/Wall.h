@@ -28,7 +28,7 @@ public:
 	TSubclassOf<AFrame> Frame_BP;
 
 	UFUNCTION(BlueprintCallable, Category="Spawn")
-	AFrame* SpawnFrame(FVector Location, FRotator Rotation);
+	AFrame* SpawnFrame(FVector Location, FRotator Rotation, bool IsFenceVisible);
 
 	void CreateFrames();
 

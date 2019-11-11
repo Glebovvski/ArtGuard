@@ -90,7 +90,7 @@ void AGuard::ApplyBonus(ABonus* Bonus)
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, EnemyVisibility, CatchSpeed);
+	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, EnemyVisibility, CatchSpeed, "");
 }
 
 void AGuard::ApplyPenalty(ABonus* Bonus)
@@ -101,30 +101,37 @@ void AGuard::ApplyPenalty(ABonus* Bonus)
 	{
 	case (EBonusType::SneakLoudness):
 		SneakLoudness += SneakLoudness * percent;
+		PenaltyText = "Increased Sneak Loudness by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::Loudness):
 		Loudness += Loudness * percent;
+		PenaltyText = "Increased Loudness by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::CatchCone):
 		CatchConeRadius -= CatchConeRadius * percent;
+		PenaltyText = "Decreased Catch Cone by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::RadiusVisibility):
 		VisibilityRadius -= VisibilityRadius * percent;
+		PenaltyText = "Decreased Visibility Radius by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::SneakSpeed):
 		SneakSpeed -= SneakSpeed * percent;
+		PenaltyText = "Decreased Sneak Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::WalkSpeed):
 		WalkSpeed -= WalkSpeed * percent;
+		PenaltyText = "Decreased Walk Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case(EBonusType::CatchSpeed):
 		CatchSpeed -= CatchSpeed * percent;
+		PenaltyText = "Decreased Catch Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, false, CatchSpeed);
+	GI->SaveGuardStats(WalkSpeed, SneakSpeed, VisibilityRadius, Loudness, SneakLoudness, CatchConeRadius, false, CatchSpeed, PenaltyText);
 }
 
 void AGuard::SetupGuardStats()
@@ -140,6 +147,7 @@ void AGuard::SetupGuardStats()
 		CatchConeRadius = GI->GuardCatchConeRadius;//3;
 		EnemyVisibility = GI->GuardEnemyVisibility;
 		CatchSpeed = GI->GuardCatchSpeed;
+		PenaltyText = GI->GuardPenaltyText;
 	}
 }
 

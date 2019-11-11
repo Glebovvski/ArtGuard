@@ -8,9 +8,9 @@ public class ArtGuard : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "AIModule" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "AIModule", "MoviePlayer" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Paper2D" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Paper2D", "MoviePlayer" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

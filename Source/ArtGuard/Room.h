@@ -38,6 +38,7 @@ public:
 	AArea* LeftExit;
 	AArea* UpExit;
 	AArea* DownExit;
+	TArray<AArea*> CreatedExits;
 
 	void CreateWalls();
 	TArray<AWall*> LeftWalls;
@@ -50,6 +51,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Props")
 	TSubclassOf<AActor> BP_Bench;
 
+	UPROPERTY(EditDefaultsOnly, Category="Props")
+	TSubclassOf<AActor> BP_BigStatue;
+
+	UPROPERTY(EditDefaultsOnly, Category="Props")
+	TSubclassOf<AActor> BP_PuddleGenerator;
+
 	UPROPERTY(EditDefaultsOnly, Category="Room")
 	UStaticMeshComponent* Floor;
 
@@ -58,6 +65,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Spawn")
 	void SetGameMode();
+
+	void SpawnPuddle(int &Iterator);
 
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<AWall> Wall_BP;
@@ -75,5 +84,5 @@ private:
 
 	AActor* CreateProp(FVector Location, FRotator Rotation = FRotator::ZeroRotator);
 
-	bool IsInExitLine(FVector Start, FVector End);
+	bool IsInExitLine(FVector Start, FVector End, bool DebugDraw);
 };

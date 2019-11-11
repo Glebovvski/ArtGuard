@@ -15,13 +15,14 @@ class ARTGUARD_API UGI_ArtGuard : public UGameInstance
 	GENERATED_BODY()
 
 public:
+
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupGuardStats();
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupRobberStats();
 
-	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius, bool EnemyVisibility, float CatchSpeed);
-	void SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius, float StealSpeed, bool VisibleExits, bool EnemyVisibility, float CatchSpeed);
+	void SaveGuardStats(float WalkSpeed, float SneakSpeed, float VisibilityRadius, float Loudness, float SneakLoudness, float CatchConeRadius, bool EnemyVisibility, float CatchSpeed, FString PenaltyText);
+	void SaveRobberStats(float WalkSpeed, float VisibilityRadius, float Loudness, float CatchConeRadius, float StealSpeed, bool VisibleExits, bool EnemyVisibility, float CatchSpeed, FString PenaltyText);
 
 	//GUARD STATS
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
@@ -40,6 +41,8 @@ public:
 	bool GuardEnemyVisibility;
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
 	float GuardCatchSpeed;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	FString GuardPenaltyText;
 
 	//ROBBER STATS
 	UPROPERTY(BlueprintReadOnly, Category="Setup")
@@ -56,4 +59,6 @@ public:
 	bool RobberVisibleExits;
 	UPROPERTY(BlueprintReadWrite, Category="Setup")
 	bool RobberEnemyVisibility;
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	FString RobberPenaltyText;
 };

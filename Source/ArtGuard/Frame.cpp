@@ -29,9 +29,10 @@ void AFrame::Tick(float DeltaTime)
 
 }
 
-void AFrame::SpawnPicture()
+void AFrame::SpawnPicture(bool IsFenceVisible)
 {
 	auto Picture = GetWorld()->SpawnActor<APicture>(Picture_BP);
+	Picture->IsFenceVisible=IsFenceVisible;
 	if (Picture->IsHorizontal)
 		Frame->AddLocalRotation(FRotator(90, 0, 0));
 	Picture->SetActorTransform(ArrowComponent->GetComponentTransform());

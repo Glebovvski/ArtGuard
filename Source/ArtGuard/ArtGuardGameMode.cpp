@@ -123,11 +123,18 @@ void AArtGuardGameMode::SpawnArea()
 		Area->CreateHall();
 	}
 
+	int PuddleIterator = 15;
 	for (AArea* Area : FoundAreas)
 	{
 		if (Area->Room)
 		{
 			Area->CreateInterior();
+
+			if(PuddleIterator>0)
+			{
+				Area->Room->SpawnPuddle(PuddleIterator);
+				//PuddleIterator--;
+			}
 		}
 	}
 
@@ -227,9 +234,8 @@ void AArtGuardGameMode::SetBonusPercent(TArray<ABonus*>& BonusArray)
 		if (BonusArray[i]->BonusType != EBonusType::ExitVisibility && BonusArray[i]->BonusType != EBonusType::EnemyVisibility)
 		{
 			BonusArray[i]->SetPercent(FMath::RandRange(3, 10));
-			BonusArray[i]->BonusText += FString::SanitizeFloat(BonusArray[i]->BonusPercent) + "%";
+			BonusArray[i]->BonusText += FString::SanitizeFloat(BonusArray[i]->BonusPercent, 0) + "%";
 		}
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *BonusArray[i]->BonusText);
 	}
 }
 
@@ -270,8 +276,8 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = Room->Location.X;
-				Y = Room->Location.Y;
+				X = Room->Location.X + 50;
+				Y = Room->Location.Y + 50;
 				check = true;
 			}
 		}
@@ -335,8 +341,8 @@ void AArtGuardGameMode::SetLocationForRobber()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 10000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = Room->Location.X;
-				Y = Room->Location.Y;
+				X = Room->Location.X + 50;
+				Y = Room->Location.Y + 50;
 				check = true;
 			}
 		}
@@ -350,7 +356,7 @@ void AArtGuardGameMode::SetLocationForRobber()
 
 void AArtGuardGameMode::SetLocationForGuard()
 {
-	int MaxAmountOfTries = 3;
+	//int MaxAmountOfTries = 3;
 	int RoomAdj = 1000;//2000
 	float X = 0, Y = 0;
 	bool check = false;
@@ -364,8 +370,8 @@ void AArtGuardGameMode::SetLocationForGuard()
 			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = Room->Location.X;
-				Y = Room->Location.Y;
+				X = Room->Location.X + 50;
+				Y = Room->Location.Y + 50;
 				check = true;
 			}
 		}

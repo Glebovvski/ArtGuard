@@ -33,13 +33,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable,Category="Spawn")
-	void SpawnPicture();
+	void SpawnPicture(bool IsFenceVisible);
 
 	UFUNCTION(BlueprintCallable, Category="Spawn")
 	void SetFrame(UArrowComponent* ArrowToSet, USceneComponent* FrameToSet);
 
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<APicture> Picture_BP;
+
 
 	UFUNCTION(BlueprintCallable, Category="Sprite")
 	void SetPictureSprite(UPaperSpriteComponent* SpriteToSet);

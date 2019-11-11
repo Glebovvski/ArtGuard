@@ -56,6 +56,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Setup")
 	void SetupGuardStats();
 
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	FString PenaltyText;
+
 	void ApplyBonus(ABonus* Bonus);
 	void ApplyPenalty(ABonus* Bonus);
 

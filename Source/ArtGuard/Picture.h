@@ -66,6 +66,10 @@ public:
 
 	void SetCost();
 
+	
+	UPROPERTY(BlueprintReadOnly, Category="Spawn")
+	bool IsFenceVisible;
+
 	UPROPERTY(VisibleAnywhere, Category="Cost")
 	int Cost = 0;
 private:

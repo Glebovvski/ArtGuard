@@ -10,6 +10,7 @@
 #include "Room.h"
 #include "Kismet/GameplayStatics.h"
 #include "Exit.h"
+#include "Wall.h"
 
 // Sets default values
 AArea::AArea()
@@ -249,7 +250,7 @@ void AArea::CreateRoom()
 			break;
 		}
 	}
-	for (int i = Height - FMath::RandRange(5,9); i > 5; i--)
+	for (int i = Height - FMath::RandRange(5, 9); i > 5; i--)
 	{
 		//if (i % 5 == 0)
 		{
@@ -286,14 +287,17 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		Hall->Width = Hall->GetActorScale3D().X;
 
 		Room->RightExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		GameMode->IsRightExitSet = true;
 
-		auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		//auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto LeftWall = GetWorld()->SpawnActor<AWall>(BP_Wall);
 		LeftWall->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y + Hall->Height * 100 / 2, 1000));
 		LeftWall->SetActorScale3D(FVector(Hall->Width, 1, 20));
 		LeftWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
-		auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		//auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto RightWall = GetWorld()->SpawnActor<AWall>(BP_Wall);
 		RightWall->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y - Hall->Height * 100 / 2, 1000));
 		RightWall->SetActorScale3D(FVector(Hall->Width, 1, 20));
 		RightWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
@@ -319,14 +323,17 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 		Hall->Width = Hall->GetActorScale3D().X;
 
 		Room->UpExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		GameMode->IsUpExitSet = true;
 
-		auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		//auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto LeftWall = GetWorld()->SpawnActor<AWall>(BP_Wall);
 		LeftWall->SetActorLocation(FVector(Hall->Location.X + Hall->Width * 100 / 2, Hall->Location.Y, 1000));
 		LeftWall->SetActorScale3D(FVector(1, Hall->Height, 20));
 		LeftWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
-		auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		//auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto RightWall = GetWorld()->SpawnActor<AWall>(BP_Wall);
 		RightWall->SetActorLocation(FVector(Hall->Location.X - Hall->Width * 100 / 2, Hall->Location.Y, 1000));
 		RightWall->SetActorScale3D(FVector(1, Hall->Height, 20));
 		RightWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
@@ -347,9 +354,9 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 
 void AArea::CreateInterior()
 {
+	Room->CreateProps();
 	Room->CreateWalls();
 	Room->CreateDecorWalls();
-	Room->CreateProps();
 }
 
 ARoom* AArea::GetRoom()
@@ -400,7 +407,9 @@ void AArea::CreateHall()
 		Hall->Childs.Add(Room);
 		Hall->Childs.Add(UpRoom);
 		Room->UpExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		UpRoom->DownExit = Hall;
+		UpRoom->CreatedExits.Add(Hall);
 	}
 	if (DownCollision && DownRoom && (DownRoom->Width / Room->Width >= 2 || DownRoom->Width / Room->Width <= 1) &&
 		!DownRoom->UpExit &&
@@ -418,7 +427,10 @@ void AArea::CreateHall()
 		Hall->Childs.Add(Room);
 		Hall->Childs.Add(DownRoom);
 		Room->DownExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		DownRoom->UpExit = Hall;
+		DownRoom->CreatedExits.Add(Hall);
+		//UE_LOG(LogTemp, Warning, TEXT("CREATE HALL"));
 	}
 	if (RightCollision && RightRoom && (RightRoom->Height / Room->Height >= 2 || RightRoom->Height / Room->Height <= 1) &&
 		!RightRoom->LeftExit &&
@@ -437,7 +449,9 @@ void AArea::CreateHall()
 		Hall->Childs.Add(Room);
 		Hall->Childs.Add(RightRoom);
 		Room->RightExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		RightRoom->LeftExit = Hall;
+		RightRoom->CreatedExits.Add(Hall);
 	}
 	if (LeftCollision && LeftRoom && (LeftRoom->Height / Room->Height >= 2 || LeftRoom->Height / Room->Height <= 1) &&
 		!LeftRoom->RightExit &&
@@ -455,7 +469,9 @@ void AArea::CreateHall()
 		Hall->Childs.Add(Room);
 		Hall->Childs.Add(LeftRoom);
 		Room->LeftExit = Hall;
+		Room->CreatedExits.Add(Hall);
 		LeftRoom->RightExit = Hall;
+		LeftRoom->CreatedExits.Add(Hall);
 	}
 }
 
@@ -478,12 +494,12 @@ AArea* AArea::SpawnHall(int X, int Y, float Width, float Height)
 
 	if (Width > Height)
 	{
-		auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto LeftWall = GetWorld()->SpawnActor<AWall>/*AArea>*/(BP_Wall);//BP_Hall);
 		LeftWall->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y + Hall->Height * 100 / 2 + WallOffset, 1000));
 		LeftWall->SetActorScale3D(FVector(Width, 1, 20));
 		LeftWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
-		auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto RightWall = GetWorld()->SpawnActor<AWall>/*AArea>*/(BP_Wall);//BP_Hall);
 		RightWall->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y - Hall->Height * 100 / 2 - WallOffset, 1000));
 		RightWall->SetActorScale3D(FVector(Width, 1, 20));
 		RightWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
@@ -500,12 +516,12 @@ AArea* AArea::SpawnHall(int X, int Y, float Width, float Height)
 	}
 	else if (Width < Height)
 	{
-		auto LeftWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto LeftWall = GetWorld()->SpawnActor<AWall>/*AArea>*/(BP_Wall);//BP_Hall);
 		LeftWall->SetActorLocation(FVector(Hall->Location.X + Hall->Width * 100 / 2 + WallOffset, Hall->Location.Y, 1000));
 		LeftWall->SetActorScale3D(FVector(1, Height, 20));
 		LeftWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");
 
-		auto RightWall = GetWorld()->SpawnActor<AArea>(BP_Hall);
+		auto RightWall = GetWorld()->SpawnActor<AWall>/*AArea>*/(BP_Wall);//BP_Hall);
 		RightWall->SetActorLocation(FVector(Hall->Location.X - Hall->Width * 100 / 2 - WallOffset, Hall->Location.Y, 1000));
 		RightWall->SetActorScale3D(FVector(1, Height, 20));
 		RightWall->AttachToActor(Hall, FAttachmentTransformRules::KeepWorldTransform, "");

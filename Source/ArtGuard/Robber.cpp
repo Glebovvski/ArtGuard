@@ -93,7 +93,7 @@ bool ARobber::GetShouldEscape()
 
 void ARobber::Stop()
 {
-	
+
 }
 
 // Called when the game starts or when spawned
@@ -179,6 +179,7 @@ void ARobber::SetupRobberStats()
 		VisibleExits = GI->RobberVisibleExits;
 		EnemyVisibility = GI->RobberEnemyVisibility;
 		CatchSpeed = GI->GuardCatchSpeed;
+		PenaltyText = GI->RobberPenaltyText;
 	}
 }
 
@@ -216,7 +217,7 @@ void ARobber::ApplyBonus(ABonus* Bonus)
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, VisibleExits, EnemyVisibility, CatchSpeed);
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, VisibleExits, EnemyVisibility, CatchSpeed, "");
 }
 
 void ARobber::ApplyPenalty(ABonus* Bonus)
@@ -226,28 +227,34 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 	switch (Bonus->BonusType)
 	{
 	case (EBonusType::Loudness):
-		Loudness -= percent;
+		Loudness += percent; //PROBABLY +
+		PenaltyText = "Increased Loudness by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::CatchCone):
-		CatchConeRadius -= CatchConeRadius * percent;
+		CatchConeRadius += CatchConeRadius * percent;
+		PenaltyText = "Increased Guard's Catch Cone by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::RadiusVisibility):
 		VisibilityRadius -= VisibilityRadius * percent;
+		PenaltyText = "Decreased Visibility Radius by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case (EBonusType::WalkSpeed):
 		WalkSpeed -= WalkSpeed * percent;
+		PenaltyText = "Decreased Walk Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case(EBonusType::StealSpeed):
 		StealSpeed += StealSpeed * percent;
+		PenaltyText = "Increased Steal Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	case(EBonusType::CatchSpeed):
-		CatchSpeed -= CatchSpeed * percent;
+		CatchSpeed += CatchSpeed * percent;
+		PenaltyText = "Increased Guard's Catch Speed by " + FString::SanitizeFloat(Bonus->BonusPercent,0) + "%";
 		break;
 	default:
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, false, false, CatchSpeed);
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, false, false, CatchSpeed, PenaltyText);
 }
 
 bool ARobber::AssessPicture()

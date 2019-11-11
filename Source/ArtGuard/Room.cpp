@@ -122,9 +122,9 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 			for (int i = 0; i < NumberOfFrames; i++)
 			{
 				if (NumberOfFrames == 1)
-					Wall->SpawnFrame(FVector(Wall->GetActorLocation().X, Start.Y + FrameOffset, Start.Z), Rotation);
+					Wall->SpawnFrame(FVector(Wall->GetActorLocation().X, Start.Y + FrameOffset, Start.Z), Rotation, true);
 				else
-					Wall->SpawnFrame(FVector(Start.X + Width * 100 / NumberOfFrames / 2 + (Width * 100 / NumberOfFrames) * i, Start.Y + FrameOffset, Start.Z), Rotation);
+					Wall->SpawnFrame(FVector(Start.X + Width * 100 / NumberOfFrames / 2 + (Width * 100 / NumberOfFrames) * i, Start.Y + FrameOffset, Start.Z), Rotation, true);
 			}
 		}
 		else
@@ -135,9 +135,9 @@ void ARoom::CreateFrames(TArray<AWall*> Walls, FRotator Rotation, bool IsHorizon
 			for (int i = 0; i < NumberOfFrames; i++)
 			{
 				if (NumberOfFrames == 1)
-					Wall->SpawnFrame(FVector(Start.X + FrameOffset, Wall->GetActorLocation().Y, Start.Z), Rotation);
+					Wall->SpawnFrame(FVector(Start.X + FrameOffset, Wall->GetActorLocation().Y, Start.Z), Rotation, true);
 				else
-					Wall->SpawnFrame(FVector(Start.X + FrameOffset, Start.Y + Width * 100 / NumberOfFrames / 2 + (Width * 100 / NumberOfFrames) * i, Start.Z), Rotation);
+					Wall->SpawnFrame(FVector(Start.X + FrameOffset, Start.Y + Width * 100 / NumberOfFrames / 2 + (Width * 100 / NumberOfFrames) * i, Start.Z), Rotation, true);
 			}
 		}
 	}
@@ -158,15 +158,15 @@ void ARoom::CreateDecorWalls()
 			FRotator OppositeRotation(0, 180, 0);
 			FVector WallLocation;
 
-			float LocationOffset = FMath::RandRange(5, 10);
+			float LocationOffset = FMath::RandRange(5, 8);
 			AWall* UpWall;
 			if (Rotation == FRotator(0, 90, 0) && Width / Height >= 2)
 				UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
 			else
 				UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
 			WallLocation = UpWall->GetActorLocation();
-			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), UpWall->GetActorRotation() + OppositeRotation);
-			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), UpWall->GetActorRotation());
+			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), UpWall->GetActorRotation() + OppositeRotation, false);
+			UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), UpWall->GetActorRotation(), false);
 			UpWall->SetActorRotation(Rotation);
 
 			AWall* DownWall;
@@ -175,8 +175,8 @@ void ARoom::CreateDecorWalls()
 			else
 				DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
 			WallLocation = DownWall->GetActorLocation();
-			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), DownWall->GetActorRotation() + OppositeRotation);
-			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation());
+			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), DownWall->GetActorRotation() + OppositeRotation, false);
+			DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation(), false);
 			DownWall->SetActorRotation(Rotation + FRotator(0, 180, 0));
 
 			AWall* LeftWall;
@@ -185,8 +185,8 @@ void ARoom::CreateDecorWalls()
 			else
 				LeftWall = CreateWall(FVector(Location.X - Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
 			WallLocation = LeftWall->GetActorLocation();
-			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), LeftWall->GetActorRotation());
-			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation()+OppositeRotation);
+			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), LeftWall->GetActorRotation(), false);
+			LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation() + OppositeRotation, false);
 			LeftWall->SetActorRotation(Rotation + FRotator(0, -90, 0));
 
 			AWall* RightWall;
@@ -195,15 +195,21 @@ void ARoom::CreateDecorWalls()
 			else
 				RightWall = CreateWall(FVector(Location.X + Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
 			WallLocation = RightWall->GetActorLocation();
-			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), RightWall->GetActorRotation());
-			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation()+OppositeRotation);
+			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), RightWall->GetActorRotation(), false);
+			RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation() + OppositeRotation, false);
 			RightWall->SetActorRotation(Rotation + FRotator(0, 90, 0));
 		}
+	}
+	else
+	{
+		auto Statue = GetWorld()->SpawnActor<AActor>(BP_BigStatue);
+		Statue->SetActorLocation(GetActorLocation());
 	}
 }
 
 void ARoom::CreateProps()
 {
+	int DistanceFromWalls = 5;
 	if (Width > Height)
 	{
 		int NumberOfBenches = Width / 5;
@@ -211,15 +217,23 @@ void ARoom::CreateProps()
 		NumberOfBenches--;
 		for (int i = 0; i < NumberOfBenches; i++)
 		{
-			FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / 3, 50);
-			FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / 3, 50);
+			FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, 50);
+			FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, 50);
 			if (DownExit)
 			{
-				auto Bench = CreateProp(LeftLocation);
-				if (IsInExitLine(DownExit->Location + FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, 500/*DownExit->Height * 1000*/, 50)))
+				if (NumberOfBenches % 2 != 0)
 				{
-					Bench->Destroy();
+					if (i != NumberOfBenches / 2)
+						auto Bench = CreateProp(LeftLocation);
 				}
+				else
+				{
+					auto Bench = CreateProp(LeftLocation);
+				}
+				//if (IsInExitLine(DownExit->Location - FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, DownExit->Height - 1000, 50), true))
+				//{
+				//	Bench->Destroy();
+				//}
 			}
 			else
 			{
@@ -227,11 +241,19 @@ void ARoom::CreateProps()
 			}
 			if (UpExit)
 			{
-				auto Bench = CreateProp(RightLocation);
-				if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, 500/*UpExit->Height * 1000*/, 50)))
+				if (NumberOfBenches % 2 != 0)
 				{
-					Bench->Destroy();
+					if (i != NumberOfBenches / 2)
+						auto Bench = CreateProp(RightLocation);
 				}
+				else
+				{
+					auto Bench = CreateProp(RightLocation);
+				}
+				//if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, UpExit->Height - 1000, 50), false))
+				//{
+				//	Bench->Destroy();
+				//}
 			}
 			else
 			{
@@ -246,15 +268,23 @@ void ARoom::CreateProps()
 		NumberOfBenches--;
 		for (int i = 0; i < NumberOfBenches; i++)
 		{
-			FVector LeftLocation = FVector(Location.X - Width * 100 / 3, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
-			FVector RightLocation = FVector(Location.X + Width * 100 / 3, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
+			FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
+			FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
 			if (LeftExit)
 			{
-				auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
-				if (IsInExitLine(LeftExit->Location + FVector(LeftExit->Width * 100 / 2, 0, 50), LeftExit->Location + FVector(LeftExit->Width * 100, 0, 50)))
+				if (NumberOfBenches % 2 != 0)
 				{
-					Bench->Destroy();
+					if (i != NumberOfBenches / 2)
+						auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
 				}
+				else
+				{
+					auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
+				}
+				//if (IsInExitLine(LeftExit->Location - FVector(LeftExit->Width * 100 / 2, 0, 50), LeftExit->Location - FVector(LeftExit->Width + 1000, 0, 50), true))
+				//{
+				//	Bench->Destroy();
+				//}
 			}
 			else
 			{
@@ -263,11 +293,19 @@ void ARoom::CreateProps()
 
 			if (RightExit)
 			{
-				auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
-				if (IsInExitLine(RightExit->Location - FVector(RightExit->Width * 100 / 2, 0, 50), RightExit->Location - FVector(RightExit->Width * 100, 0, 50)))
+				if (NumberOfBenches % 2 != 0)
 				{
-					Bench->Destroy();
+					if (i != NumberOfBenches / 2)
+						auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
 				}
+				else
+				{
+					auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
+				}
+				//if (IsInExitLine(RightExit->Location + FVector(RightExit->Width * 100 / 2, 0, 50), RightExit->Location + FVector(RightExit->Width + 1000, 0, 50), false))
+				//{
+				//	Bench->Destroy();
+				//}
 			}
 			else
 			{
@@ -280,18 +318,32 @@ void ARoom::CreateProps()
 
 AActor* ARoom::CreateProp(FVector Location, FRotator Rotation)
 {
-	auto Bench = GetWorld()->SpawnActor<AActor>(BP_Bench);
-	Bench->SetActorLocation(Location);
-	Bench->SetActorRotation(Rotation);
+	FTransform BenchTransform = FTransform(
+		Rotation,
+		Location
+	);
+
+	auto Bench = UGameplayStatics::BeginSpawningActorFromClass(this, BP_Bench, BenchTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
+	if (Bench)
+	{
+		UGameplayStatics::FinishSpawningActor(Bench, BenchTransform);
+	}
 	return Bench;
 }
 
-bool ARoom::IsInExitLine(FVector Start, FVector End)
+bool ARoom::IsInExitLine(FVector Start, FVector End, bool DebugDraw)
 {
 	TArray<FHitResult> OutHits;
 	FCollisionShape BoxCollision = FCollisionShape::MakeBox(FVector(180, 180, 180));
+	//FBox Box = FBox(FVector(180,180,180));
+	if (DebugDraw)
+	{
+		DrawDebugBox(GetWorld(), Start, FVector(180), FColor::Red, true, 1000);
+		DrawDebugBox(GetWorld(), End, FVector(180), FColor::Red, true, 1000);
+	}
 
 	bool IsHit = GetWorld()->SweepMultiByChannel(OutHits, Start, End, FQuat::Identity, ECC_WorldDynamic, BoxCollision);
+	//bool IsHit = GetWorld()->SweepMultiByObjectType(OutHits, Start, End, FQuat::Identity, ECC_WorldDynamic, BoxCollision);
 	if (IsHit)
 	{
 		for (auto OutHit : OutHits)
@@ -314,4 +366,27 @@ void ARoom::SetFloor(UStaticMeshComponent* FloorToSet)
 void ARoom::SetGameMode()
 {
 	GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
+}
+
+void ARoom::SpawnPuddle(int& Iterator)
+{
+	AArea* Exit = CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)];
+	//for (AArea* Exit : CreatedExits)
+	//{
+	if (FMath::RandRange(0, 1))
+	{
+		FVector Distance = (Location + Exit->GetActorLocation()) / 2;
+		FTransform PuddleTransform = FTransform(
+			FRotator::ZeroRotator,
+			Distance + FVector(0, 0, 50)//RandomExit->GetActorLocation() + FVector(700,700,50)//z maybe 50
+		);
+
+		auto Puddle = UGameplayStatics::BeginSpawningActorFromClass(this, BP_PuddleGenerator, PuddleTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
+		if (Puddle)
+		{
+			UGameplayStatics::FinishSpawningActor(Puddle, PuddleTransform);
+		}
+		Iterator--;
+	}
+	//}
 }

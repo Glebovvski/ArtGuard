@@ -67,7 +67,7 @@ void AWall::CreateFrames()
 }
 
 
-AFrame* AWall::SpawnFrame(FVector Location, FRotator Rotation)
+AFrame* AWall::SpawnFrame(FVector Location, FRotator Rotation, bool IsFenceVisible)
 {
 	auto Frame = GetWorld()->SpawnActor<AFrame>(Frame_BP);
 	//Frame->SetActorTransform(Arrow->GetComponentTransform());
@@ -75,7 +75,7 @@ AFrame* AWall::SpawnFrame(FVector Location, FRotator Rotation)
 	Frame->AddActorWorldRotation(Rotation);
 	Frame->SetActorLocation(Location);
 	Frame->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
-	Frame->SpawnPicture();
+	Frame->SpawnPicture(IsFenceVisible);
 	return Frame;
 }
 

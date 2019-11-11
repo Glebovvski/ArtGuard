@@ -7,6 +7,7 @@
 #include "Area.generated.h"
 
 class UBoxComponent;
+class AWall;
 
 UCLASS()
 class ARTGUARD_API AArea : public AActor
@@ -45,6 +46,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Area")
 		TSubclassOf<AArea> BP_MAIN_Hall;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Area")
+		TSubclassOf<AWall> BP_Wall;
 
 	UPROPERTY(VisibleAnywhere, Category = "Hall")
 		FString HallText = "";

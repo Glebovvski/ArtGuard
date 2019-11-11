@@ -116,6 +116,8 @@ public:
 
 	void ApplyBonus(ABonus* Bonus);
 	void ApplyPenalty(ABonus* Bonus);
+	UPROPERTY(BlueprintReadWrite, Category="Setup")
+	FString PenaltyText;
 
 private:
 	UBoxComponent* StealOverlapComponent;
