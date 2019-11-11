@@ -215,49 +215,44 @@ void ARoom::CreateProps()
 		int NumberOfBenches = Width / 5;
 		int offset = (Width / NumberOfBenches) * 100;
 		NumberOfBenches--;
-		for (int i = 0; i < NumberOfBenches; i++)
+		if (NumberOfBenches > 1)
 		{
-			FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, 50);
-			FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, 50);
-			if (DownExit)
+			for (int i = 0; i < NumberOfBenches; i++)
 			{
-				if (NumberOfBenches % 2 != 0)
+				FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, 50);
+				FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, 50);
+				if (DownExit)
 				{
-					if (i != NumberOfBenches / 2)
+					if (NumberOfBenches % 2 != 0)
+					{
+						if (i != NumberOfBenches / 2)
+							auto Bench = CreateProp(LeftLocation);
+					}
+					else
+					{
 						auto Bench = CreateProp(LeftLocation);
+					}
 				}
 				else
 				{
-					auto Bench = CreateProp(LeftLocation);
+					CreateProp(LeftLocation);
 				}
-				//if (IsInExitLine(DownExit->Location - FVector(0, DownExit->Height * 100 / 2, 50), DownExit->Location + FVector(0, DownExit->Height - 1000, 50), true))
-				//{
-				//	Bench->Destroy();
-				//}
-			}
-			else
-			{
-				CreateProp(LeftLocation);
-			}
-			if (UpExit)
-			{
-				if (NumberOfBenches % 2 != 0)
+				if (UpExit)
 				{
-					if (i != NumberOfBenches / 2)
+					if (NumberOfBenches % 2 != 0)
+					{
+						if (i != NumberOfBenches / 2)
+							auto Bench = CreateProp(RightLocation);
+					}
+					else
+					{
 						auto Bench = CreateProp(RightLocation);
+					}
 				}
 				else
 				{
-					auto Bench = CreateProp(RightLocation);
+					CreateProp(RightLocation);
 				}
-				//if (IsInExitLine(UpExit->Location - FVector(0, UpExit->Height * 100 / 2, 50), UpExit->Location - FVector(0, UpExit->Height - 1000, 50), false))
-				//{
-				//	Bench->Destroy();
-				//}
-			}
-			else
-			{
-				CreateProp(RightLocation);
 			}
 		}
 	}
@@ -266,50 +261,45 @@ void ARoom::CreateProps()
 		int NumberOfBenches = Height / 5;
 		int offset = (Height / NumberOfBenches) * 100;
 		NumberOfBenches--;
-		for (int i = 0; i < NumberOfBenches; i++)
+		if (NumberOfBenches > 1)
 		{
-			FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
-			FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
-			if (LeftExit)
+			for (int i = 0; i < NumberOfBenches; i++)
 			{
-				if (NumberOfBenches % 2 != 0)
+				FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
+				FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
+				if (LeftExit)
 				{
-					if (i != NumberOfBenches / 2)
+					if (NumberOfBenches % 2 != 0)
+					{
+						if (i != NumberOfBenches / 2)
+							auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
+					}
+					else
+					{
 						auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
+					}
 				}
 				else
 				{
-					auto Bench = CreateProp(LeftLocation, FRotator(0, 90, 0));
+					CreateProp(LeftLocation, FRotator(0, 90, 0));
 				}
-				//if (IsInExitLine(LeftExit->Location - FVector(LeftExit->Width * 100 / 2, 0, 50), LeftExit->Location - FVector(LeftExit->Width + 1000, 0, 50), true))
-				//{
-				//	Bench->Destroy();
-				//}
-			}
-			else
-			{
-				CreateProp(LeftLocation, FRotator(0, 90, 0));
-			}
 
-			if (RightExit)
-			{
-				if (NumberOfBenches % 2 != 0)
+				if (RightExit)
 				{
-					if (i != NumberOfBenches / 2)
+					if (NumberOfBenches % 2 != 0)
+					{
+						if (i != NumberOfBenches / 2)
+							auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
+					}
+					else
+					{
 						auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
+					}
 				}
 				else
 				{
-					auto Bench = CreateProp(RightLocation, FRotator(0, 90, 0));
+					CreateProp(RightLocation, FRotator(0, 90, 0));
 				}
-				//if (IsInExitLine(RightExit->Location + FVector(RightExit->Width * 100 / 2, 0, 50), RightExit->Location + FVector(RightExit->Width + 1000, 0, 50), false))
-				//{
-				//	Bench->Destroy();
-				//}
-			}
-			else
-			{
-				CreateProp(RightLocation, FRotator(0, 90, 0));
 			}
 		}
 	}
