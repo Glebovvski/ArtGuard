@@ -315,7 +315,7 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 	if (Guard)
 	{
 		UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
-		//GuardPerception = Guard->GetPerception();
+		GuardPerception = Guard->GetPerception();
 	}
 	return Guard;
 }

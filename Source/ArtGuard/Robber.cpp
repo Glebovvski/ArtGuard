@@ -244,8 +244,8 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 		PenaltyText = "Decreased Walk Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case(EBonusType::StealSpeed):
-		StealSpeed += StealSpeed * percent;
-		PenaltyText = "Increased Steal Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
+		StealSpeed -= StealSpeed * percent;
+		PenaltyText = "Decreased Steal Speed by " + FString::SanitizeFloat(Bonus->BonusPercent, 0) + "%";
 		break;
 	case(EBonusType::CatchSpeed):
 		CatchSpeed += CatchSpeed * percent;
