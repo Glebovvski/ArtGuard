@@ -119,28 +119,45 @@ void AArtGuardGameMode::SpawnArea()
 	for (TActorIterator<AArea> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		AArea* Area = *ActorItr;
-		FoundAreas.Add(Area);
+		if (Area->Room)
+			FoundAreas.Add(Area);
 		Area->CreateHall();
-	}
+	}	
+
+	FindBiggestRoom(FoundAreas);
 
 	int PuddleIterator = 15;
 	for (AArea* Area : FoundAreas)
 	{
-		if (Area->Room)
-		{
-			Area->CreateInterior();
+		Area->CreateInterior();
 
-			if(PuddleIterator>0)
-			{
-				Area->Room->SpawnPuddle(PuddleIterator);
-				//PuddleIterator--;
-			}
+		if (PuddleIterator > 0)
+		{
+			Area->Room->SpawnPuddle(PuddleIterator);
 		}
 	}
+}
 
-	//TotalPicturesCost=TotalPicturesCost/TotalPictures;
-	//UE_LOG(LogTemp, Warning, TEXT("Total Pictures: %d"), TotalPictures);
-	//UE_LOG(LogTemp, Warning, TEXT("Total Cost: %d"), TotalPicturesCost);
+void AArtGuardGameMode::FindBiggestRoom(TArray<AArea*> Rooms)
+{
+	int PrevBiggest = 0;
+	Rooms[PrevBiggest]->Room->IsBiggestRoom = true;
+	int PrevSquare = Rooms[PrevBiggest]->Room->Width * Rooms[PrevBiggest]->Room->Height;
+	int Square = 0;
+	int BiggestRoom = 0;
+
+	for (int i = 0; i < Rooms.Num(); i++)
+	{
+		BiggestRoom = i;
+		Square = Rooms[i]->Room->Width * Rooms[i]->Room->Height;
+		if (Square > PrevSquare)
+		{
+			Rooms[PrevBiggest]->Room->IsBiggestRoom = false;
+			PrevBiggest = BiggestRoom;
+			PrevSquare=Square;
+			Rooms[PrevBiggest]->Room->IsBiggestRoom = true;
+		}
+	}
 }
 
 void AArtGuardGameMode::ActionBonus1()
@@ -298,7 +315,7 @@ AGuard* AArtGuardGameMode::SpawnAIGuard()
 	if (Guard)
 	{
 		UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);
-		GuardPerception = Guard->GetPerception();
+		//GuardPerception = Guard->GetPerception();
 	}
 	return Guard;
 }
@@ -458,20 +475,20 @@ void AArtGuardGameMode::CalculateDamageToMuseum()
 		int StolenMoney = Robber->GetStolenMoney();
 		int StolenPictures = Robber->GetPicturesStolen();
 
-		int MoneyPercent = ((float)StolenMoney / (float)TotalPicturesCost) * 100;
-		int PicturePercent = ((float)StolenPictures / (float)TotalPictures) * 100;
+		float MoneyPercent = ((float)StolenMoney / (float)TotalPicturesCost) * 100;
+		float PicturePercent = ((float)StolenPictures / (float)TotalPictures) * 100;
 
-		UE_LOG(LogTemp, Warning, TEXT("Stolen %d of pictures or %d in dollars"), PicturePercent, MoneyPercent);
+		UE_LOG(LogTemp, Warning, TEXT("Stolen %f of pictures or %f in dollars"), PicturePercent, MoneyPercent);
 	}
 }
 
 
-int AArtGuardGameMode::GetTotalPictureCost()
+int AArtGuardGameMode::GetTotalPicturesCost() const
 {
 	return TotalPicturesCost;
 }
 
-int AArtGuardGameMode::GetTotalPictures()
+int AArtGuardGameMode::GetTotalPictures() const
 {
 	return TotalPictures;
 }

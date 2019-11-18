@@ -144,9 +144,9 @@ public:
 	int TotalPictures=0;
 
 	UFUNCTION(BlueprintCallable, Category="Pictures")
-	int GetTotalPictureCost();
+	int GetTotalPicturesCost() const;
 	UFUNCTION(BlueprintCallable, Category="Pictures")
-	int GetTotalPictures();
+	int GetTotalPictures() const;
 
 
 private:
@@ -160,6 +160,8 @@ private:
 	TArray<AArea*> FoundAreas;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	void FindBiggestRoom(TArray<AArea*> Rooms);
 };
 
 

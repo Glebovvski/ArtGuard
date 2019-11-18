@@ -70,6 +70,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<AWall> Wall_BP;
+
+	bool IsBiggestRoom=false;
 private:
 	AArtGuardGameMode* GameMode;
 	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation=FRotator::ZeroRotator);
