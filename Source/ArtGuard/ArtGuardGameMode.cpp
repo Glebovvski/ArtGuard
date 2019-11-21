@@ -50,9 +50,6 @@ void AArtGuardGameMode::FillBonusArrays()
 void AArtGuardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FillBonusArrays();
-	SpawnArea();
 }
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
@@ -124,7 +121,7 @@ void AArtGuardGameMode::SpawnArea()
 		if (Area->Room)
 			FoundAreas.Add(Area);
 		Area->CreateHall();
-	}	
+	}
 
 	FindBiggestRoom(FoundAreas);
 
@@ -156,7 +153,7 @@ void AArtGuardGameMode::FindBiggestRoom(TArray<AArea*> Rooms)
 		{
 			Rooms[PrevBiggest]->Room->IsBiggestRoom = false;
 			PrevBiggest = BiggestRoom;
-			PrevSquare=Square;
+			PrevSquare = Square;
 			Rooms[PrevBiggest]->Room->IsBiggestRoom = true;
 		}
 	}
