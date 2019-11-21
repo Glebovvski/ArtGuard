@@ -305,7 +305,7 @@ bool ARobber::IsEnoughStole()
 {
 	float StolenPercent = ((float)PicturesStolen / (float)TotalPictures) * 100;//((float)StolenMoney / (float)TotalMoney) * 100;
 	UE_LOG(LogTemp, Warning, TEXT("STOLEN PERCENT: %f"), StolenPercent);
-	if (StolenPercent < 1.5) //10
+	if (StolenPercent < 1) //1.5 //10
 		return false;
 	return  true;
 }

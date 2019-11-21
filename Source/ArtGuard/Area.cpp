@@ -145,7 +145,7 @@ void AArea::SpawnChild()
 				FVector(Location.X, Location.Y + Split * 100 / 2, 0),
 				FVector(Width, Height - Split, 1));
 
-			RightAreaChild = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, RightChildTransform, false, this));
+			RightAreaChild = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, RightChildTransform));
 			if (RightAreaChild)
 			{
 				Location = GetActorLocation();
@@ -159,7 +159,7 @@ void AArea::SpawnChild()
 				FRotator::ZeroRotator,
 				FVector(Location.X, RightAreaChild->Location.Y - RightAreaChild->Height * 100 / 2 - Split * 100 / 2, 0),
 				FVector(Width, Split, 1));
-			LeftAreaChild = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, LeftChildTransform, false, this));
+			LeftAreaChild = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, LeftChildTransform));
 			if (LeftAreaChild)
 			{
 				Location = GetActorLocation();
@@ -176,7 +176,7 @@ void AArea::SpawnChild()
 				FVector(Location.X + Split * 100 / 2, Location.Y, 0),
 				FVector(Width - Split, Height, 1));
 
-			RightAreaChild = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, RightChildTransform, false, this));//(BP_Area, AArea::StaticClass(), RightChildTransform));
+			RightAreaChild = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, RightChildTransform));//(BP_Area, AArea::StaticClass(), RightChildTransform));
 			if (RightAreaChild)
 			{
 				Location = GetActorLocation();
@@ -191,7 +191,7 @@ void AArea::SpawnChild()
 				FVector(RightAreaChild->Location.X - RightAreaChild->Width * 100 / 2 - Split * 100 / 2, Location.Y, 0),
 				FVector(Split, Height, 1));
 
-			LeftAreaChild = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, LeftChildTransform, false, this));
+			LeftAreaChild = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, LeftChildTransform));
 			if (LeftAreaChild)
 			{
 				Location = GetActorLocation();
@@ -264,7 +264,7 @@ void AArea::CreateRoom()
 		Location,
 		FVector(RoomWidth, RoomHeight, 1));
 
-	Room = Cast<ARoom>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), AreaRoom, RoomTransform, false, this));
+	Room = Cast<ARoom>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), AreaRoom, RoomTransform));
 	if (Room)
 	{
 		Room->Width = RoomWidth;
@@ -483,7 +483,7 @@ AArea* AArea::SpawnHall(int X, int Y, float Width, float Height)
 		FVector(X, Y, 0),
 		FVector(Width, Height, 1));
 
-	AArea* Hall = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Hall, HallTransform));
+	AArea* Hall = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Hall, HallTransform));
 	if (Hall)
 	{
 		Location = GetActorLocation();

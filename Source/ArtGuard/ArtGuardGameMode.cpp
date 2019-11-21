@@ -51,6 +51,8 @@ void AArtGuardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FillBonusArrays();
+	SpawnArea();
 }
 
 void AArtGuardGameMode::Tick(float DeltaSeconds)
@@ -88,7 +90,7 @@ void AArtGuardGameMode::SpawnArea()
 	FVector Scale = FVector(150, 150, 1);
 	FVector Location = FVector(Scale.X / 2 * 100, Scale.Y / 2 * 100, 0);
 	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);
-	AArea* Root = Cast<AArea>(UGameplayStatics::BeginSpawningActorFromClass(this, BP_Area, RootTransform));
+	AArea* Root = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, RootTransform));
 	if (Root)
 	{
 		Root->Width = RootTransform.GetScale3D().X;
@@ -269,7 +271,7 @@ AArea* AArtGuardGameMode::GetMainUpExit()
 void AArtGuardGameMode::SpawnAIRobber()
 {
 	FTransform SpawnTransform = GetRandomSpawnLocation();
-	Robber = Cast<ARobber>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Robber, SpawnTransform, false, this));
+	Robber = Cast<ARobber>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), BP_Robber, SpawnTransform));
 	if (Robber)
 	{
 		UGameplayStatics::FinishSpawningActor(Robber, SpawnTransform);
@@ -311,7 +313,7 @@ ARobber* AArtGuardGameMode::GetRobber()
 AGuard* AArtGuardGameMode::SpawnAIGuard()
 {
 	FTransform SpawnTransform = GetRandomSpawnLocation();
-	Guard = Cast<AGuard>(UGameplayStatics::BeginSpawningActorFromClass(GetWorld(), BP_Guard, SpawnTransform, false, this));
+	Guard = Cast<AGuard>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), BP_Guard, SpawnTransform));
 	if (Guard)
 	{
 		UGameplayStatics::FinishSpawningActor(Guard, SpawnTransform);

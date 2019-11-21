@@ -323,7 +323,7 @@ AActor* ARoom::CreateProp(FVector Location, FRotator Rotation)
 		Location
 	);
 
-	auto Bench = UGameplayStatics::BeginSpawningActorFromClass(this, BP_Bench, BenchTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
+	auto Bench = UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Bench, BenchTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
 	if (Bench)
 	{
 		UGameplayStatics::FinishSpawningActor(Bench, BenchTransform);
@@ -381,7 +381,7 @@ void ARoom::SpawnPuddle(int& Iterator)
 			Distance + FVector(0, 0, 50)//RandomExit->GetActorLocation() + FVector(700,700,50)//z maybe 50
 		);
 
-		auto Puddle = UGameplayStatics::BeginSpawningActorFromClass(this, BP_PuddleGenerator, PuddleTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
+		auto Puddle = UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_PuddleGenerator, PuddleTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
 		if (Puddle)
 		{
 			UGameplayStatics::FinishSpawningActor(Puddle, PuddleTransform);
