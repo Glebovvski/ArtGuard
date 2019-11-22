@@ -289,7 +289,7 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 10000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 15000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				X = Room->Location.X + 50;
