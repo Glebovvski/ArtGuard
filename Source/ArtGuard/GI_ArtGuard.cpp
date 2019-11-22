@@ -10,7 +10,7 @@ void UGI_ArtGuard::SetupGuardStats()
 	GuardVisibilityRadius = 1000;
 	GuardLoudness = 1;
 	GuardSneakLoudness = 0.7;
-	GuardCatchConeRadius = 3;
+	GuardCatchConeRadius = 2;
 	GuardEnemyVisibility = false;
 	GuardCatchSpeed = 2;
 	GuardPenaltyText = "";
@@ -21,7 +21,7 @@ void UGI_ArtGuard::SetupRobberStats()
 	RobberVisibilityRadius = 1000;
 	RobberWalkSpeed = 600;
 	RobberLoudness = 0.0001;
-	RobberCatchConeRadius = 3;
+	RobberCatchConeRadius = 2;
 	RobberStealSpeed = 5;
 	RobberVisibleExits = false;
 	RobberEnemyVisibility = false;
