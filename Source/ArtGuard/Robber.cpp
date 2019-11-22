@@ -269,7 +269,7 @@ bool ARobber::AssessPicture()
 			if (PicturesStolen > 0)
 			{
 				int PictureCost = PictureToSteal->GetCost();
-				float Risk = (float)StolenMoney / (float)PicturesStolen;//*100;//(StolenMoney / TotalMoney);// PicturesStolen);// / 2;
+				float Risk = ((float)StolenMoney / (float)PicturesStolen)/2;//*100;//(StolenMoney / TotalMoney);// PicturesStolen);// / 2;
 				float Temp = (float(StolenMoney) / float(PicturesStolen));
 				UE_LOG(LogTemp,Warning, TEXT("Risk: %f,  Cost: %d"), Risk, PictureCost);
 				return PictureCost > Risk ? true : false;//Risk <= Temp ? true : false;//
