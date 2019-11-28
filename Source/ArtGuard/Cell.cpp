@@ -2,7 +2,6 @@
 
 
 #include "Cell.h"
-#include "Components/BoxComponent.h"
 #include "Room.h"
 
 // Sets default values

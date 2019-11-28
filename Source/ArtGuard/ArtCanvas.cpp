@@ -3,7 +3,6 @@
 
 #include "ArtCanvas.h"
 #include "Components/StaticMeshComponent.h"
-#include "Materials/Material.h"
 
 // Sets default values
 AArtCanvas::AArtCanvas()

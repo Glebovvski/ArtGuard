@@ -101,8 +101,9 @@ void ARobber::BeginPlay()
 {
 	Super::BeginPlay();
 	StolenMoney = 0;
-	TotalMoney = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode())->TotalPicturesCost;
-	TotalPictures = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode())->TotalPictures;
+	auto GameMode = Cast<AArtGuardGameMode>(GetWorld()->GetAuthGameMode());
+	TotalMoney = GameMode->TotalPicturesCost;
+	TotalPictures = GameMode->TotalPictures;
 	//UE_LOG(LogTemp, Warning, TEXT("TOTAL MONEY: %d"), TotalMoney);
 	if (StealOverlapComponent)
 	{

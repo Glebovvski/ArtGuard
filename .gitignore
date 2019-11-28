@@ -16,3 +16,7 @@ Content/4K_WoodFlooring/
 Content/TrueSky/
 Content/LSS_LoadingScreenSystem/
 Content/WaterMaterials/
+Build/Android_ASTCClient/
+Android/
+Build/
+.idea/

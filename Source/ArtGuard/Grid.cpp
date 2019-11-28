@@ -3,10 +3,7 @@
 
 #include "Grid.h"
 #include "GameFramework/Actor.h"
-#include "Cell.h"
-#include "Components/StaticMeshComponent.h"
-#include "ArtGuardGameMode.h"
-#include "Components/BoxComponent.h"
+
 // Sets default values
 AGrid::AGrid()
 {

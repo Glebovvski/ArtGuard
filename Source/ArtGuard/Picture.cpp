@@ -3,12 +3,9 @@
 
 #include "Picture.h"
 #include "Materials/Material.h"
-#include "Materials/MaterialInstance.h"
 #include "Components/StaticMeshComponent.h"
 #include "ArtGuardGameMode.h"
 #include "Frame.h"
-//#include "Components/SphereComponent.h";
-//#include "WidgetComponent.h"
 
 //#include "Paper2D"
 // Sets default values

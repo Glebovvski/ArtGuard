@@ -30,14 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Spawn")
 	AFrame* SpawnFrame(FVector Location, FRotator Rotation, bool IsFenceVisible);
 
-	void CreateFrames();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };
