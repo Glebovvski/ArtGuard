@@ -31,14 +31,16 @@ void ARoom::Tick(float DeltaTime)
 
 void ARoom::CreateWalls()
 {
+	float WallOffset = 50;
+
 	if (!UpExit)
 	{
 		UpWalls.Add(CreateWall(FVector(Location.X, Location.Y + Height * 100 / 2, 800), FVector(Width, 1, 15)));
 	}
 	else
 	{
-		float Left = UpExit->Location.X - UpExit->Width * 100 / 2;
-		float Right = UpExit->Location.X + UpExit->Width * 100 / 2;
+		float Left = UpExit->Location.X - UpExit->Width * 100 / 2 - WallOffset;
+		float Right = UpExit->Location.X + UpExit->Width * 100 / 2 + WallOffset;
 
 		float LeftWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2, 0, 0), FVector(Left, 0, 0));
 		float RightWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2, 0, 0), FVector(Right, 0, 0));
@@ -54,8 +56,8 @@ void ARoom::CreateWalls()
 	}
 	else
 	{
-		float Left = DownExit->Location.X - DownExit->Width * 100 / 2;
-		float Right = DownExit->Location.X + DownExit->Width * 100 / 2;
+		float Left = DownExit->Location.X - DownExit->Width * 100 / 2 - WallOffset;
+		float Right = DownExit->Location.X + DownExit->Width * 100 / 2 + WallOffset;
 
 		float LeftWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2, 0, 0), FVector(Left, 0, 0));
 		float RightWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2, 0, 0), FVector(Right, 0, 0));
@@ -71,8 +73,8 @@ void ARoom::CreateWalls()
 	}
 	else
 	{
-		float Up = LeftExit->Location.Y - LeftExit->Height * 100 / 2;
-		float Down = LeftExit->Location.Y + LeftExit->Height * 100 / 2;
+		float Up = LeftExit->Location.Y - LeftExit->Height * 100 / 2 - WallOffset;
+		float Down = LeftExit->Location.Y + LeftExit->Height * 100 / 2 + WallOffset;
 
 		float UpWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2, 0, 0), FVector(Up, 0, 0));
 		float DownWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2, 0, 0), FVector(Down, 0, 0));
@@ -88,8 +90,8 @@ void ARoom::CreateWalls()
 	}
 	else
 	{
-		float Up = RightExit->Location.Y - RightExit->Height * 100 / 2;
-		float Down = RightExit->Location.Y + RightExit->Height * 100 / 2;
+		float Up = RightExit->Location.Y - RightExit->Height * 100 / 2 - WallOffset;
+		float Down = RightExit->Location.Y + RightExit->Height * 100 / 2 + WallOffset;
 
 		float UpWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2, 0, 0), FVector(Up, 0, 0));
 		float DownWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2, 0, 0), FVector(Down, 0, 0));
