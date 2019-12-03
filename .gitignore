@@ -20,3 +20,14 @@ Build/Android_ASTCClient/
 Android/
 Build/
 .idea/
+Content/WallPAint/tibkfa2ew.json
+Content/WallPAint/tibkfa2ew_8K_Displacement.exr
+Content/WallPAint/Wall_Painted_tibkfa2ew_surface_Preview.png
+*.jpg
+Content/WallPaint/tibkfa2ew_8K_Albedo.uasset
+Content/WallPaint/tibkfa2ew_8K_Normal.uasset
+Content/WallPaint/tibkfa2ew_8K_Roughness.uasset
+
+Content/Puddle/Material/
+Content/Rooms/images.uasset
+Content/Wall_Plaster/ti1nebpfw_8K_Displacement.exr

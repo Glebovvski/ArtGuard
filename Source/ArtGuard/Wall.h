@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Wall.generated.h"
 
-class UArrowComponent;
 class AFrame;
 
 UCLASS()
@@ -18,11 +17,10 @@ public:
 	// Sets default values for this actor's properties
 	AWall();
 
-	UArrowComponent* Arrow;
 	UStaticMeshComponent* Wall;
 
 	UFUNCTION(BlueprintCallable, Category="Setup")
-	void SetWallProperties(UArrowComponent* ArrowToSet, UStaticMeshComponent* WallToSet);
+	void SetWallProperties(UStaticMeshComponent* WallToSet);
 
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<AFrame> Frame_BP;

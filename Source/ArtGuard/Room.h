@@ -71,10 +71,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<AWall> Wall_BP;
 
+	UPROPERTY(EditDefaultsOnly, Category="Props")
+	UMaterialInterface* DecorWallMat;
+
 	bool IsBiggestRoom=false;
+	
 private:
+	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation);
+	AWall* CreateWall(FVector Location, FVector Scale);
 	AArtGuardGameMode* GameMode;
-	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation=FRotator::ZeroRotator);
+	AWall* SpawnWall(FVector Location, FVector Scale, FRotator Rotation);
 	ARoom* UpRoom;
 	ARoom* BottomRoom;
 	ARoom* RightRoom;

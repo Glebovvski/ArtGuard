@@ -104,11 +104,29 @@ void ARoom::CreateWalls()
 
 AWall* ARoom::CreateWall(FVector Location, FVector Scale, FRotator Rotation)
 {
-	auto Wall = GetWorld()->SpawnActor<AWall>(Wall_BP);
-	Wall->SetActorLocation(Location);
-	Wall->SetActorScale3D(Scale);
-	Wall->SetActorRotation(Rotation);
-	Wall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
+	return SpawnWall(Location, Scale, Rotation);
+}
+
+AWall* ARoom::CreateWall(FVector Location, FVector Scale)
+{
+	return SpawnWall(Location, Scale, FRotator::ZeroRotator);
+}
+
+AWall* ARoom::SpawnWall(FVector Location, FVector Scale, FRotator Rotation)
+{
+	FTransform WallTransform = FTransform(
+		Rotation,
+		Location
+	);
+
+	auto Wall = Cast<AWall>(UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), Wall_BP, WallTransform));
+	if (Wall)
+	{
+		UGameplayStatics::FinishSpawningActor(Wall, WallTransform);
+		Wall->SetActorScale3D(Scale);
+		Wall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
+	}
+	
 	return Wall;
 }
 
@@ -170,10 +188,12 @@ void ARoom::CreateDecorWalls()
 					UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
 				else
 					UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
+				
 				WallLocation = UpWall->GetActorLocation();
 				UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), UpWall->GetActorRotation() + OppositeRotation, false);
 				UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), UpWall->GetActorRotation(), false);
 				UpWall->SetActorRotation(Rotation);
+				UpWall->Wall->SetMaterial(0,DecorWallMat);
 				GameMode->TotalPictures += 2;
 
 				AWall* DownWall;
@@ -181,6 +201,7 @@ void ARoom::CreateDecorWalls()
 					DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
 				else
 					DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
+				DownWall->Wall->SetMaterial(0,DecorWallMat);
 				WallLocation = DownWall->GetActorLocation();
 				DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), DownWall->GetActorRotation() + OppositeRotation, false);
 				DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation(), false);
@@ -192,6 +213,7 @@ void ARoom::CreateDecorWalls()
 					LeftWall = CreateWall(FVector(Location.X - Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Width / LocationOffset, SecondScale, 15));
 				else
 					LeftWall = CreateWall(FVector(Location.X - Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
+				LeftWall->Wall->SetMaterial(0,DecorWallMat);
 				WallLocation = LeftWall->GetActorLocation();
 				LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), LeftWall->GetActorRotation(), false);
 				LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation() + OppositeRotation, false);
@@ -203,6 +225,7 @@ void ARoom::CreateDecorWalls()
 					RightWall = CreateWall(FVector(Location.X + Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Width / LocationOffset, SecondScale, 15));
 				else
 					RightWall = CreateWall(FVector(Location.X + Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
+				RightWall->Wall->SetMaterial(0,DecorWallMat);
 				WallLocation = RightWall->GetActorLocation();
 				RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), RightWall->GetActorRotation(), false);
 				RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation() + OppositeRotation, false);
@@ -220,6 +243,7 @@ void ARoom::CreateDecorWalls()
 
 void ARoom::CreateProps()
 {
+	float Z = 55;
 	int DistanceFromWalls = 5;
 	if (Width > Height)
 	{
@@ -230,8 +254,8 @@ void ARoom::CreateProps()
 		{
 			for (int i = 0; i < NumberOfBenches; i++)
 			{
-				FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, 50);
-				FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, 50);
+				FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, Z);
+				FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, Z);
 				if (DownExit)
 				{
 					if (NumberOfBenches % 2 != 0)
@@ -276,8 +300,8 @@ void ARoom::CreateProps()
 		{
 			for (int i = 0; i < NumberOfBenches; i++)
 			{
-				FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
-				FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, 50);
+				FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, Z);
+				FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, Z);
 				if (LeftExit)
 				{
 					if (NumberOfBenches % 2 != 0)

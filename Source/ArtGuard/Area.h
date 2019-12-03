@@ -52,6 +52,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Hall")
 		FString HallText = "";
+	UPROPERTY(EditDefaultsOnly,Category="Spawn")
+	UMaterialInterface* HallWallMaterial;
+
 
 	void SpawnChild();
 protected:
