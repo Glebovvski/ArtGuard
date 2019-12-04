@@ -236,8 +236,8 @@ void ARoom::CreateDecorWalls()
 	}
 	else
 	{
-		auto Statue = GetWorld()->SpawnActor<AActor>(BP_BigStatue);
-		Statue->SetActorLocation(GetActorLocation());
+		//auto Statue = GetWorld()->SpawnActor<AActor>(BP_BigStatue);
+		//Statue->SetActorLocation(GetActorLocation());
 	}
 }
 

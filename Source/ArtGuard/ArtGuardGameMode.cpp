@@ -37,7 +37,6 @@ void AArtGuardGameMode::FillBonusArrays()
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::Loudness, "Decrease Loudness by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::CatchCone, "Decrease Guard's Catch Scale by "));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::StealSpeed, "Increase Steal Speed by "));
-	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::ExitVisibility, "Visible Exit icons for 5 seconds"));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::EnemyVisibility, "Visible Guard icon for 5 seconds"));
 	RobberBonuses.Add(ABonus::BonusInit(EBonusAddition::Decrease, EBonusType::CatchSpeed, "Decrease Catch Speed by "));
 
@@ -245,7 +244,7 @@ void AArtGuardGameMode::SetBonusPercent(TArray<ABonus*>& BonusArray)
 {
 	for (int i = 0; i < BonusArray.Num(); i++)
 	{
-		if (BonusArray[i]->BonusType != EBonusType::ExitVisibility && BonusArray[i]->BonusType != EBonusType::EnemyVisibility)
+		if (BonusArray[i]->BonusType != EBonusType::EnemyVisibility)
 		{
 			BonusArray[i]->SetPercent(FMath::RandRange(3, 10));
 			BonusArray[i]->BonusText += FString::SanitizeFloat(BonusArray[i]->BonusPercent, 0) + "%";

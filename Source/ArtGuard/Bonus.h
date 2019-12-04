@@ -21,7 +21,6 @@ enum EBonusType
 	CatchCone,
 	SneakSpeed,
 	SneakLoudness,
-	ExitVisibility,
 	EnemyVisibility,
 	CatchSpeed
 };

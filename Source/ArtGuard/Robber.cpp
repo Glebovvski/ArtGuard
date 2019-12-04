@@ -178,7 +178,6 @@ void ARobber::SetupRobberStats()
 		Loudness = GI->RobberLoudness;//1;
 		CatchConeRadius = GI->RobberCatchConeRadius;//3;
 		StealSpeed = GI->RobberStealSpeed;
-		VisibleExits = GI->RobberVisibleExits;
 		EnemyVisibility = GI->RobberEnemyVisibility;
 		CatchSpeed = GI->GuardCatchSpeed;
 		PenaltyText = GI->RobberPenaltyText;
@@ -206,9 +205,6 @@ void ARobber::ApplyBonus(ABonus* Bonus)
 	case(EBonusType::StealSpeed):
 		StealSpeed -= StealSpeed * percent;
 		break;
-	case(EBonusType::ExitVisibility):
-		VisibleExits = true;
-		break;
 	case(EBonusType::EnemyVisibility):
 		EnemyVisibility = true;
 		break;
@@ -219,7 +215,7 @@ void ARobber::ApplyBonus(ABonus* Bonus)
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, VisibleExits, EnemyVisibility, CatchSpeed, "");
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, EnemyVisibility, CatchSpeed, "");
 }
 
 void ARobber::ApplyPenalty(ABonus* Bonus)
@@ -256,7 +252,7 @@ void ARobber::ApplyPenalty(ABonus* Bonus)
 		break;
 	}
 	auto GI = Cast<UGI_ArtGuard>(GetWorld()->GetGameInstance());
-	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, false, false, CatchSpeed, PenaltyText);
+	GI->SaveRobberStats(WalkSpeed, VisibilityRadius, Loudness, CatchConeRadius, StealSpeed, false, CatchSpeed, PenaltyText);
 }
 
 bool ARobber::AssessPicture()
