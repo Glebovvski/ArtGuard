@@ -34,6 +34,8 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	//virtual void BeginDestroy() override;
+
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Materials")
 		TArray<UMaterialInstance*> VerticalMaterials;
 
@@ -68,17 +70,20 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Character")
 	TSubclassOf<ARobber> BP_Robber;
-	//UPROPERTY(BlueprintReadOnly)
+	UPROPERTY()
 	TArray<ABonus*> RobberBonuses;
 	UFUNCTION(BlueprintCallable, Category="Bonus")
 	TArray<ABonus*> GetRobberBonuses() const;
 
 	UPROPERTY(EditDefaultsOnly, Category="Character")
 	TSubclassOf<AGuard> BP_Guard;
-	//UPROPERTY(BlueprintReadOnly)
+	UPROPERTY()
 	TArray<ABonus*> GuardBonuses;
 	UFUNCTION(BlueprintCallable, Category="Bonus")
 	TArray<ABonus*> GetGuardBonuses() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
+	TSubclassOf<AActor> BP_CharSelect;
 
 	void Shuffle(TArray<ABonus*>& BonusArray);
 	void SetBonusPercent(TArray<ABonus*>& BonusArray);

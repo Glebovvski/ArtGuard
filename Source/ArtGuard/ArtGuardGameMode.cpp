@@ -62,6 +62,17 @@ void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
 	GetAllMaterials();
 }
 
+//void AArtGuardGameMode::BeginDestroy()
+//{
+//	Super::BeginDestroy();
+//	
+//	RobberBonuses.Empty();
+//	GuardBonuses.Empty();
+//
+//	HorizontalMaterials.Empty();
+//	VerticalMaterials.Empty();
+//}
+
 TArray<UMaterialInstance*> AArtGuardGameMode::GetVerticalMaterials() const
 {
 	return VerticalMaterials;
@@ -81,10 +92,13 @@ void AArtGuardGameMode::RemoveUsedPictureFromArray(bool IsHorizontalArray, int i
 
 void AArtGuardGameMode::SpawnArea()
 {
+	Areas.Empty();
+	FoundAreas.Empty();
 	FVector Scale = FVector(150, 150, 1);
 	FVector Location = FVector(Scale.X / 2 * 100, Scale.Y / 2 * 100, 0);
 	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);
 	AArea* Root = Cast<AArea>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_Area, RootTransform));
+	
 	if (Root)
 	{
 		Root->Width = RootTransform.GetScale3D().X;
@@ -116,11 +130,13 @@ void AArtGuardGameMode::SpawnArea()
 	{
 		AArea* Area = *ActorItr;
 		if (Area->Room)
+		{
 			FoundAreas.Add(Area);
-		Area->CreateHall();
+			Area->CreateHall();
+		}
 	}
 
-	FindBiggestRoom(FoundAreas);
+	//FindBiggestRoom(FoundAreas);
 
 	int PuddleIterator = 15;
 	for (AArea* Area : FoundAreas)

@@ -75,6 +75,14 @@ void APicture::BeginPlay()
 	}
 }
 
+void APicture::BeginDestroy()
+{
+	Super::BeginDestroy();
+	//Materials.Empty();
+	//Plane->DestroyComponent();
+	//DestroyConstructedComponents();
+}
+
 void APicture::SetPlane(UStaticMeshComponent* PlaneToSet)
 {
 	Plane = PlaneToSet;
@@ -85,6 +93,8 @@ void APicture::ApplyMaterial()
 	int RandomIndex = FMath::RandRange(0, Materials.Num() - 1);
 	Material = Materials[RandomIndex];
 	Plane->SetMaterial(0, Material);
+
+	
 	//GameMode->RemoveUsedPictureFromArray(IsHorizontal, RandomIndex);
 }
 

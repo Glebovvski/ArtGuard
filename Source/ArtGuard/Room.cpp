@@ -20,6 +20,15 @@ ARoom::ARoom()
 void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
+	UpdateOverlaps(true);
+	bGenerateOverlapEventsDuringLevelStreaming = true;
+}
+
+void ARoom::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	UpdateOverlaps(true);
+	bGenerateOverlapEventsDuringLevelStreaming = true;
 }
 
 // Called every frame
@@ -126,7 +135,7 @@ AWall* ARoom::SpawnWall(FVector Location, FVector Scale, FRotator Rotation)
 		Wall->SetActorScale3D(Scale);
 		Wall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
 	}
-	
+
 	return Wall;
 }
 
@@ -188,12 +197,12 @@ void ARoom::CreateDecorWalls()
 					UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
 				else
 					UpWall = CreateWall(FVector(Location.X, Location.Y + Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
-				
+
 				WallLocation = UpWall->GetActorLocation();
 				UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), UpWall->GetActorRotation() + OppositeRotation, false);
 				UpWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), UpWall->GetActorRotation(), false);
 				UpWall->SetActorRotation(Rotation);
-				UpWall->Wall->SetMaterial(0,DecorWallMat);
+				UpWall->Wall->SetMaterial(0, DecorWallMat);
 				GameMode->TotalPictures += 2;
 
 				AWall* DownWall;
@@ -201,7 +210,7 @@ void ARoom::CreateDecorWalls()
 					DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
 				else
 					DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Width / LocationOffset, SecondScale, 15));
-				DownWall->Wall->SetMaterial(0,DecorWallMat);
+				DownWall->Wall->SetMaterial(0, DecorWallMat);
 				WallLocation = DownWall->GetActorLocation();
 				DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), DownWall->GetActorRotation() + OppositeRotation, false);
 				DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation(), false);
@@ -213,7 +222,7 @@ void ARoom::CreateDecorWalls()
 					LeftWall = CreateWall(FVector(Location.X - Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Width / LocationOffset, SecondScale, 15));
 				else
 					LeftWall = CreateWall(FVector(Location.X - Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
-				LeftWall->Wall->SetMaterial(0,DecorWallMat);
+				LeftWall->Wall->SetMaterial(0, DecorWallMat);
 				WallLocation = LeftWall->GetActorLocation();
 				LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), LeftWall->GetActorRotation(), false);
 				LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation() + OppositeRotation, false);
@@ -225,7 +234,7 @@ void ARoom::CreateDecorWalls()
 					RightWall = CreateWall(FVector(Location.X + Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Width / LocationOffset, SecondScale, 15));
 				else
 					RightWall = CreateWall(FVector(Location.X + Width * 100 / (LocationOffset - 1), Location.Y, 800), FVector(Height / LocationOffset, SecondScale, 15));
-				RightWall->Wall->SetMaterial(0,DecorWallMat);
+				RightWall->Wall->SetMaterial(0, DecorWallMat);
 				WallLocation = RightWall->GetActorLocation();
 				RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), RightWall->GetActorRotation(), false);
 				RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation() + OppositeRotation, false);
@@ -234,11 +243,11 @@ void ARoom::CreateDecorWalls()
 			}
 		}
 	}
-	else
-	{
-		//auto Statue = GetWorld()->SpawnActor<AActor>(BP_BigStatue);
-		//Statue->SetActorLocation(GetActorLocation());
-	}
+	//else
+	//{
+	//		auto Statue = GetWorld()->SpawnActor<AActor>(BP_BigStatue);
+	//		Statue->SetActorLocation(GetActorLocation());
+	//}
 }
 
 void ARoom::CreateProps()
@@ -395,23 +404,23 @@ void ARoom::SetGameMode()
 
 void ARoom::SpawnPuddle(int& Iterator)
 {
-	AArea* Exit = CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)];
-	//for (AArea* Exit : CreatedExits)
-	//{
-	if (FMath::RandRange(0, 1))
+	if (CreatedExits.Num() > 0) 
 	{
-		FVector Distance = (Location + Exit->GetActorLocation()) / 2;
-		FTransform PuddleTransform = FTransform(
-			FRotator::ZeroRotator,
-			Distance + FVector(0, 0, 50)//RandomExit->GetActorLocation() + FVector(700,700,50)//z maybe 50
-		);
-
-		auto Puddle = UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_PuddleGenerator, PuddleTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
-		if (Puddle)
+		AArea* Exit = CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)];
+		if (FMath::RandRange(0, 1) && Exit)
 		{
-			UGameplayStatics::FinishSpawningActor(Puddle, PuddleTransform);
+			FVector Distance = (Location + Exit->GetActorLocation()) / 2;
+			FTransform PuddleTransform = FTransform(
+				FRotator::ZeroRotator,
+				Distance + FVector(0, 0, 50)//RandomExit->GetActorLocation() + FVector(700,700,50)//z maybe 50
+			);
+
+			auto Puddle = UGameplayStatics::BeginDeferredActorSpawnFromClass(this, BP_PuddleGenerator, PuddleTransform);//GetWorld()->SpawnActor<AActor>(BP_Bench);
+			if (Puddle)
+			{
+				UGameplayStatics::FinishSpawningActor(Puddle, PuddleTransform);
+			}
 		}
 		Iterator--;
 	}
-	//}
 }

@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Room.h"
 #include "Area.generated.h"
 
 class UBoxComponent;
 class AWall;
+//class ARoom;
 
 UCLASS()
 class ARTGUARD_API AArea : public AActor
@@ -16,7 +18,7 @@ class ARTGUARD_API AArea : public AActor
 
 public:
 	// Sets default values for this actor's properties
-	AArea();
+	AArea();// (const FObjectInitializer& ObjectInitializer);
 	void Init(int Width, int Height);
 	int MaxWidth = 60;
 	int MaxHeight = 60;
@@ -31,9 +33,11 @@ public:
 	AArea* LeftAreaChild;
 	AArea* RightAreaChild;
 
-	class ARoom* Room;
+	UPROPERTY()
+	ARoom* Room;
 
-	UStaticMeshComponent* Box;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* Box = nullptr;
 
 	UFUNCTION(BlueprintCallable, Category = "Set")
 		void SetBox(UStaticMeshComponent* BoxToSet);
@@ -60,6 +64,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 
 public:
@@ -103,6 +109,24 @@ public:
 	void CreateExit(int X, int Y, bool IsRight);
 
 	void CreateInterior();
+
+	TArray<UBoxComponent*> CollisionArray;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* UpCollision;
+	UPROPERTY()
+		ARoom* UpRoom;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* DownCollision;
+	UPROPERTY()
+		ARoom* DownRoom;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* RightCollision;
+	UPROPERTY()
+		ARoom* RightRoom;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* LeftCollision;
+	UPROPERTY()
+		ARoom* LeftRoom;
 private:
 	ARoom* GetRoom();
 
@@ -116,16 +140,9 @@ private:
 	FTransform RightChildTransform;
 
 	void DestroyCollisions();
+	
+	
 
-	TArray<UBoxComponent*> CollisionArray;
-	UBoxComponent* UpCollision;
-	ARoom* UpRoom;
-	UBoxComponent* DownCollision;
-	ARoom* DownRoom;
-	UBoxComponent* RightCollision;
-	ARoom* RightRoom;
-	UBoxComponent* LeftCollision;
-	ARoom* LeftRoom;
 };
 
 

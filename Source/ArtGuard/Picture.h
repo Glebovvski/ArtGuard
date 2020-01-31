@@ -32,6 +32,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void BeginDestroy() override;
+	
 	UFUNCTION(BlueprintCallable, Category = "Spawn")
 		void SetPlane(UStaticMeshComponent* PlaneToSet);
 
