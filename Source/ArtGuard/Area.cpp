@@ -31,44 +31,51 @@ AArea::AArea()//(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 	LeftAreaChild = nullptr;
 	RightAreaChild = nullptr;
 
+	FTransform BoxTransform = FTransform(
+		FRotator::ZeroRotator,
+		FVector(0, 0, 0),
+		FVector(1, 1, 0.1)
+	);
+	
 	Box = CreateDefaultSubobject<UStaticMeshComponent>(FName("Box"));
+	Box->SetWorldTransform(BoxTransform);
 	SetRootComponent(Box);
 	UpCollision = CreateDefaultSubobject<UBoxComponent>(FName("UpCollision")); //<UBoxComponent>(this, TEXT("UpCollision"));
 	DownCollision = CreateDefaultSubobject<UBoxComponent>(FName("DownCollision")); //ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("DownCollision"));
 	RightCollision = CreateDefaultSubobject<UBoxComponent>(FName("RightCollision")); //ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("RightCollision"));
 	LeftCollision = CreateDefaultSubobject<UBoxComponent>(FName("LeftCollision")); //ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("LeftCollision"));
 
-	UpCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-	DownCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-	RightCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-	LeftCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-
 	FTransform UpTransform = FTransform(
 		FRotator::ZeroRotator,
-		FVector(0, 105, 0),
-		FVector(0.1, 0.5, 10)
+		FVector(0, 10, 0), //105
+		FVector(0.1, 0.5, 1)
 	);
 	FTransform DownTransform = FTransform(
 		FRotator::ZeroRotator,
-		FVector(0, -105, 0),
-		FVector(0.1, 0.5, 10)
+		FVector(0, -10, 0),
+		FVector(0.1, 0.5, 1)
 	);
 
 	FTransform RightTransform = FTransform(
 		FRotator::ZeroRotator,
-		FVector(105, 0, 0),
-		FVector(0.5, 0.1, 10)
+		FVector(10, 0, 0),
+		FVector(0.5, 0.1, 1)
 	);
 
 	FTransform LeftTransform = FTransform(
 		FRotator::ZeroRotator,
-		FVector(-105, 0, 0),
-		FVector(0.5, 0.1, 10)
+		FVector(-10, 0, 0),
+		FVector(0.5, 0.1, 1)
 	);
 	UpCollision->SetWorldTransform(UpTransform);
 	DownCollision->SetWorldTransform(DownTransform);
 	RightCollision->SetWorldTransform(RightTransform);
 	LeftCollision->SetWorldTransform(LeftTransform);
+	
+	UpCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepWorldTransform);
+	DownCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepWorldTransform);
+	RightCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepWorldTransform);
+	LeftCollision->AttachToComponent(Box, FAttachmentTransformRules::KeepWorldTransform);
 
 	UpCollision->SetGenerateOverlapEvents(true);
 	DownCollision->SetGenerateOverlapEvents(true);
@@ -474,7 +481,7 @@ void AArea::CreateHall()
 	//UE_LOG(LogTemp, Warning, TEXT(" ROOM: %s "), *GetRoom()->GetName());
 	constexpr int ROOT_AREA_SCALE = 15000;
 	int AdditionalOffset = 150;
-	/*if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 2000)
+	if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 2000)
 	{
 		if (!GameMode->IsRightExitSet)
 			CreateExit(Room->Location.X + Room->Width * 100 / 2, Room->Location.Y, true);
@@ -483,7 +490,7 @@ void AArea::CreateHall()
 	{
 		if (!GameMode->IsUpExitSet)
 			CreateExit(Room->Location.X, Room->Location.Y + Room->Height * 100 / 2, false);
-	}*/
+	}
 	//auto UpColLoc = UpCollision->GetComponentLocation();
 	if (UpCollision && UpRoom && (UpRoom->Width / Room->Width >= 2 || UpRoom->Width / Room->Width <= 1) &&
 		!UpRoom->DownExit &&
@@ -504,6 +511,8 @@ void AArea::CreateHall()
 		Room->CreatedExits.Add(Hall);
 		UpRoom->DownExit = Hall;
 		UpRoom->CreatedExits.Add(Hall);
+
+		UpCollision->DestroyComponent();
 	}
 
 	//auto DownColLoc = DownCollision->GetComponentLocation();
@@ -527,6 +536,8 @@ void AArea::CreateHall()
 		DownRoom->UpExit = Hall;
 		DownRoom->CreatedExits.Add(Hall);
 		//UE_LOG(LogTemp, Warning, TEXT("CREATE HALL"));
+
+		DownCollision->DestroyComponent();
 	}
 	//auto RightColLoc = RightCollision->GetComponentLocation();
 	if (RightCollision && RightRoom && (RightRoom->Height / Room->Height >= 2 || RightRoom->Height / Room->Height <= 1) &&
@@ -549,6 +560,8 @@ void AArea::CreateHall()
 		Room->CreatedExits.Add(Hall);
 		RightRoom->LeftExit = Hall;
 		RightRoom->CreatedExits.Add(Hall);
+
+		RightCollision->DestroyComponent();
 	}
 	//auto LeftColLoc = LeftCollision->GetComponentLocation();
 	if (LeftCollision && LeftRoom && (LeftRoom->Height / Room->Height >= 2 || LeftRoom->Height / Room->Height <= 1) &&
@@ -570,6 +583,8 @@ void AArea::CreateHall()
 		Room->CreatedExits.Add(Hall);
 		LeftRoom->RightExit = Hall;
 		LeftRoom->CreatedExits.Add(Hall);
+
+		LeftCollision->DestroyComponent();
 	}
 }
 

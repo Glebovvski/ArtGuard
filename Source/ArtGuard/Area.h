@@ -111,19 +111,19 @@ public:
 	void CreateInterior();
 
 	TArray<UBoxComponent*> CollisionArray;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		UBoxComponent* UpCollision;
 	UPROPERTY()
 		ARoom* UpRoom;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		UBoxComponent* DownCollision;
 	UPROPERTY()
 		ARoom* DownRoom;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		UBoxComponent* RightCollision;
 	UPROPERTY()
 		ARoom* RightRoom;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		UBoxComponent* LeftCollision;
 	UPROPERTY()
 		ARoom* LeftRoom;
