@@ -23,6 +23,9 @@
 
 void AArtGuardGameMode::FillBonusArrays()
 {
+	GuardBonuses.Empty();
+	RobberBonuses.Empty();
+	
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::RadiusVisibility, "Increase Radius for Visibility by "));
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::WalkSpeed, "Increase Max Speed by "));
 	GuardBonuses.Add(ABonus::BonusInit(EBonusAddition::Increase, EBonusType::SneakSpeed, "Increase Sneak Speed by "));
