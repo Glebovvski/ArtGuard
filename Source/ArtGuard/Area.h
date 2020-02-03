@@ -30,7 +30,9 @@ public:
 
 	FVector Location;
 
+	UPROPERTY()
 	AArea* LeftAreaChild;
+	UPROPERTY()
 	AArea* RightAreaChild;
 
 	UPROPERTY()
@@ -111,19 +113,19 @@ public:
 	void CreateInterior();
 
 	TArray<UBoxComponent*> CollisionArray;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* UpCollision;
 	UPROPERTY()
 		ARoom* UpRoom;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* DownCollision;
 	UPROPERTY()
 		ARoom* DownRoom;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* RightCollision;
 	UPROPERTY()
 		ARoom* RightRoom;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* LeftCollision;
 	UPROPERTY()
 		ARoom* LeftRoom;
