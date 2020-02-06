@@ -150,6 +150,8 @@ void AArtGuardGameMode::SpawnArea()
 		{
 			Area->Room->SpawnPuddle(PuddleIterator);
 		}
+
+		Area->DeleteExtraRooms();
 	}
 }
 
@@ -305,7 +307,7 @@ FTransform AArtGuardGameMode::GetRandomSpawnLocation()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 15000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Player->GetActorLocation()) > 10000)//15000)
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				X = Room->Location.X + 50;
@@ -365,21 +367,24 @@ void AArtGuardGameMode::SetLocationForRobber()
 	float X = 0, Y = 0;
 	bool check = false;
 	bool checkCollisionInRoom = false;
-	do
-	{
-		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
-		if (FoundAreas[RandomRoomIndex]->Room)
-		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 10000)
-			{
-				auto Room = FoundAreas[RandomRoomIndex]->Room;
-				X = Room->Location.X + 50;
-				Y = Room->Location.Y + 50;
-				check = true;
-			}
-		}
-	} while (!check);
+	//do
+	//{
+	//	auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
+	//	if (FoundAreas[RandomRoomIndex]->Room)
+	//	{
+	//		if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)//10000)
+	//		{
+	//			auto Room = FoundAreas[RandomRoomIndex]->Room;
+	//			X = Room->Location.X + 50;
+	//			Y = Room->Location.Y + 50;
+	//			check = true;
+	//		}
+	//	}
+	//} while (!check);
 
+	X = FoundAreas[0]->Room->Location.X + 50;
+	Y = FoundAreas[0]->Room->Location.Y + 50;
+	
 	FVector SpawnLocation = FVector(X, Y, 150);
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);
@@ -399,7 +404,7 @@ void AArtGuardGameMode::SetLocationForGuard()
 		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
 		if (FoundAreas[RandomRoomIndex]->Room)
 		{
-			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 3000)
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, FVector::ZeroVector) < 6000) //3000
 			{
 				auto Room = FoundAreas[RandomRoomIndex]->Room;
 				X = Room->Location.X + 50;
@@ -409,6 +414,9 @@ void AArtGuardGameMode::SetLocationForGuard()
 		}
 	} while (!check);
 
+	//X = FoundAreas[FoundAreas.Num()-1]->Room->Location.X + 50;
+	//Y = FoundAreas[FoundAreas.Num() - 1]->Room->Location.Y + 50;
+	
 	FVector SpawnLocation = FVector(X, Y, 150);
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	Player->SetActorLocation(SpawnLocation);

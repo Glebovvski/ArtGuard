@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Wall.h"
 #include "ArtGuardGameMode.h"
+#include "Components/SphereComponent.h"
 #include "Area.h"
 
 // Sets default values
@@ -14,6 +15,27 @@ ARoom::ARoom()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	FTransform BoxTransform = FTransform(
+		FRotator::ZeroRotator,
+		FVector(0, 0, 0),
+		FVector(1, 1, 1)
+	);
+	Box = CreateDefaultSubobject<UStaticMeshComponent>(FName("Box"));
+	Box->SetWorldTransform(BoxTransform);
+	SetRootComponent(Box);
+
+	//RoomDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("DetectionSphere"));
+	//FTransform SphereTransform = FTransform(
+	//	FRotator::ZeroRotator,
+	//	FVector(0, 0, 0), //x=-105
+	//	FVector(10) //x=0.5
+	//);
+	//RoomDetectionSphere->SetRelativeTransform(SphereTransform);
+
+	//RoomDetectionSphere->AttachToComponent(Box, FAttachmentTransformRules::KeepWorldTransform);
+
+	//RoomDetectionSphere->SetGenerateOverlapEvents(true);
 }
 
 // Called when the game starts or when spawned
@@ -22,6 +44,10 @@ void ARoom::BeginPlay()
 	Super::BeginPlay();
 	UpdateOverlaps(true);
 	bGenerateOverlapEventsDuringLevelStreaming = true;
+
+	//RoomDetectionSphere->SetSphereRadius((FMath::Sqrt(Width * Width + Height * Height) / 2)*10);
+
+	//UE_LOG(LogTemp, Warning, TEXT("PARENT AREA: %s"), *(GetParentActor() ? GetParentActor()->GetName() : TEXT("NULL")));
 }
 
 void ARoom::OnConstruction(const FTransform& Transform)
@@ -31,25 +57,27 @@ void ARoom::OnConstruction(const FTransform& Transform)
 	bGenerateOverlapEventsDuringLevelStreaming = true;
 }
 
+
 // Called every frame
 void ARoom::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ARoom::CreateWalls()
 {
+	SortExits();
+
 	float WallOffset = 50;
 
-	if (!UpExit)
+	if (UpExits.Num() == 0)//(!UpExit)
 	{
 		UpWalls.Add(CreateWall(FVector(Location.X, Location.Y + Height * 100 / 2, 800), FVector(Width, 1, 15)));
 	}
-	else
+	else if (UpExits.Num() == 1)
 	{
-		float Left = UpExit->Location.X - UpExit->Width * 100 / 2 - WallOffset;
-		float Right = UpExit->Location.X + UpExit->Width * 100 / 2 + WallOffset;
+		float Left = UpExits[0]->Location.X - UpExits[0]->Width * 100 / 2 - WallOffset;
+		float Right = UpExits[0]->Location.X + UpExits[0]->Width * 100 / 2 + WallOffset;
 
 		float LeftWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2, 0, 0), FVector(Left, 0, 0));
 		float RightWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2, 0, 0), FVector(Right, 0, 0));
@@ -57,16 +85,36 @@ void ARoom::CreateWalls()
 		UpWalls.Add(CreateWall(FVector((Left + (Location.X - Width * 100 / 2)) / 2, Location.Y + Height * 100 / 2, 800), FVector(LeftWallWidth / 100, 1, 15))); //15
 		UpWalls.Add(CreateWall(FVector((Right + (Location.X + Width * 100 / 2)) / 2, Location.Y + Height * 100 / 2, 800), FVector(RightWallWidth / 100, 1, 15))); //15
 	}
+	else //if(UpExits.Num() == 2)
+	{
+		AArea* FirstExit = UpExits[0];
+		AArea* SecondExit = UpExits[1];
+
+		//FIRST WALL
+		float FirstWallX = ((Location.X - Width * 100 / 2) + (FirstExit->Location.X - FirstExit->Width * 100 / 2)) / 2;
+		float FirstWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2 + WallOffset, 0, 0), FVector(FirstExit->Location.X - FirstExit->Width * 100 / 2 - WallOffset, 0, 0));
+		UpWalls.Add(CreateWall(FVector(FirstWallX, Location.Y + Height * 100 / 2, 800), FVector(FirstWallWidth / 100, 1, 15)));
+
+		//SECOND WALL
+		float SecondWallX = ((FirstExit->Location.X - WallOffset + FirstExit->Width * 100 / 2) + (SecondExit->Location.X + WallOffset - SecondExit->Width * 100 / 2)) / 2;
+		float SecondWallWidth = FVector::Distance(FVector(FirstExit->Location.X + FirstExit->Width * 100 / 2 + WallOffset, 0, 0), FVector(SecondExit->Location.X - SecondExit->Width * 100 / 2 - WallOffset, 0, 0));
+		UpWalls.Add(CreateWall(FVector(SecondWallX, Location.Y + Height * 100 / 2, 800), FVector(SecondWallWidth / 100, 1, 15)));
+
+		//THIRD WALL
+		float ThirdWallX = ((Location.X + Width * 100 / 2) + (SecondExit->Location.X + SecondExit->Width * 100 / 2)) / 2;
+		float ThirdWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2 - WallOffset, 0, 0), FVector(SecondExit->Location.X + SecondExit->Width * 100 / 2 + WallOffset, 0, 0));
+		UpWalls.Add(CreateWall(FVector(ThirdWallX, Location.Y + Height * 100 / 2, 800), FVector(ThirdWallWidth / 100, 1, 15)));
+	}
 	CreateFrames(UpWalls, FRotator(0, 180, 0), true, -50);
 
-	if (!DownExit)
+	if (DownExits.Num() == 0)//(!DownExit)
 	{
 		DownWalls.Add(CreateWall(FVector(Location.X, Location.Y - Height * 100 / 2, 800), FVector(Width, 1, 15)));
 	}
-	else
+	else if (DownExits.Num() == 1)
 	{
-		float Left = DownExit->Location.X - DownExit->Width * 100 / 2 - WallOffset;
-		float Right = DownExit->Location.X + DownExit->Width * 100 / 2 + WallOffset;
+		float Left = DownExits[0]->Location.X - DownExits[0]->Width * 100 / 2 - WallOffset;
+		float Right = DownExits[0]->Location.X + DownExits[0]->Width * 100 / 2 + WallOffset;
 
 		float LeftWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2, 0, 0), FVector(Left, 0, 0));
 		float RightWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2, 0, 0), FVector(Right, 0, 0));
@@ -74,16 +122,36 @@ void ARoom::CreateWalls()
 		DownWalls.Add(CreateWall(FVector((Left + (Location.X - Width * 100 / 2)) / 2, Location.Y - Height * 100 / 2, 800), FVector(LeftWallWidth / 100, 1, 15)));
 		DownWalls.Add(CreateWall(FVector((Right + (Location.X + Width * 100 / 2)) / 2, Location.Y - Height * 100 / 2, 800), FVector(RightWallWidth / 100, 1, 15)));
 	}
+	else //if (DownExits.Num() == 2)
+	{
+		AArea* FirstExit = DownExits[0];
+		AArea* SecondExit = DownExits[1];
+
+		//FIRST WALL
+		float FirstWallX = ((Location.X - Width * 100 / 2) + (FirstExit->Location.X - FirstExit->Width * 100 / 2)) / 2;
+		float FirstWallWidth = FVector::Distance(FVector(Location.X - Width * 100 / 2 + WallOffset, 0, 0), FVector(FirstExit->Location.X - FirstExit->Width * 100 / 2 - WallOffset, 0, 0)); //MINUS WALLOFFSET
+		DownWalls.Add(CreateWall(FVector(FirstWallX, Location.Y - Height * 100 / 2, 800), FVector(FirstWallWidth / 100, 1, 15)));
+
+		//SECOND WALL
+		float SecondWallX = ((FirstExit->Location.X + FirstExit->Width * 100 / 2) + (SecondExit->Location.X - SecondExit->Width * 100 / 2)) / 2;
+		float SecondWallWidth = FVector::Distance(FVector(FirstExit->Location.X + FirstExit->Width * 100 / 2 + WallOffset, 0, 0), FVector(SecondExit->Location.X - SecondExit->Width * 100 / 2 - WallOffset, 0, 0));
+		DownWalls.Add(CreateWall(FVector(SecondWallX, Location.Y - Height * 100 / 2, 800), FVector(SecondWallWidth / 100, 1, 15)));
+
+		//THIRD WALL
+		float ThirdWallX = ((Location.X + Width * 100 / 2) + (SecondExit->Location.X + SecondExit->Width * 100 / 2)) / 2;
+		float ThirdWallWidth = FVector::Distance(FVector(Location.X + Width * 100 / 2 - WallOffset, 0, 0), FVector(SecondExit->Location.X + SecondExit->Width * 100 / 2 + WallOffset, 0, 0));
+		DownWalls.Add(CreateWall(FVector(ThirdWallX, Location.Y - Height * 100 / 2, 800), FVector(ThirdWallWidth / 100, 1, 15)));
+	}
 	CreateFrames(DownWalls, FRotator(0), true, 50);
 
-	if (!LeftExit)
+	if (LeftExits.Num() == 0)//(!LeftExit)
 	{
 		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, Location.Y, 800), FVector(1, Height, 15)));
 	}
-	else
+	else if (LeftExits.Num() == 1)
 	{
-		float Up = LeftExit->Location.Y - LeftExit->Height * 100 / 2 - WallOffset;
-		float Down = LeftExit->Location.Y + LeftExit->Height * 100 / 2 + WallOffset;
+		float Up = LeftExits[0]->Location.Y - LeftExits[0]->Height * 100 / 2 - WallOffset;
+		float Down = LeftExits[0]->Location.Y + LeftExits[0]->Height * 100 / 2 + WallOffset;
 
 		float UpWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2, 0, 0), FVector(Up, 0, 0));
 		float DownWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2, 0, 0), FVector(Down, 0, 0));
@@ -91,22 +159,62 @@ void ARoom::CreateWalls()
 		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, (Up + (Location.Y - Height * 100 / 2)) / 2, 800), FVector(1, UpWallHeight / 100, 15)));
 		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, (Down + (Location.Y + Height * 100 / 2)) / 2, 800), FVector(1, DownWallHeight / 100, 15)));
 	}
+	else
+	{
+		AArea* FirstExit = LeftExits[0];
+		AArea* SecondExit = LeftExits[1];
+
+		//FIRST WALL
+		float FirstWallY = ((Location.Y - Height * 100 / 2) + (FirstExit->Location.Y - FirstExit->Height * 100 / 2)) / 2;
+		float FirstWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2 + WallOffset, 0, 0), FVector(FirstExit->Location.Y - FirstExit->Height * 100 / 2 - WallOffset, 0, 0));
+		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, FirstWallY, 800), FVector(1, FirstWallHeight / 100, 15)));
+
+		//SECOND WALL
+		float SecondWallY = ((FirstExit->Location.Y + FirstExit->Height * 100 / 2) + (SecondExit->Location.Y - SecondExit->Height * 100 / 2)) / 2;
+		float SecondWallHeight = FVector::Distance(FVector(FirstExit->Location.Y + FirstExit->Height * 100 / 2 + WallOffset, 0, 0), FVector(SecondExit->Location.Y - SecondExit->Height * 100 / 2 - WallOffset, 0, 0));
+		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, SecondWallY, 800), FVector(1, SecondWallHeight / 100, 15)));
+
+		//THIRD WALL
+		float ThirdWallY = ((Location.Y + Height * 100 / 2) + (SecondExit->Location.Y + SecondExit->Height * 100 / 2)) / 2;
+		float ThirdWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2 - WallOffset, 0, 0), FVector(SecondExit->Location.Y + SecondExit->Height * 100 / 2 + WallOffset, 0, 0));
+		LeftWalls.Add(CreateWall(FVector(Location.X - Width * 100 / 2, ThirdWallY, 800), FVector(1, ThirdWallHeight / 100, 15)));
+	}
 	CreateFrames(LeftWalls, FRotator(0, -90, 0), false, 50);
 
-	if (!RightExit)
+	if (RightExits.Num() == 0)//(!RightExit)
 	{
 		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, Location.Y, 800), FVector(1, Height, 15)));
 	}
-	else
+	else if (RightExits.Num() == 1)
 	{
-		float Up = RightExit->Location.Y - RightExit->Height * 100 / 2 - WallOffset;
-		float Down = RightExit->Location.Y + RightExit->Height * 100 / 2 + WallOffset;
+		float Up = RightExits[0]->Location.Y - RightExits[0]->Height * 100 / 2 - WallOffset;
+		float Down = RightExits[0]->Location.Y + RightExits[0]->Height * 100 / 2 + WallOffset;
 
 		float UpWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2, 0, 0), FVector(Up, 0, 0));
 		float DownWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2, 0, 0), FVector(Down, 0, 0));
 
 		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, (Up + (Location.Y - Height * 100 / 2)) / 2, 800), FVector(1, UpWallHeight / 100, 15)));
 		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, (Down + (Location.Y + Height * 100 / 2)) / 2, 800), FVector(1, DownWallHeight / 100, 15)));
+	}
+	else
+	{
+		AArea* FirstExit = RightExits[0];
+		AArea* SecondExit = RightExits[1];
+
+		//FIRST WALL
+		float FirstWallY = ((Location.Y - Height * 100 / 2) + (FirstExit->Location.Y - FirstExit->Height * 100 / 2)) / 2;
+		float FirstWallHeight = FVector::Distance(FVector(Location.Y - Height * 100 / 2 + WallOffset, 0, 0), FVector(FirstExit->Location.Y - FirstExit->Height * 100 / 2 - WallOffset, 0, 0));
+		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, FirstWallY, 800), FVector(1, FirstWallHeight / 100, 15)));
+
+		//SECOND WALL
+		float SecondWallY = ((FirstExit->Location.Y + FirstExit->Height * 100 / 2) + (SecondExit->Location.Y - SecondExit->Height * 100 / 2)) / 2;
+		float SecondWallHeight = FVector::Distance(FVector(FirstExit->Location.Y + FirstExit->Height * 100 / 2 + WallOffset, 0, 0), FVector(SecondExit->Location.Y - SecondExit->Height * 100 / 2 - WallOffset, 0, 0));
+		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, SecondWallY, 800), FVector(1, SecondWallHeight / 100, 15)));
+
+		//THIRD WALL
+		float ThirdWallY = ((Location.Y + Height * 100 / 2) + (SecondExit->Location.Y + SecondExit->Height * 100 / 2)) / 2;
+		float ThirdWallHeight = FVector::Distance(FVector(Location.Y + Height * 100 / 2 - WallOffset, 0, 0), FVector(SecondExit->Location.Y + SecondExit->Height * 100 / 2 + WallOffset, 0, 0));
+		RightWalls.Add(CreateWall(FVector(Location.X + Width * 100 / 2, ThirdWallY, 800), FVector(1, ThirdWallHeight / 100, 15)));
 	}
 	CreateFrames(RightWalls, FRotator(0, 90, 0), false, -50);
 }
@@ -265,7 +373,7 @@ void ARoom::CreateProps()
 			{
 				FVector LeftLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y - Height * 100 / DistanceFromWalls, Z);
 				FVector RightLocation = FVector(Location.X - Width * 100 / 2 + (i + 1) * offset, Location.Y + Height * 100 / DistanceFromWalls, Z);
-				if (DownExit)
+				if (DownExits.Num() > 0)//(DownExit)
 				{
 					if (NumberOfBenches % 2 != 0)
 					{
@@ -281,7 +389,7 @@ void ARoom::CreateProps()
 				{
 					CreateProp(LeftLocation);
 				}
-				if (UpExit)
+				if (UpExits.Num() > 0)//(UpExit)
 				{
 					if (NumberOfBenches % 2 != 0)
 					{
@@ -311,7 +419,7 @@ void ARoom::CreateProps()
 			{
 				FVector LeftLocation = FVector(Location.X - Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, Z);
 				FVector RightLocation = FVector(Location.X + Width * 100 / DistanceFromWalls, Location.Y - Height * 100 / 2 + (i + 1) * offset, Z);
-				if (LeftExit)
+				if (LeftExits.Num() > 0)//(LeftExit)
 				{
 					if (NumberOfBenches % 2 != 0)
 					{
@@ -328,7 +436,7 @@ void ARoom::CreateProps()
 					CreateProp(LeftLocation, FRotator(0, 90, 0));
 				}
 
-				if (RightExit)
+				if (RightExits.Num() > 0)//(RightExit)
 				{
 					if (NumberOfBenches % 2 != 0)
 					{
@@ -391,6 +499,37 @@ bool ARoom::IsInExitLine(FVector Start, FVector End, bool DebugDraw)
 	return false;
 }
 
+void ARoom::SortExits()
+{
+	if (UpExits.Num() > 1)
+	{
+		if (UpExits[0]->Location.X > UpExits[1]->Location.X)
+			Swap(UpExits);
+	}
+	if (DownExits.Num() > 1)
+	{
+		if (DownExits[0]->Location.X > DownExits[1]->Location.X)
+			Swap(DownExits);
+	}
+	if (RightExits.Num() > 1)
+	{
+		if (RightExits[0]->Location.Y > RightExits[1]->Location.Y)
+			Swap(RightExits);
+	}
+	if (LeftExits.Num() > 1)
+	{
+		if (LeftExits[0]->Location.Y > LeftExits[1]->Location.Y)
+			Swap(LeftExits);
+	}
+}
+
+void ARoom::Swap(TArray<AArea*>& Exits)
+{
+	AArea* temp = Exits[0];
+	Exits[0] = Exits[1];
+	Exits[1] = temp;
+}
+
 void ARoom::SetFloor(UStaticMeshComponent* FloorToSet)
 {
 	Floor = FloorToSet;
@@ -404,7 +543,7 @@ void ARoom::SetGameMode()
 
 void ARoom::SpawnPuddle(int& Iterator)
 {
-	if (CreatedExits.Num() > 0) 
+	if (CreatedExits.Num() > 0)
 	{
 		AArea* Exit = CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)];
 		if (FMath::RandRange(0, 1) && Exit)

@@ -12,6 +12,7 @@ class UArrowComponent;
 class AExit;
 class AArtGuardGameMode;
 class UBoxComponent;
+class USphereComponent;
 
 UCLASS()
 class ARTGUARD_API ARoom : public AActor
@@ -38,10 +39,20 @@ public:
 	UPROPERTY()
 	FVector Location;
 
-	AArea* RightExit;
+	/*AArea* RightExit;
 	AArea* LeftExit;
 	AArea* UpExit;
-	AArea* DownExit;
+	AArea* DownExit;*/
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<AArea*> RightExits;
+	UPROPERTY(VisibleAnywhere)
+	TArray<AArea*> LeftExits;
+	UPROPERTY(VisibleAnywhere)
+	TArray<AArea*> UpExits;
+	UPROPERTY(VisibleAnywhere)
+	TArray<AArea*> DownExits;
+	
 	TArray<AArea*> CreatedExits;
 
 	void CreateWalls();
@@ -79,6 +90,11 @@ public:
 	UMaterialInterface* DecorWallMat;
 
 	bool IsBiggestRoom=false;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+		UStaticMeshComponent* Box = nullptr;
+
+	
 	
 private:
 	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation);
@@ -103,4 +119,8 @@ private:
 	AActor* CreateProp(FVector Location, FRotator Rotation = FRotator::ZeroRotator);
 
 	bool IsInExitLine(FVector Start, FVector End, bool DebugDraw);
+
+	void SortExits();
+
+	void Swap(TArray<AArea*> &Exits);
 };
