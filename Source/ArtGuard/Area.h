@@ -150,7 +150,7 @@ public:
 		FString LEFT;
 
 	UPROPERTY(EditDefaultsOnly)
-		UBoxComponent* RoomDetectionBox;
+		USphereComponent* RoomDetectionSphere;
 	
 private:
 	ARoom* GetRoom();

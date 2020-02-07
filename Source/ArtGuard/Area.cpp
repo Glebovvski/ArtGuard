@@ -72,15 +72,15 @@ AArea::AArea()//(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 		FVector(1, 0.5, 1) //x=0.5
 	);
 
-	RoomDetectionBox = CreateDefaultSubobject<UBoxComponent>(FName("DetectionSphere"));
+	RoomDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("DetectionSphere"));
 	FTransform SphereTransform = FTransform(
 		FRotator::ZeroRotator,
 		FVector(0, 0, 0), //x=-105
 		FVector(100, 100, 100) //x=0.5
 	);
-	RoomDetectionBox->SetRelativeTransform(SphereTransform);
-	RoomDetectionBox->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-	RoomDetectionBox->SetGenerateOverlapEvents(true);
+	RoomDetectionSphere->SetRelativeTransform(SphereTransform);
+	RoomDetectionSphere->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
+	RoomDetectionSphere->SetGenerateOverlapEvents(true);
 
 	UpCollision->SetWorldTransform(UpTransform);
 	DownCollision->SetWorldTransform(DownTransform);
@@ -138,7 +138,7 @@ void AArea::OnOverlapBeginUp(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
 	{
 		UpRoom = Cast<ARoom>(OtherActor);
-	UP = OtherActor->GetName();
+		UP = OtherActor->GetName();
 	}
 }
 
@@ -148,7 +148,7 @@ void AArea::OnOverlapBeginBottom(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
 	{
 		DownRoom = Cast<ARoom>(OtherActor);
-	DOWN = OtherActor->GetName();
+		DOWN = OtherActor->GetName();
 	}
 }
 
@@ -158,7 +158,7 @@ void AArea::OnOverlapBeginRight(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
 	{
 		RightRoom = Cast<ARoom>(OtherActor);
-	RIGHT = OtherActor->GetName();
+		RIGHT = OtherActor->GetName();
 	}
 }
 
@@ -168,7 +168,7 @@ void AArea::OnOverlapBeginLeft(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
 	{
 		LeftRoom = Cast<ARoom>(OtherActor);
-	LEFT = OtherActor->GetName();
+		LEFT = OtherActor->GetName();
 	}
 }
 
@@ -210,8 +210,8 @@ void AArea::OnConstruction(const FTransform& Transform)
 		LeftCollision->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginLeft);
 	if (RightCollision)
 		RightCollision->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginRight);
-	if (RoomDetectionBox)
-		RoomDetectionBox->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginSphere);
+	if (RoomDetectionSphere)
+		RoomDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginSphere);
 }
 
 bool AArea::Split()
@@ -379,10 +379,10 @@ void AArea::CreateRoom()
 			Room->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
 		}
 
-		UpCollision->SetWorldScale3D(FVector(Room->Width, 1, 1));
-		DownCollision->SetWorldScale3D(FVector(Room->Width, 1, 1));
-		RightCollision->SetWorldScale3D(FVector(1, Room->Height, 1));
-		LeftCollision->SetWorldScale3D(FVector(1, Room->Height, 1));
+		UpCollision->SetWorldScale3D(FVector(Room->Width / 1.2, 1, 1));
+		DownCollision->SetWorldScale3D(FVector(Room->Width / 1.2, 1, 1));
+		RightCollision->SetWorldScale3D(FVector(1, Room->Height / 1.2, 1));
+		LeftCollision->SetWorldScale3D(FVector(1, Room->Height / 1.2, 1));
 	}
 }
 
@@ -495,32 +495,16 @@ void AArea::CreateHall()
 {
 	constexpr int ROOT_AREA_SCALE = 15000;
 	int AdditionalOffset = 150;// 55;//100;//50// 100;// 150;
-	int DeltaOffset = 200; //400
 
-	if (UpCollision && UpRoom && //(UpRoom->Width / Room->Width >= 2 || UpRoom->Width / Room->Width <= 1) &&
-		UpRoom->DownExits.Num() == 0 //!UpRoom->DownExit 
-		//&& UpCollision->GetComponentLocation().X < UpRoom->Location.X + UpRoom->Width * 100 / 2 - AdditionalOffset &&
-		//UpCollision->GetComponentLocation().X > UpRoom->Location.X - UpRoom->Width * 100 / 2 + AdditionalOffset
-		)
+	if (UpCollision && UpRoom && UpRoom->DownExits.Num() == 0)
 	{
-		//int DeltaHall = 0;
-		//if (Room->Width > UpRoom->Width)
-		//{
-			int DeltaHall = FMath::Abs(Room->Location.X - UpRoom->Location.X) / 1.25;// +Room->Location.X;
-			if (UpRoom->Location.X > Room->Location.X) DeltaHall = FMath::Abs(DeltaHall);
-			else DeltaHall *= -1;
-		//}
-		//else DeltaHall = 0;
+		float Min, Max = 0;
+		FindCommonAreasBetweenNeighbourRooms(Room, UpRoom, Min, Max, true);
+		float HallLocation_X = (Min + Max) / 2;//FMath::Clamp(Room->Location.X + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
+		UE_LOG(LogTemp, Warning, TEXT("Room: %s Min: %f : Max: %f"), *Room->GetName(), Min, Max);
 
-			//UE_LOG(LogTemp, Warning, TEXT("ROOM: %s : DELTA HALL: %d"),*Room->GetName(), DeltaHall);
-			float Min, Max = 0;
-			FindCommonAreasBetweenNeighbourRooms(Room, UpRoom, Min, Max, true);
-			float HallLocation_X = FMath::Clamp(Room->Location.X + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
-			UE_LOG(LogTemp, Warning, TEXT("Min: %f : Max: %f"), Min, Max);
-		
 		FVector Point1 = FVector(Room->Location.X, Room->Location.Y, 0);
 		FVector Point2 = FVector(UpRoom->Location.X, UpRoom->Location.Y, 0);
-		//float HallWidth = Point2.X - Point1.X;
 		float HallHeight = Point2.Y - UpRoom->Height * 100 / 2 - Point1.Y + Room->Height * 100 / 2;
 		float Height = FVector::Distance(FVector(0, UpRoom->Location.Y - UpRoom->Height * 100 / 2, 0), FVector(0, Room->Location.Y + Room->Height * 100 / 2, 0));
 		float Y = (UpRoom->Location.Y - UpRoom->Height * 100 / 2) + (Room->Location.Y + Room->Height * 100 / 2);
@@ -536,29 +520,15 @@ void AArea::CreateHall()
 		UpRoom->DownExits.Add(Hall);
 		UpRoom->CreatedExits.Add(Hall);
 	}
-	if (DownCollision && DownRoom && //(DownRoom->Width / Room->Width >= 2 || DownRoom->Width / Room->Width <= 1) &&
-		DownRoom->UpExits.Num()==0 //!DownRoom->UpExit
-		//&&	DownCollision->GetComponentLocation().X < DownRoom->Location.X + DownRoom->Width * 100 / 2  - AdditionalOffset &&
-		//DownCollision->GetComponentLocation().X > DownRoom->Location.X - DownRoom->Width * 100 / 2 + AdditionalOffset
-		)
+	if (DownCollision && DownRoom && DownRoom->UpExits.Num() == 0)
 	{
-		//int DeltaHall = 0;
-		//if (Room->Width > DownRoom->Width)
-		//{
-			int DeltaHall = FMath::Abs(Room->Location.X - DownRoom->Location.X) / 1.25;// +Room->Location.X;
-			if (DownRoom->Location.X > Room->Location.X) DeltaHall = FMath::Abs(DeltaHall);
-			else DeltaHall *= -1;
-		//}
-		//else DeltaHall = 0;
-			//UE_LOG(LogTemp, Warning, TEXT("ROOM: %s : DELTA HALL: %d"),*Room->GetName(), DeltaHall);
-			float Min, Max = 0;
-			FindCommonAreasBetweenNeighbourRooms(Room, DownRoom, Min, Max, true);
-			float HallLocation_X = FMath::Clamp(Room->Location.X + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
-			UE_LOG(LogTemp, Warning, TEXT("Min: %f : Max: %f"), Min, Max);
-		
+		float Min, Max = 0;
+		FindCommonAreasBetweenNeighbourRooms(Room, DownRoom, Min, Max, true);
+		float HallLocation_X = (Min + Max) / 2;//FMath::Clamp(Room->Location.X + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
+		UE_LOG(LogTemp, Warning, TEXT("Room: %s Min: %f : Max: %f"), *Room->GetName(), Min, Max);
+
 		FVector Point1 = FVector(Room->Location.X, Room->Location.Y, 0);
 		FVector Point2 = FVector(DownRoom->Location.X, DownRoom->Location.Y, 0);
-		//float HallWidth = Point2.X - Point1.X;
 		float HallHeight = Point2.Y + DownRoom->Height * 100 / 2 - Point1.Y - Room->Height * 100 / 2;
 		float Height = FVector::Distance(FVector(0, DownRoom->Location.Y + DownRoom->Height * 100 / 2, 0), FVector(0, Room->Location.Y - Room->Height * 100 / 2, 0));
 		float Y = (DownRoom->Location.Y + DownRoom->Height * 100 / 2) + (Room->Location.Y - Room->Height * 100 / 2);
@@ -574,30 +544,15 @@ void AArea::CreateHall()
 		DownRoom->UpExits.Add(Hall);
 		DownRoom->CreatedExits.Add(Hall);
 	}
-	if (RightCollision && RightRoom && //(RightRoom->Height / Room->Height >= 2 || RightRoom->Height / Room->Height <= 1) &&
-		RightRoom->LeftExits.Num() == 0  // !RightRoom->LeftExit
-		//&&	RightCollision->GetComponentLocation().Y < RightRoom->Location.Y + RightRoom->Height * 100 / 2 - AdditionalOffset &&
-		//RightCollision->GetComponentLocation().Y > RightRoom->Location.Y - RightRoom->Height * 100 / 2 + AdditionalOffset
-		)
+	if (RightCollision && RightRoom && RightRoom->LeftExits.Num() == 0)
 	{
+		float Min, Max = 0;
+		FindCommonAreasBetweenNeighbourRooms(Room, RightRoom, Min, Max, false);
+		float HallLocation_Y = (Min + Max) / 2;//FMath::Clamp(Room->Location.Y + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
+		UE_LOG(LogTemp, Warning, TEXT("Room: %s Min: %f : Max: %f"), *Room->GetName(), Min, Max);
 
-		//int DeltaHall = 0;
-		//if (Room->Height > RightRoom->Height)
-		//{
-			int DeltaHall = FMath::Abs(Room->Location.Y - RightRoom->Location.Y) / 1.25;// +Room->Location.Y;
-			if (RightRoom->Location.Y > Room->Location.Y) DeltaHall = FMath::Abs(DeltaHall);
-			else DeltaHall *= -1;
-		//}
-		//else DeltaHall = 0;
-			//UE_LOG(LogTemp, Warning, TEXT("ROOM: %s : DELTA HALL: %d"),*Room->GetName(), DeltaHall);
-			float Min, Max = 0;
-			FindCommonAreasBetweenNeighbourRooms(Room, RightRoom, Min, Max, false);
-			float HallLocation_Y = FMath::Clamp(Room->Location.Y + DeltaHall, Min + DeltaOffset, Max - DeltaOffset);
-			UE_LOG(LogTemp, Warning, TEXT("Min: %f : Max: %f"), Min, Max);
-		
 		FVector Point1 = FVector(Room->Location.X, Room->Location.Y, 0);
 		FVector Point2 = FVector(RightRoom->Location.X, RightRoom->Location.Y, 0);
-		//float HallWidth = Point2.X - RightRoom->Width * 100 / 2 - Point1.X + Room->Width * 100 / 2;
 		float HallHeight = Point2.Y - Point1.Y;
 		float Width = FVector::Distance(FVector(RightRoom->Location.X - RightRoom->Width * 100 / 2, 0, 0), FVector(Room->Location.X + Room->Width * 100 / 2, 0, 0));
 		float X = (RightRoom->Location.X - RightRoom->Width * 100 / 2) + (Room->Location.X + Room->Width * 100 / 2);
@@ -613,27 +568,13 @@ void AArea::CreateHall()
 		RightRoom->LeftExits.Add(Hall);
 		RightRoom->CreatedExits.Add(Hall);
 	}
-	if (LeftCollision && LeftRoom && //(LeftRoom->Height / Room->Height >= 2 || LeftRoom->Height / Room->Height <= 1) &&
-		LeftRoom->RightExits.Num() == 0 //!LeftRoom->RightExit
-		//&&	LeftCollision->GetComponentLocation().Y < LeftRoom->Location.Y + LeftRoom->Height * 100 / 2 - AdditionalOffset &&
-		//LeftCollision->GetComponentLocation().Y > LeftRoom->Location.Y - LeftRoom->Height * 100 / 2 + AdditionalOffset
-		)
+	if (LeftCollision && LeftRoom && LeftRoom->RightExits.Num() == 0)
 	{
-		//int DeltaHall = 0;
-		//if (Room->Height > LeftRoom->Height)
-		//{
-			int DeltaHall = FMath::Abs(Room->Location.Y - LeftRoom->Location.Y) / 1.25;// +Room->Location.Y;
-			if (LeftRoom->Location.Y > Room->Location.Y) DeltaHall = FMath::Abs(DeltaHall);
-			else DeltaHall *= -1;
-		//}
-		//else DeltaHall = 0;
-			//UE_LOG(LogTemp, Warning, TEXT("ROOM: %s : DELTA HALL: %d"),*Room->GetName(), DeltaHall);
-			float Min, Max = 0;
-			FindCommonAreasBetweenNeighbourRooms(Room, LeftRoom, Min, Max, false);
-			float HallLocation_Y = FMath::Clamp(Room->Location.Y + DeltaHall, Min, Max);
-			UE_LOG(LogTemp, Warning, TEXT("Min: %f : Max: %f"), Min + DeltaOffset, Max - DeltaOffset);
-		
-			
+		float Min, Max = 0;
+		FindCommonAreasBetweenNeighbourRooms(Room, LeftRoom, Min, Max, false);
+		float HallLocation_Y = (Min + Max) / 2;// FMath::Clamp(Room->Location.Y + DeltaHall, Min, Max);
+		UE_LOG(LogTemp, Warning, TEXT("Room: %s Min: %f : Max: %f"), *Room->GetName(), Min, Max);
+
 		FVector Point1 = FVector(Room->Location.X, Room->Location.Y, 0);
 		FVector Point2 = FVector(LeftRoom->Location.X, LeftRoom->Location.Y, 0);
 		//float HallWidth = Point2.X + LeftRoom->Width * 100 / 2 - Point1.X - Room->Width * 100 / 2;
@@ -653,24 +594,24 @@ void AArea::CreateHall()
 		LeftRoom->CreatedExits.Add(Hall);
 	}
 
-	//if (Room->CreatedExits.Num() > 0) 
-	//{
-	//	if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 4000) //4000 //2000
-	//	{
-	//		if (!GameMode->IsRightExitSet)
-	//			CreateExit(Room->Location.X + Room->Width * 100 / 2, Room->Location.Y, true);
-	//	}
-	//	if (!UpRoom && Room && Room->Location.Y > ROOT_AREA_SCALE - 4000) //4000
-	//	{
-	//		if (!GameMode->IsUpExitSet)
-	//			CreateExit(Room->Location.X, Room->Location.Y + Room->Height * 100 / 2, false);
-	//	}
-	//}
-	//else
-	//{
-	//	Room->Destroy();
-	//	Destroy(false, true);
-	//}
+	if (Room->CreatedExits.Num() > 0) 
+	{
+		if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 4000) //4000 //2000
+		{
+			if (!GameMode->IsRightExitSet)
+				CreateExit(Room->Location.X + Room->Width * 100 / 2, Room->Location.Y, true);
+		}
+		if (!UpRoom && Room && Room->Location.Y > ROOT_AREA_SCALE - 4000) //4000
+		{
+			if (!GameMode->IsUpExitSet)
+				CreateExit(Room->Location.X, Room->Location.Y + Room->Height * 100 / 2, false);
+		}
+	}
+	else
+	{
+		Room->Destroy();
+		Destroy(false, true);
+	}
 }
 
 void AArea::DeleteExtraRooms()
@@ -705,8 +646,8 @@ void AArea::FindCommonAreasBetweenNeighbourRooms(ARoom* thisRoom, ARoom* Neighbo
 
 	float MinOtherRoom;
 	float MaxOtherRoom;
-	
-	if(isComparedByX)
+
+	if (isComparedByX)
 	{
 		MinMainRoom = thisRoom->Location.X - (thisRoom->Width * 100 / 2);
 		MaxMainRoom = thisRoom->Location.X + (thisRoom->Width * 100 / 2);

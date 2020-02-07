@@ -151,7 +151,7 @@ void AArtGuardGameMode::SpawnArea()
 			Area->Room->SpawnPuddle(PuddleIterator);
 		}
 
-		Area->DeleteExtraRooms();
+		//Area->DeleteExtraRooms();
 	}
 }
 
