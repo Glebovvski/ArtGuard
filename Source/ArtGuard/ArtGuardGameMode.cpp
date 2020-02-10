@@ -97,6 +97,9 @@ void AArtGuardGameMode::SpawnArea()
 {
 	Areas.Empty();
 	FoundAreas.Empty();
+	IsRightExitSet = false;
+	IsUpExitSet = false;
+	
 	FVector Scale = FVector(150, 150, 1);
 	FVector Location = FVector(Scale.X / 2 * 100, Scale.Y / 2 * 100, 0);
 	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);

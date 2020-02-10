@@ -26,7 +26,9 @@ public:
 	int MinWidth = 22;
 	int MinHeight = 22;
 
+	UPROPERTY(VisibleInstanceOnly)
 	float Height;
+	UPROPERTY(VisibleInstanceOnly)
 	float Width;
 
 	FVector Location;
@@ -149,7 +151,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		FString LEFT;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere)
 		USphereComponent* RoomDetectionSphere;
 	
 private:

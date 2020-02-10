@@ -72,13 +72,13 @@ AArea::AArea()//(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 		FVector(1, 0.5, 1) //x=0.5
 	);
 
+	
 	RoomDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("DetectionSphere"));
 	FTransform SphereTransform = FTransform(
 		FRotator::ZeroRotator,
 		FVector(0, 0, 0), //x=-105
-		FVector(100, 100, 100) //x=0.5
+		FVector(0) //x=0.5
 	);
-	RoomDetectionSphere->SetRelativeTransform(SphereTransform);
 	RoomDetectionSphere->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
 	RoomDetectionSphere->SetGenerateOverlapEvents(true);
 
@@ -193,6 +193,13 @@ void AArea::BeginPlay()
 	CollisionArray.Add(DownCollision);
 	CollisionArray.Add(LeftCollision);
 	CollisionArray.Add(RightCollision);
+
+	float SphereRadius = FMath::Sqrt(Width * Width + Height * Height) / 2;
+	SphereRadius += FMath::RandRange(15,40);//*= 100;//+= 50;
+	UE_LOG(LogTemp, Warning, TEXT("SPHERE RADIUS: %f"), SphereRadius);
+	RoomDetectionSphere->SetSphereRadius(SphereRadius);
+	RoomDetectionSphere->SetWorldScale3D(FVector(SphereRadius));
+
 }
 
 void AArea::OnConstruction(const FTransform& Transform)
@@ -233,6 +240,7 @@ bool AArea::Split()
 
 void AArea::SpawnChild()
 {
+	float SphereRadius = 0;
 	if (!Visited)
 	{
 		FActorSpawnParameters SpawnParameters;
@@ -254,7 +262,7 @@ void AArea::SpawnChild()
 				UGameplayStatics::FinishSpawningActor(RightAreaChild, RightChildTransform);
 			}
 			RightAreaChild->Parent = this;
-
+			
 			LeftChildTransform = FTransform(
 				FRotator::ZeroRotator,
 				FVector(Location.X, RightAreaChild->Location.Y - RightAreaChild->Height * 100 / 2 - Split * 100 / 2, 0),
@@ -301,14 +309,16 @@ void AArea::SpawnChild()
 			}
 			LeftAreaChild->Parent = this;
 		}
-		Box->DestroyComponent();
-
+		Destroy();
+		Box->SetHiddenInGame(true, true);
+		RoomDetectionSphere->SetHiddenInGame(true, true);
+		//RoomDetectionSphere->DestroyComponent();
 		DestroyCollisions();
 		Childs.Add(LeftAreaChild);
 		Childs.Add(RightAreaChild);
 		Visited = true;
 
-		Destroy();
+		Box->DestroyComponent();
 	}
 }
 
@@ -342,7 +352,7 @@ void AArea::CreateRooms()
 
 void AArea::CreateRoom()
 {
-	if (FMath::FRandRange(0, 1) > 0.6 || NeighbourRooms.Num() < 3)//(Width > MIN_AREA_SIZE&& Height > MIN_AREA_SIZE) 
+	if (FMath::FRandRange(0, 1) > 0.75 || NeighbourRooms.Num() < 3)//(Width > MIN_AREA_SIZE&& Height > MIN_AREA_SIZE) 
 	{
 		int RoomWidth = 5;
 		int RoomHeight = 5;
@@ -379,10 +389,14 @@ void AArea::CreateRoom()
 			Room->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
 		}
 
-		UpCollision->SetWorldScale3D(FVector(Room->Width / 1.2, 1, 1));
-		DownCollision->SetWorldScale3D(FVector(Room->Width / 1.2, 1, 1));
-		RightCollision->SetWorldScale3D(FVector(1, Room->Height / 1.2, 1));
-		LeftCollision->SetWorldScale3D(FVector(1, Room->Height / 1.2, 1));
+		UpCollision->SetRelativeScale3D(FVector(Room->Width, 1, 1));
+		DownCollision->SetRelativeScale3D(FVector(Room->Width, 1, 1));
+		RightCollision->SetRelativeScale3D(FVector(1, Room->Height, 1));
+		LeftCollision->SetRelativeScale3D(FVector(1, Room->Height, 1));
+
+		//float SphereRadius = FMath::Sqrt(RoomWidth * RoomWidth + RoomHeight * RoomHeight) / 2 + 50;
+		//RoomDetectionSphere->SetWorldScale3D(FVector(SphereRadius));
+		//RoomDetectionSphere->SetSphereRadius(SphereRadius);
 	}
 }
 
