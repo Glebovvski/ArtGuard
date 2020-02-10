@@ -100,6 +100,7 @@ void AArtGuardGameMode::SpawnArea()
 	IsRightExitSet = false;
 	IsUpExitSet = false;
 	
+	
 	FVector Scale = FVector(150, 150, 1);
 	FVector Location = FVector(Scale.X / 2 * 100, Scale.Y / 2 * 100, 0);
 	FTransform RootTransform = FTransform(FRotator::ZeroRotator, Location, Scale);
@@ -370,23 +371,23 @@ void AArtGuardGameMode::SetLocationForRobber()
 	float X = 0, Y = 0;
 	bool check = false;
 	bool checkCollisionInRoom = false;
-	//do
-	//{
-	//	auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
-	//	if (FoundAreas[RandomRoomIndex]->Room)
-	//	{
-	//		if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)//10000)
-	//		{
-	//			auto Room = FoundAreas[RandomRoomIndex]->Room;
-	//			X = Room->Location.X + 50;
-	//			Y = Room->Location.Y + 50;
-	//			check = true;
-	//		}
-	//	}
-	//} while (!check);
+	do
+	{
+		auto RandomRoomIndex = FMath::RandRange(0, FoundAreas.Num() - 1);
+		if (FoundAreas[RandomRoomIndex]->Room)
+		{
+			if (FVector::Distance(FoundAreas[RandomRoomIndex]->Room->Location, Guard->GetActorLocation()) > 5000)//10000)
+			{
+				auto Room = FoundAreas[RandomRoomIndex]->Room;
+				X = Room->Location.X + 50;
+				Y = Room->Location.Y + 50;
+				check = true;
+			}
+		}
+	} while (!check);
 
-	X = FoundAreas[0]->Room->Location.X + 50;
-	Y = FoundAreas[0]->Room->Location.Y + 50;
+	//X = FoundAreas[0]->Room->Location.X + 50;
+	//Y = FoundAreas[0]->Room->Location.Y + 50;
 	
 	FVector SpawnLocation = FVector(X, Y, 150);
 	auto Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
