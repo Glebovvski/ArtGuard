@@ -65,17 +65,6 @@ void AArtGuardGameMode::OnConstruction(const FTransform& Transform)
 	GetAllMaterials();
 }
 
-//void AArtGuardGameMode::BeginDestroy()
-//{
-//	Super::BeginDestroy();
-//	
-//	RobberBonuses.Empty();
-//	GuardBonuses.Empty();
-//
-//	HorizontalMaterials.Empty();
-//	VerticalMaterials.Empty();
-//}
-
 TArray<UMaterialInstance*> AArtGuardGameMode::GetVerticalMaterials() const
 {
 	return VerticalMaterials;
@@ -155,7 +144,7 @@ void AArtGuardGameMode::SpawnArea()
 			Area->Room->SpawnPuddle(PuddleIterator);
 		}
 
-		//Area->DeleteExtraRooms();
+		Area->DeleteExtraRooms();
 	}
 }
 
@@ -277,12 +266,12 @@ void AArtGuardGameMode::SetBonusPercent(TArray<ABonus*>& BonusArray)
 	}
 }
 
-AArea* AArtGuardGameMode::GetMainRightExit()
+AExit* AArtGuardGameMode::GetMainRightExit()
 {
 	return MainRightExit;
 }
 
-AArea* AArtGuardGameMode::GetMainUpExit()
+AExit* AArtGuardGameMode::GetMainUpExit()
 {
 	return MainUpExit;
 }

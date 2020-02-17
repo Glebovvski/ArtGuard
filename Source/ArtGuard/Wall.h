@@ -28,6 +28,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Spawn")
 	AFrame* SpawnFrame(FVector Location, FRotator Rotation, bool IsFenceVisible);
 
+	TArray<AFrame*> Frames;
+
+	void DestroyWall();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

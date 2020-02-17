@@ -40,13 +40,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Spawn")
 	TSubclassOf<APicture> Picture_BP;
-
+	APicture* Picture;
 
 	UFUNCTION(BlueprintCallable, Category="Sprite")
 	void SetPictureSprite(UPaperSpriteComponent* SpriteToSet);
 
 	void ChangeSpriteColor();
 	void Color(FLinearColor Color);
+
+	void DestroyFrame();
 private:
 	
 	UPaperSpriteComponent* Sprite;

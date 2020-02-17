@@ -31,7 +31,7 @@ void AFrame::Tick(float DeltaTime)
 
 void AFrame::SpawnPicture(bool IsFenceVisible)
 {
-	auto Picture = GetWorld()->SpawnActor<APicture>(Picture_BP);
+	Picture = GetWorld()->SpawnActor<APicture>(Picture_BP);
 	Picture->IsFenceVisible=IsFenceVisible;
 	if (Picture->IsHorizontal)
 		Frame->AddLocalRotation(FRotator(90, 0, 0));
@@ -58,6 +58,11 @@ void AFrame::ChangeSpriteColor()
 void AFrame::Color(FLinearColor Color)
 {
 	Sprite->SetSpriteColor(Color);
+}
+
+void AFrame::DestroyFrame()
+{
+	Picture->Destroy();
 }
 
 void AFrame::SetPictureSprite(UPaperSpriteComponent* SpriteToSet)

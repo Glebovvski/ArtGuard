@@ -18,6 +18,7 @@ class AArea;
 class ARobber;
 class AGuard;
 class UAIPerceptionComponent;
+class AExit;
 
 UCLASS()
 class ARTGUARD_API AArtGuardGameMode : public AGameModeBase
@@ -96,13 +97,13 @@ public:
 	bool IsRightExitSet=false;
 	bool IsUpExitSet=false;
 
-	AArea* MainRightExit;
-	AArea* MainUpExit;
+	AExit* MainRightExit;
+	AExit* MainUpExit;
 
 	UFUNCTION(BlueprintCallable, Category="Exit")
-	AArea* GetMainRightExit();
+	AExit* GetMainRightExit();
 	UFUNCTION(BlueprintCallable, Category="Exit")
-	AArea* GetMainUpExit();
+	AExit* GetMainUpExit();
 
 	UFUNCTION(BlueprintCallable, Category="Spawning")
 	void SpawnAIRobber();

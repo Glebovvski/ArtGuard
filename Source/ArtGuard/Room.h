@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ArtGuardGameMode.h"
+#include "Space.h"
 #include "Room.generated.h"
 
 class AWall;
@@ -27,6 +28,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+	
 
 public:	
 	// Called every frame
@@ -44,16 +46,16 @@ public:
 	AArea* UpExit;
 	AArea* DownExit;*/
 
-	UPROPERTY(VisibleAnywhere)
-	TArray<AArea*> RightExits;
-	UPROPERTY(VisibleAnywhere)
-	TArray<AArea*> LeftExits;
-	UPROPERTY(VisibleAnywhere)
-	TArray<AArea*> UpExits;
-	UPROPERTY(VisibleAnywhere)
-	TArray<AArea*> DownExits;
+	//UPROPERTY(VisibleAnywhere)
+	TArray<ISpace*> RightExits;
+	//UPROPERTY(VisibleAnywhere)
+	TArray<ISpace*> LeftExits;
+	//UPROPERTY(VisibleAnywhere)
+	TArray<ISpace*> UpExits;
+	//UPROPERTY(VisibleAnywhere)
+	TArray<ISpace*> DownExits;
 	
-	TArray<AArea*> CreatedExits;
+	TArray<ISpace*> CreatedExits;
 
 	void CreateWalls();
 	TArray<AWall*> LeftWalls;
@@ -62,10 +64,13 @@ public:
 	TArray<AWall*> DownWalls;
 
 	void CreateDecorWalls();
+	TArray<AWall*> DecorWalls;
+	
 	void CreateProps();
 	UPROPERTY(EditDefaultsOnly, Category="Props")
 	TSubclassOf<AActor> BP_Bench;
-
+	TArray<AActor*> Benches;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Props")
 	TSubclassOf<AActor> BP_BigStatue;
 
@@ -94,7 +99,7 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 		UStaticMeshComponent* Box = nullptr;
 
-	
+	void DestroyRoom();
 	
 private:
 	AWall* CreateWall(FVector Location, FVector Scale, FRotator Rotation);
@@ -122,5 +127,5 @@ private:
 
 	void SortExits();
 
-	void Swap(TArray<AArea*> &Exits);
+	void Swap(TArray<ISpace*> &Exits);
 };

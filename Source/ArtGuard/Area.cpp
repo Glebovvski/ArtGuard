@@ -9,8 +9,9 @@
 #include "ArtGuardGameMode.h"
 #include "Room.h"
 #include "Kismet/GameplayStatics.h"
-#include "Components/SphereComponent.h"
+//#include "Components/SphereComponent.h"
 #include "Exit.h"
+#include "Space.h"
 #include "Wall.h"
 
 // Sets default values
@@ -72,15 +73,17 @@ AArea::AArea()//(const FObjectInitializer& ObjectInitializer) : Super(ObjectInit
 		FVector(1, 0.5, 1) //x=0.5
 	);
 
-	
-	RoomDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("DetectionSphere"));
+
+	RoomDetectionBox = CreateDefaultSubobject<UBoxComponent>(FName("DetectionSphere"));
 	FTransform SphereTransform = FTransform(
 		FRotator::ZeroRotator,
 		FVector(0, 0, 0), //x=-105
-		FVector(0) //x=0.5
+		FVector(1)//(FMath::Sqrt((Width * Width) + (Height * Height)) / 2) //x=0.5
 	);
-	RoomDetectionSphere->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
-	RoomDetectionSphere->SetGenerateOverlapEvents(true);
+	//float SphereRadius = FMath::Sqrt((Width * Width) + (Height * Height)) / 2;
+
+	RoomDetectionBox->AttachToComponent(Box, FAttachmentTransformRules::KeepRelativeTransform);
+	RoomDetectionBox->SetGenerateOverlapEvents(true);
 
 	UpCollision->SetWorldTransform(UpTransform);
 	DownCollision->SetWorldTransform(DownTransform);
@@ -177,7 +180,18 @@ void AArea::OnOverlapBeginSphere(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
 	{
+		//if (FVector::Distance(Room->GetActorLocation(), OtherActor->GetActorLocation()) < RoomDetectionSphere->GetScaledSphereRadius() * 2)
 		NeighbourRooms.Add(OtherActor);
+	}
+}
+
+void AArea::OnOverlapEndSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	if (OtherActor->ActorHasTag("Room") && OtherActor != Room)//this)
+	{
+		//if (FVector::Distance(Room->GetActorLocation(), OtherActor->GetActorLocation()) < RoomDetectionSphere->GetScaledSphereRadius() * 2)
+		NeighbourRooms.Remove(OtherActor);
 	}
 }
 
@@ -194,12 +208,13 @@ void AArea::BeginPlay()
 	CollisionArray.Add(LeftCollision);
 	CollisionArray.Add(RightCollision);
 
-	float SphereRadius = FMath::Sqrt(Width * Width + Height * Height) / 2;
-	SphereRadius += FMath::RandRange(15,40);//*= 100;//+= 50;
-	UE_LOG(LogTemp, Warning, TEXT("SPHERE RADIUS: %f"), SphereRadius);
-	RoomDetectionSphere->SetSphereRadius(SphereRadius);
-	RoomDetectionSphere->SetWorldScale3D(FVector(SphereRadius));
-
+	float SphereRadius = FMath::Sqrt(FMath::Pow(Width, 2) + FMath::Pow(Height, 2));
+	//SphereRadius += FMath::RandRange(15, 40);//*= 100;//+= 50;
+	//UE_LOG(LogTemp, Warning, TEXT("SPHERE RADIUS: %f"), SphereRadius);
+	//RoomDetectionSphere->InitSphereRadius(SphereRadius);
+	//RoomDetectionSphere->SetSphereRadius(SphereRadius);
+	RoomDetectionBox->SetWorldScale3D(FVector(Width * 2.5, Height*2.5, 10));
+	//UE_LOG(LogTemp, Warning, TEXT("SCALED RADIUS: %f"), RoomDetectionSphere->GetScaledSphereRadius());
 }
 
 void AArea::OnConstruction(const FTransform& Transform)
@@ -217,8 +232,11 @@ void AArea::OnConstruction(const FTransform& Transform)
 		LeftCollision->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginLeft);
 	if (RightCollision)
 		RightCollision->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginRight);
-	if (RoomDetectionSphere)
-		RoomDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginSphere);
+	if (RoomDetectionBox) 
+	{
+		RoomDetectionBox->OnComponentBeginOverlap.AddDynamic(this, &AArea::OnOverlapBeginSphere);
+		RoomDetectionBox->OnComponentEndOverlap.AddDynamic(this, &AArea::OnOverlapEndSphere);
+	}
 }
 
 bool AArea::Split()
@@ -262,7 +280,7 @@ void AArea::SpawnChild()
 				UGameplayStatics::FinishSpawningActor(RightAreaChild, RightChildTransform);
 			}
 			RightAreaChild->Parent = this;
-			
+
 			LeftChildTransform = FTransform(
 				FRotator::ZeroRotator,
 				FVector(Location.X, RightAreaChild->Location.Y - RightAreaChild->Height * 100 / 2 - Split * 100 / 2, 0),
@@ -311,7 +329,6 @@ void AArea::SpawnChild()
 		}
 		Destroy();
 		Box->SetHiddenInGame(true, true);
-		RoomDetectionSphere->SetHiddenInGame(true, true);
 		//RoomDetectionSphere->DestroyComponent();
 		DestroyCollisions();
 		Childs.Add(LeftAreaChild);
@@ -347,32 +364,15 @@ void AArea::CreateRooms()
 		LeftAreaChild->CreateRooms();
 		RightAreaChild->CreateRooms();
 	}
-	else CreateRoom();
+	else /*if (NeighbourRooms.Num() <= 5)*/ CreateRoom();
 }
 
 void AArea::CreateRoom()
 {
-	if (FMath::FRandRange(0, 1) > 0.75 || NeighbourRooms.Num() < 3)//(Width > MIN_AREA_SIZE&& Height > MIN_AREA_SIZE) 
+	if (FMath::FRandRange(0, 1) > 0.8 || NeighbourRooms.Num() < 3)// Width >= MIN_AREA_SIZE && Height >= MIN_AREA_SIZE) 
 	{
-		int RoomWidth = 5;
-		int RoomHeight = 5;
-		for (int i = Width - FMath::RandRange(7, 9); i > 5; i--) //min=5
-		{
-			//CHECK WHAT HAPPENS
-			//if (i % 5 == 0)
-			{
-				RoomWidth = i;
-				break;
-			}
-		}
-		for (int i = Height - FMath::RandRange(7, 9); i > 5; i--)
-		{
-			//if (i % 5 == 0)
-			{
-				RoomHeight = i;
-				break;
-			}
-		}
+		int RoomWidth = Width - FMath::RandRange(5, 9); //min=5
+		int RoomHeight = Height - FMath::RandRange(5, 9);
 
 		FTransform RoomTransform = FTransform(
 			FRotator::ZeroRotator,
@@ -394,6 +394,7 @@ void AArea::CreateRoom()
 		RightCollision->SetRelativeScale3D(FVector(1, Room->Height, 1));
 		LeftCollision->SetRelativeScale3D(FVector(1, Room->Height, 1));
 
+		RoomDetectionBox->SetWorldScale3D(FVector(RoomWidth * 2.5, RoomHeight * 2.5, 10));
 		//float SphereRadius = FMath::Sqrt(RoomWidth * RoomWidth + RoomHeight * RoomHeight) / 2 + 50;
 		//RoomDetectionSphere->SetWorldScale3D(FVector(SphereRadius));
 		//RoomDetectionSphere->SetSphereRadius(SphereRadius);
@@ -404,7 +405,7 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 {
 	if (IsRight)
 	{
-		AArea* Hall = GetWorld()->SpawnActor<AArea>(BP_MAIN_Hall);
+		AExit* Hall = GetWorld()->SpawnActor<AExit>(BP_MAIN_Hall);
 		Hall->SetActorScale3D(FVector(7, 4, 1));
 		Hall->SetActorLocation(FVector(X + Hall->GetActorScale3D().X * 100 / 2, Y, 1));
 		Hall->Location = Hall->GetActorLocation();
@@ -442,7 +443,7 @@ void AArea::CreateExit(int X, int Y, bool IsRight)
 	}
 	else
 	{
-		AArea* Hall = GetWorld()->SpawnActor<AArea>(BP_MAIN_Hall);
+		AExit* Hall = GetWorld()->SpawnActor<AExit>(BP_MAIN_Hall);
 		Hall->SetActorScale3D(FVector(4, 7, 1));
 		Hall->SetActorLocation(FVector(X, Y + Hall->GetActorScale3D().Y * 100 / 2, 1));
 		Hall->Location = Hall->GetActorLocation();
@@ -608,7 +609,7 @@ void AArea::CreateHall()
 		LeftRoom->CreatedExits.Add(Hall);
 	}
 
-	if (Room->CreatedExits.Num() > 0) 
+	if (Room->CreatedExits.Num() > 0)
 	{
 		if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 4000) //4000 //2000
 		{
@@ -630,23 +631,10 @@ void AArea::CreateHall()
 
 void AArea::DeleteExtraRooms()
 {
-	constexpr int ROOT_AREA_SCALE = 15000;
-	if (Room->CreatedExits.Num() > 0)
-	{
-		if (!RightRoom && Room && Room->Location.X > ROOT_AREA_SCALE - 4000) //4000 //2000
-		{
-			if (!GameMode->IsRightExitSet)
-				CreateExit(Room->Location.X + Room->Width * 100 / 2, Room->Location.Y, true);
-		}
-		if (!UpRoom && Room && Room->Location.Y > ROOT_AREA_SCALE - 4000) //4000
-		{
-			if (!GameMode->IsUpExitSet)
-				CreateExit(Room->Location.X, Room->Location.Y + Room->Height * 100 / 2, false);
-		}
-	}
-	else
+	if (Room->CreatedExits.Num() == 0)
 	{
 		Room->Destroy();
+		Room->DestroyRoom();
 		Room = nullptr;
 		Destroy(false, true);
 	}
@@ -699,7 +687,7 @@ AArea* AArea::SpawnHall(int X, int Y, float Width, float Height)
 		UGameplayStatics::FinishSpawningActor(Hall, HallTransform);
 	}
 
-	if (Width > Height)
+	if (Width >= Height)
 	{
 		auto LeftWall = GetWorld()->SpawnActor<AWall>/*AArea>*/(BP_Wall);//BP_Hall);
 		LeftWall->SetActorLocation(FVector(Hall->Location.X, Hall->Location.Y + Hall->Height * 100 / 2 + WallOffset, 1000));

@@ -75,13 +75,6 @@ void APicture::BeginPlay()
 	}
 }
 
-void APicture::BeginDestroy()
-{
-	Super::BeginDestroy();
-	//Materials.Empty();
-	//Plane->DestroyComponent();
-	//DestroyConstructedComponents();
-}
 
 void APicture::SetPlane(UStaticMeshComponent* PlaneToSet)
 {

@@ -29,7 +29,17 @@ AFrame* AWall::SpawnFrame(FVector Location, FRotator Rotation, bool IsFenceVisib
 	Frame->SetActorLocation(Location);
 	Frame->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform, "");
 	Frame->SpawnPicture(IsFenceVisible);
+	Frames.Add(Frame);
 	return Frame;
+}
+
+void AWall::DestroyWall()
+{
+	for (auto Frame : Frames)
+	{
+		Frame->DestroyFrame();
+		Frame->Destroy();
+	}
 }
 
 // Called when the game starts or when spawned

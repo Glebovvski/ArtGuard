@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Room.h"
+#include "Space.h"
 #include "Area.generated.h"
 
 class UBoxComponent;
@@ -13,7 +14,7 @@ class AWall;
 //class ARoom;
 
 UCLASS()
-class ARTGUARD_API AArea : public AActor
+class ARTGUARD_API AArea : public AActor, public ISpace
 {
 	GENERATED_BODY()
 
@@ -26,12 +27,12 @@ public:
 	int MinWidth = 22;
 	int MinHeight = 22;
 
-	UPROPERTY(VisibleInstanceOnly)
+	/*UPROPERTY(VisibleInstanceOnly)
 	float Height;
 	UPROPERTY(VisibleInstanceOnly)
 	float Width;
 
-	FVector Location;
+	FVector Location;*/
 
 	UPROPERTY()
 	AArea* LeftAreaChild;
@@ -54,7 +55,7 @@ public:
 		TSubclassOf<AArea> BP_Hall;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Area")
-		TSubclassOf<AArea> BP_MAIN_Hall;
+		TSubclassOf<AExit> BP_MAIN_Hall;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Area")
 		TSubclassOf<AWall> BP_Wall;
@@ -107,6 +108,8 @@ public:
 	void OnOverlapBeginLeft(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnOverlapBeginSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnOverlapEndSphere(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> NeighbourRooms;
 	
@@ -151,8 +154,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		FString LEFT;
 
-	UPROPERTY(VisibleAnywhere)
-		USphereComponent* RoomDetectionSphere;
+	UPROPERTY(EditDefaultsOnly)
+		UBoxComponent* RoomDetectionBox;
 	
 private:
 	ARoom* GetRoom();

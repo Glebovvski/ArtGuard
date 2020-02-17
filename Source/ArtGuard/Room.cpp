@@ -7,7 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "Wall.h"
 #include "ArtGuardGameMode.h"
-#include "Components/SphereComponent.h"
+#include "Exit.h"
+#include "Space.h"
 #include "Area.h"
 
 // Sets default values
@@ -44,7 +45,7 @@ void ARoom::BeginPlay()
 	Super::BeginPlay();
 	UpdateOverlaps(true);
 	bGenerateOverlapEventsDuringLevelStreaming = true;
-
+	
 	//RoomDetectionSphere->SetSphereRadius((FMath::Sqrt(Width * Width + Height * Height) / 2)*10);
 
 	//UE_LOG(LogTemp, Warning, TEXT("PARENT AREA: %s"), *(GetParentActor() ? GetParentActor()->GetName() : TEXT("NULL")));
@@ -55,6 +56,39 @@ void ARoom::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 	UpdateOverlaps(true);
 	bGenerateOverlapEventsDuringLevelStreaming = true;
+}
+
+void ARoom::DestroyRoom()
+{
+	for (auto UpWall : UpWalls)
+	{
+		UpWall->DestroyWall();
+		UpWall->Destroy(false, true);
+	}
+	for (auto LeftWall : LeftWalls)
+	{
+		LeftWall->DestroyWall();
+		LeftWall->Destroy(false, true);
+	}
+	for (auto DownWall : DownWalls)
+	{
+		DownWall->DestroyWall();
+		DownWall->Destroy(false, true);
+	}
+	for (auto RightWall : RightWalls)
+	{
+		RightWall->DestroyWall();
+		RightWall->Destroy(false, true);
+	}
+	for (auto DecorWall : DecorWalls)
+	{
+		DecorWall->DestroyWall();
+		DecorWall->Destroy(false, true);
+	}
+	for (auto Bench : Benches)
+	{
+		Bench->Destroy();
+	}
 }
 
 
@@ -87,8 +121,8 @@ void ARoom::CreateWalls()
 	}
 	else //if(UpExits.Num() == 2)
 	{
-		AArea* FirstExit = UpExits[0];
-		AArea* SecondExit = UpExits[1];
+		ISpace* FirstExit = UpExits[0];
+		ISpace* SecondExit = UpExits[1];
 
 		//FIRST WALL
 		float FirstWallX = ((Location.X - Width * 100 / 2) + (FirstExit->Location.X - FirstExit->Width * 100 / 2)) / 2;
@@ -124,8 +158,8 @@ void ARoom::CreateWalls()
 	}
 	else //if (DownExits.Num() == 2)
 	{
-		AArea* FirstExit = DownExits[0];
-		AArea* SecondExit = DownExits[1];
+		ISpace* FirstExit = DownExits[0];
+		ISpace* SecondExit = DownExits[1];
 
 		//FIRST WALL
 		float FirstWallX = ((Location.X - Width * 100 / 2) + (FirstExit->Location.X - FirstExit->Width * 100 / 2)) / 2;
@@ -161,8 +195,8 @@ void ARoom::CreateWalls()
 	}
 	else
 	{
-		AArea* FirstExit = LeftExits[0];
-		AArea* SecondExit = LeftExits[1];
+		ISpace* FirstExit = LeftExits[0];
+		ISpace* SecondExit = LeftExits[1];
 
 		//FIRST WALL
 		float FirstWallY = ((Location.Y - Height * 100 / 2) + (FirstExit->Location.Y - FirstExit->Height * 100 / 2)) / 2;
@@ -198,8 +232,8 @@ void ARoom::CreateWalls()
 	}
 	else
 	{
-		AArea* FirstExit = RightExits[0];
-		AArea* SecondExit = RightExits[1];
+		ISpace* FirstExit = RightExits[0];
+		ISpace* SecondExit = RightExits[1];
 
 		//FIRST WALL
 		float FirstWallY = ((Location.Y - Height * 100 / 2) + (FirstExit->Location.Y - FirstExit->Height * 100 / 2)) / 2;
@@ -312,7 +346,8 @@ void ARoom::CreateDecorWalls()
 				UpWall->SetActorRotation(Rotation);
 				UpWall->Wall->SetMaterial(0, DecorWallMat);
 				GameMode->TotalPictures += 2;
-
+				DecorWalls.Add(UpWall);
+				
 				AWall* DownWall;
 				if (Rotation == FRotator(0, 90, 0) && Width / Height >= 2)
 					DownWall = CreateWall(FVector(Location.X, Location.Y - Height * 100 / (LocationOffset - 1), 800), FVector(Height / LocationOffset, SecondScale, 15));
@@ -324,6 +359,7 @@ void ARoom::CreateDecorWalls()
 				DownWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y + FrameOffset, 300), DownWall->GetActorRotation(), false);
 				DownWall->SetActorRotation(Rotation + FRotator(0, 180, 0));
 				GameMode->TotalPictures += 2;
+				DecorWalls.Add(DownWall);
 
 				AWall* LeftWall;
 				if (Rotation == FRotator(0, 90, 0) && Height / Width >= 2)
@@ -336,6 +372,7 @@ void ARoom::CreateDecorWalls()
 				LeftWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), LeftWall->GetActorRotation() + OppositeRotation, false);
 				LeftWall->SetActorRotation(Rotation + FRotator(0, -90, 0));
 				GameMode->TotalPictures += 2;
+				DecorWalls.Add(LeftWall);
 
 				AWall* RightWall;
 				if (Rotation == FRotator(0, 90, 0) && Height / Width >= 2)
@@ -348,6 +385,7 @@ void ARoom::CreateDecorWalls()
 				RightWall->SpawnFrame(FVector(WallLocation.X, WallLocation.Y - FrameOffset, 300), RightWall->GetActorRotation() + OppositeRotation, false);
 				RightWall->SetActorRotation(Rotation + FRotator(0, 90, 0));
 				GameMode->TotalPictures += 2;
+				DecorWalls.Add(RightWall);
 			}
 		}
 	}
@@ -470,6 +508,7 @@ AActor* ARoom::CreateProp(FVector Location, FRotator Rotation)
 	{
 		UGameplayStatics::FinishSpawningActor(Bench, BenchTransform);
 	}
+	Benches.Add(Bench);
 	return Bench;
 }
 
@@ -523,9 +562,9 @@ void ARoom::SortExits()
 	}
 }
 
-void ARoom::Swap(TArray<AArea*>& Exits)
+void ARoom::Swap(TArray<ISpace*>& Exits)
 {
-	AArea* temp = Exits[0];
+	ISpace* temp = Exits[0];
 	Exits[0] = Exits[1];
 	Exits[1] = temp;
 }
@@ -545,7 +584,7 @@ void ARoom::SpawnPuddle(int& Iterator)
 {
 	if (CreatedExits.Num() > 0)
 	{
-		AArea* Exit = CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)];
+		auto Exit = Cast<AArea>(CreatedExits[FMath::RandRange(0, CreatedExits.Num() - 1)]);
 		if (FMath::RandRange(0, 1) && Exit)
 		{
 			FVector Distance = (Location + Exit->GetActorLocation()) / 2;
